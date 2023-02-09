@@ -14,14 +14,38 @@ state = {
   }
     // fetching the GET route from the Express server which matches the GET route from server.js
   callBackendAPI = async () => {
-    const response = await fetch('/express_backend');
+   
     
-    const body = await response.json();
-    console.log(body);
-    if (response.status !== 200) {
-      throw Error(body.message) 
-    }
-    return body;
+
+    fetch("/createtable", {
+	
+	// Adding method type
+	method: "POST",
+	
+	// Adding body or contents to send
+	body: JSON.stringify({
+		tablename: "bow2",
+	}),
+	
+	// Adding headers to the request
+	headers: {
+		"Content-type": "application/json",
+    "Accept":"application/json",
+    "Access-Control-Allow-Origin":"*",
+    "Access-Control-Request-Headers":"*",
+   }
+})
+.then(response => response.json())
+.then(json => console.log(json));
+
+
+// const response = await fetch('/createtable');
+//     const body = await response.json();
+//     console.log(body);
+//     if (response.status !== 200) {
+//       throw Error(body.message) 
+//     }
+//     return body;
   };
 
   render() {
