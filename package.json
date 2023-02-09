@@ -1,0 +1,23 @@
+{
+  "name": "reactwithnodeserver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ypradeeprao/reactwithnodeserver.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ypradeeprao/reactwithnodeserver/issues"
+  },
+  "homepage": "https://github.com/ypradeeprao/reactwithnodeserver#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
