@@ -150,7 +150,7 @@ const createtable = async function(req){
       .then(function (response) {
           console.log(JSON.stringify(response.data));
           resp.issuccess = "true";
-          resp.data = response.data;
+          resp.data = response.data.documents;
       })
       .catch(function (error) {
           console.log(error);
