@@ -2151,7 +2151,7 @@ export let gettabledatafromNodejs = async (methodprops) => {
       "Content-type": "application/json",
     "Accept": "application/json",
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Request-Headers": "*",
+ //   "Access-Control-Request-Headers": "*",
     },
     data: requestbody
 };
@@ -2162,7 +2162,7 @@ let resp = {issuccess:"true", message:""};
    .then(function (response) {
        console.log(JSON.stringify(response.data));
        resp.issuccess = true;
-       resp.data = [];
+       resp.data = response.data;
        resp.message = '';
    })
    .catch(function (error) {
