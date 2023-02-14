@@ -1,0 +1,783 @@
+// get mediaarray in artwork insert, insert iamge, video, others in artwork
+// inputoutputscreenshare, inputoutpumeeting, inputoutputaudio, inputoutputvideo
+//1. createpagename, createpag
+//2. do not pass sitename, if sitename //changes, appname changes
+//3. localfolder to add iamges videos, drag and drop them
+//4. database to sitemanager
+//5. external image source
+//6. external video source, sync to app
+//7. paginaton on table
+//8. iot cam app
+//9. qrcode as inputcolumn,
+//10. buildicon, build, customeredit, customerview
+
+// insertfromexcel, updatefromexcel, multieditfromtableui,inlinesave
+// add field rollupsummary as componnet which runs all time on ui fro reporting it should be a field
+// create serveractopms amd execite in future when no recordlockdata
+//futureexecute object and execute in server
+//schedulefuture execute on server
+// update only differnces not full object find somehow to avoid concurrent editing
+// rollback feature how in multirecord insert udpdate usecase
+//tabletagmetatada,
+// lockedrecorddata -
+//create linkedcolumnrecorddata, ln-{currenttablename-columnname-fieldvalue-id} - {tablename, columnname, fieldvalue, id} ex: ln-order-productidfieldapi-productidvalue-orderid- {productid:"", orderid:"", tablaname:"", columnname:""}
+// linkedrecordnumberdata tgn-{tablename-nooftaggedrecords-tagname}- {nooftaggedrecords} this is future execution add one more after 1hr, 1day after if needed - ex: tgn-order-3-productid - {productid:}
+// linkedrecordnumbertrackerdata - tgnr-{tablename} > {min: , nax:, avg:} - future - tngr-order > max: 3, min: 1
+// futureexecutedata - params, executename
+// create serveractionmetadata table
+//tables
+//parentsitetemplatemetadata()
+//parentsitemetadata
+//parentsiteversionmetadata
+//parentsiteversionpagemetadata
+// component relatedtabledata, which renders only on load
+// tableaccessdata,  create acess records based on user role profile
+//tablelinkdata create links to tags or parentids
+
+//clientsitetemplatemetadata
+//clientsitemetadata
+//clientsiteversionmetadata
+//clientsiteversionpagemetadata
+//clienttablemetadata
+//clienttablecolumnmetadata
+//clienttablebuttonmetadata
+//clienttablelayoutmetadata
+//clienttablequerymetadata
+//orgmetadata
+//dbuser
+//profilemetadata
+//rolemetadata
+
+// sitepages
+
+//parenthome
+//clienthome
+
+//newparentsitetemplatemetadata
+//newparentsitemetadata
+//newparentsiteversionmetadata
+//newparentsiteversionpagemetadata
+//newclientsitetemplatemetadata
+//newclientsitemetadata
+//newclientsiteversionmetadata
+//newclientsiteversionpagemetadata
+//newclienttablemetadata
+//newclienttablecolumnmetadata
+//newclienttablebuttonmetadata
+//newclienttablelayoutmetadata
+//newclienttablequerymetadata
+//newprofilemetadata
+//newrolemetadata
+//newdbuser
+
+//editparentsitetemplatemetadata
+//editparentsitemetadata
+//editparentsiteversionmetadata
+//editparentsiteversionpagemetadata
+//editsitetemplatemetadata
+//editsitemetadata
+//editsiteversionmetadata
+//editsiteversionpagemetadata
+//edittablemetadata
+//edittablecolumnmetadata
+//edittablebuttonmetadata
+//edittablelayoutmetadata
+//edittablequerymetadata
+//editprofilemetadata
+//editrolemetadata
+//editdbuser
+
+//listparentsitetemplatemetadata
+//listparentsitemetadata
+//listparentsiteversionmetadata
+//listparentsiteversionpagemetadata
+//listsitetemplatemetadata
+//listsitemetadata
+//listsiteversionmetadata
+//listsiteversionpagemetadata
+//listtablemetadata
+//listtablecolumnmetadata
+//listtablebuttonmetadata
+//listtablelayoutmetadata
+//listtablequerymetadata
+//listprofilemetadata
+//listrolemetadata
+//listdbuser
+
+//buildparentsitetemplatemetadata
+//buildparentsiteversionpagemetadata
+//buildsitetemplatemetadata
+//buildsiteversionpagemetadata
+//buildprofilemetadata
+//buildrolemetadata
+
+// to do..
+
+//Priority:high
+// dbuser login as signup panel, default landing page, redirection, session handling
+// drag and drop listbuttons, recordbuttons
+// preinsert assignment, preinsertvalidation, postinsert-insert, postinsertinsertvalidation, all in updatecase
+// add pages, create pages, click behaviour, table columns data create
+// add link to sectioncolumn, blankrow,
+// add textalign on sectincolumn styleprops
+// show blankrow edit icon not visible in build mode
+// load comp based on urldata, sitestatedata
+// clickbehavior> urlredirection, updatesitestatedata, updatecompstatedata, insert , udpate data, and refresh or not, updatesessiondata in browser
+// url onclick change and local comp state to comp state update in sync
+// change bheaviour recorddata, insert update on section columns
+// onload error, onloadpopup, onload validations
+// record access control
+// jira parent child path comp
+// richtextarea
+// footer comp, hasfooter
+// recordlist searchbox, faviouritefilters, filters range, filter types, row grouping, default row grouping, default sort, view more, pagination
+//recorddata input, tabledatainputcolumn validations, blank validation
+// searchrecorddatacolumn
+// view records access before display, hide edit button after access, hide delte buttoons
+// trigger kind of validations
+// multiple record retrival in update button, insert button and redirect
+// seperate recordaccess object and how to handle
+// new sectioncolumns > dot, numbers, links, code, checkboxgroup, selectgroup, combobox
+// signuppanel, logout
+// check isdbuserloggedin or not and open urls
+// show or hide templateitems, sectioncolumns based on dbuser profile record urls
+// hide edit button, hide delete button, hide save,
+// button behaviour design flow in ui, dbuser friendly
+// recordaccess:
+// id:"",
+// record:{}
+// sharedto:{}
+// sharetype:"" private, public, herirarchyread, hirarchymodify, hirarchydelete,
+// create ohter records based on accessstatus, roleshare, customobjectshare
+
+//Priority:low
+// viewas different profile
+// viewas profile filter on columns, templateareaitems
+// reduce metadata size check any chance reduce lot of data
+//  islayoutmetadatafromserver
+//  get navbar items from db and show
+//. proptypes? error handling?
+// reduce differnce betwwen templatearealist, item, column edit, build help dbusers to build easily
+// long medium padding marging
+// autosave on sectioncolumns
+// sectioncolumns
+// duallsitbox, fileupload, statefulbutton, phone, time,date, datetime, helptext on all columns, pill, badge, avatar, cursor, radiogroup, checkboxgroup, relative datetime diffrence,  slider, textarea,
+//now date, nowdatetime,
+//templateitems
+// buttongroup, formatedaddress, localdatetime, breadcrumb, map, notificaation panel on top of site, sendemail
+// setup databasevend select, apigateway, image, video,
+// 8. db call caching, version manager call
+// profile wise page, defaultpage, guestprofilepage,
+// 10. notification comp
+// 11. dbmanager tab where dbuser can create table columns
+// 12. recruutment manager, market postiong, inteview , hire
+// 13. role manager, table access control,
+// 14. wordpad, excel, quicknote, pdf, signature manager
+// 15. login to specific accunt after login
+// 16. reset passwrod for other dbuser, login as other dbuser
+// 17. sendmail comp
+// pathcompnent
+// approval process
+// publishrecord
+// inlineeditsave
+// onloaderror,profilecheck, showhide,
+// pagination
+// showmore
+// mailbox
+// chat
+
+
+
+
+
+///////////////////
+
+
+
+
+
+//////
+
+
+
+// function Databasenavmenu(props) {
+//   let handleClick = async (methodprops) => {
+//     alltypecompconsolelog("Databasenavmenu-handleClick", methodprops);
+
+//     let { type, order, sectioncolumnmetadata } = methodprops;
+
+//     if (type === "selecteddatabasenavmenuitemname") {
+//       props.parenthandleClick({
+//         type: "selecteddatabasenavmenuitemname",
+//         value: methodprops.value,
+//       });
+//     }
+//   };
+
+//   let fromchildhandleClick = async (methodprops) => {
+//     alltypecompconsolelog("Databasenavmenu-fromchildhandleClick", methodprops);
+//     let { type, order, sectioncolumnmetadata } = methodprops;
+
+//     //let { siteversionpagetemplatedata } = compstate;
+//   };
+
+//   let fromchildhandleChange = async (methodprops) => {
+//     alltypecompconsolelog("Databasenavmenu-fromchildhandleChange", methodprops);
+//     let { type, order, sectioncolumnmetadata } = methodprops;
+
+//     //let { siteversionpagetemplatedata } = compstate;
+//   };
+
+//   return (
+//     <>
+//       <div
+//         onClick={() => {
+//           handleClick({
+//             type: "selecteddatabasenavmenuitemname",
+//             value: "dbnavitemone",
+//           });
+//         }}
+//       >
+//         dbnavitemone
+//       </div>
+//       <div
+//         onClick={() => {
+//           handleClick({
+//             type: "selecteddatabasenavmenuitemname",
+//             value: "dbnavitemtwo",
+//           });
+//         }}
+//       >
+//         dbnavitemtwo
+//       </div>
+//       <div
+//         onClick={() => {
+//           handleClick({
+//             type: "selecteddatabasenavmenuitemname",
+//             value: "dbnavitemthree",
+//           });
+//         }}
+//       >
+//         dbnavitemthree
+//       </div>
+//     </>
+//   );
+// }
+
+// function Pagenavmenu(props) {
+//   let handleClick = async (methodprops) => {
+//     alltypecompconsolelog("Pagenavmenu-handleClick", methodprops);
+//     let { type, order, sectioncolumnmetadata } = methodprops;
+
+//     if (type === "selectedpagenavmenuitemname") {
+//       props.parenthandleClick({
+//         type: "selectedpagenavmenuitemname",
+//         value: methodprops.value,
+//       });
+//     }
+//   };
+
+//   let fromchildhandleClick = async (methodprops) => {
+//     alltypecompconsolelog("Pagenavmenu-fromchildhandleClick", methodprops);
+//     let { type, order, sectioncolumnmetadata } = methodprops;
+
+//    // let { siteversionpagetemplatedata } = compstate;
+//   };
+
+//   let fromchildhandleChange = async (methodprops) => {
+//     alltypecompconsolelog("Pagenavmenu-fromchildhandleChange", methodprops);
+//     let { type, order, sectioncolumnmetadata } = methodprops;
+
+//    // let { siteversionpagetemplatedata } = compstate;
+//   };
+
+//   return (
+//     <>
+//       <div
+//         onClick={() => {
+//           handleClick({
+//             type: "selectedpagenavmenuitemname",
+//             value: "pageone",
+//           });
+//         }}
+//       >
+//         pageone
+//       </div>
+//       <div
+//         onClick={() => {
+//           handleClick({
+//             type: "selectedpagenavmenuitemname",
+//             value: "pagetwo",
+//           });
+//         }}
+//       >
+//         pagetwo
+//       </div>
+//       <div
+//         onClick={() => {
+//           handleClick({
+//             type: "selectedpagenavmenuitemname",
+//             value: "pagethree",
+//           });
+//         }}
+//       >
+//         pagethree
+//       </div>
+//     </>
+//   );
+// }
+
+// function Richtexteditornavbar(props) {
+//   let handleClick = async (methodprops) => {
+//     alltypecompconsolelog("Richtexteditornavbar-handleClick", methodprops);
+//     let { type, order, sectioncolumnmetadata } = methodprops;
+//     if (type === "ispagenavmenuselected") {
+//       props.parenthandleClick({
+//         type: "ispagenavmenuselected",
+//         value: methodprops.value,
+//       });
+//     }
+
+//     if (type === "isdatabasenavmenuselected") {
+//       props.parenthandleClick({
+//         type: "isdatabasenavmenuselected",
+//         value: methodprops.value,
+//       });
+//     }
+//   };
+
+//   let fromchildhandleClick = async (methodprops) => {
+//     alltypecompconsolelog(
+//       "Richtexteditornavbar-fromchildhandleClick",
+//       methodprops
+//     );
+//     let { type, order, sectioncolumnmetadata } = methodprops;
+
+//     if (type === "selectedpagenavmenuitemname") {
+//       props.parenthandleClick({
+//         type: "selectedpagenavmenuitemname",
+//         value: methodprops.value,
+//       });
+//     }
+
+//     if (type === "selecteddatabasenavmenuitemname") {
+//       props.parenthandleClick({
+//         type: "selecteddatabasenavmenuitemname",
+//         value: methodprops.value,
+//       });
+//     }
+//   };
+
+//   let fromchildhandleChange = async (methodprops) => {
+//     alltypecompconsolelog(
+//       "Richtexteditornavbar-fromchildhandleChange",
+//       methodprops
+//     );
+//     let { type, order, sectioncolumnmetadata } = methodprops;
+
+//   //  let { siteversionpagetemplatedata } = compstate;
+//   };
+
+//   let ispagenavmenuselected = false;
+//   let isdatabasenavmenuselected = false;
+
+//   let rtestatedata = props.sitestatedata.rtestatedata;
+//   if (
+//     rtestatedata.ispagenavmenuselected &&
+//     rtestatedata.ispagenavmenuselected !== ""
+//   ) {
+//     ispagenavmenuselected = rtestatedata.ispagenavmenuselected;
+//   }
+//   if (
+//     rtestatedata.isdatabasenavmenuselected &&
+//     rtestatedata.isdatabasenavmenuselected !== ""
+//   ) {
+//     isdatabasenavmenuselected = rtestatedata.isdatabasenavmenuselected;
+//   }
+
+//   return (
+//     <div
+//       style={{
+//         width: "100%",
+//         height: "100vh",
+//         display: "inline-flex",
+//         alignContent: "flex-start",
+//         flexWrap: "wrap",
+//       }}
+//     >
+//       <div style={{ width: "20%", height: "100%", backgroundColor: "red" }}>
+//         <div
+//           onClick={() => {
+//             handleClick({ type: "ispagenavmenuselected", value: "true" });
+//           }}
+//         >
+//           Pages
+//         </div>
+//         <div
+//           onClick={() => {
+//             handleClick({ type: "isdatabasenavmenuselected", value: "true" });
+//           }}
+//         >
+//           dbnav
+//         </div>
+//       </div>
+
+//       <div style={{ width: "80%", height: "100%", backgroundColor: "yellow" }}>
+//         {ispagenavmenuselected === "true" ? (
+//           <Pagenavmenu
+//             sitestatedata={props.sitestatedata}
+//             modetype={props.modetype}
+//             parenthandleClick={fromchildhandleClick}
+//             parenthandleChange={fromchildhandleChange}
+//           />
+//         ) : (
+//           <></>
+//         )}
+//         {isdatabasenavmenuselected === "true" ? (
+//           <Databasenavmenu
+//             sitestatedata={props.sitestatedata}
+//             modetype={props.modetype}
+//             parenthandleClick={fromchildhandleClick}
+//             parenthandleChange={fromchildhandleChange}
+//           />
+//         ) : (
+//           <></>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
+
+// function Richtexteditortoolbaricon(props) {
+//   let fromchildhandleClick = async (methodprops) => {
+//     alltypecompconsolelog(
+//       "Richtexteditortoolbaricon-fromchildhandleClick",
+//       methodprops
+//     );
+//     let { type, order, sectioncolumnmetadata } = methodprops;
+
+//     //let { siteversionpagetemplatedata } = compstate;
+//   };
+
+//   let fromchildhandleChange = async (methodprops) => {
+//     alltypecompconsolelog(
+//       "Richtexteditortoolbaricon-fromchildhandleChange",
+//       methodprops
+//     );
+//     let { type, order, sectioncolumnmetadata } = methodprops;
+
+//    // let { siteversionpagetemplatedata } = compstate;
+//   };
+
+//   return <div style={{}}>test</div>;
+// }
+
+// function Richtexteditortoolbar(props) {
+//   let fromchildhandleClick = async (methodprops) => {
+//     alltypecompconsolelog(
+//       "Richtexteditortoolbar-fromchildhandleClick",
+//       methodprops
+//     );
+//     let { type, order, sectioncolumnmetadata } = methodprops;
+
+//     //let { siteversionpagetemplatedata } = compstate;
+//   };
+
+//   let fromchildhandleChange = async (methodprops) => {
+//     alltypecompconsolelog(
+//       "Richtexteditortoolbar-fromchildhandleChange",
+//       methodprops
+//     );
+//     let { type, order, sectioncolumnmetadata } = methodprops;
+
+//    // let { siteversionpagetemplatedata } = compstate;
+//   };
+
+//   return (
+//     <div
+//       style={{
+//         width: "100%",
+//         display: "inline-flex",
+//         alignContent: "flex-start",
+//         flexWrap: "wrap",
+//         backgroundColor: "red",
+//       }}
+//     >
+//       <Richtexteditortoolbaricon
+//         sitestatedata={props.sitestatedata}
+//         modetype={props.modetype}
+//         parenthandleClick={fromchildhandleClick}
+//         parenthandleChange={fromchildhandleChange}
+//       />
+//     </div>
+//   );
+// }
+
+// function Richtexteditortoolbardragarea(props) {
+//   let fromchildhandleClick = async (methodprops) => {
+//     alltypecompconsolelog(
+//       "Richtexteditortoolbardragarea-fromchildhandleClick",
+//       methodprops
+//     );
+//     let { type, order, sectioncolumnmetadata } = methodprops;
+
+//    // let { siteversionpagetemplatedata } = compstate;
+//   };
+
+//   let fromchildhandleChange = async (methodprops) => {
+//     alltypecompconsolelog(
+//       "Richtexteditortoolbardragarea-fromchildhandleChange",
+//       methodprops
+//     );
+//     let { type, order, sectioncolumnmetadata } = methodprops;
+
+//    // let { siteversionpagetemplatedata } = compstate;
+//   };
+
+//   return <>test1</>;
+// }
+
+// function Richtexteditoreditarea(props) {
+//   let fromchildhandleClick = async (methodprops) => {
+//     alltypecompconsolelog(
+//       "Richtexteditoreditarea-fromchildhandleClick",
+//       methodprops
+//     );
+//     let { type, order, sectioncolumnmetadata } = methodprops;
+
+//    // let { siteversionpagetemplatedata } = compstate;
+//   };
+
+//   let fromchildhandleChange = async (methodprops) => {
+//     alltypecompconsolelog(
+//       "Richtexteditoreditarea-fromchildhandleChange",
+//       methodprops
+//     );
+//     let { type, order, sectioncolumnmetadata } = methodprops;
+
+//    // let { siteversionpagetemplatedata } = compstate;
+//   };
+
+//   let handleKeyUp = async (methodprops) => {
+//     alltypecompconsolelog("Richtexteditoreditarea-handleKeyUp", methodprops);
+//     let { type, order, sectioncolumnmetadata } = methodprops;
+
+//     console.log(methodprops);
+//     console.log(getSelectionText());
+//   };
+
+//   let handleMouseUp = async (methodprops) => {
+//     alltypecompconsolelog("Richtexteditoreditarea-onMouseUp", methodprops);
+//     let { type, order, sectioncolumnmetadata } = methodprops;
+//     console.log(methodprops);
+//     console.log(getSelectionText());
+//   };
+
+//   function getSelectionText() {
+//     var text = "";
+//     var activeEl = document.activeElement;
+//     console.log(activeEl.selectionStart);
+//     console.log(activeEl.selectionEnd);
+//     var activeElTagName = activeEl ? activeEl.tagName.toLowerCase() : null;
+//     if (
+//       activeElTagName === "textarea" ||
+//       (activeElTagName === "input" &&
+//         /^(?:text|search|password|tel|url)$/i.test(activeEl.type) &&
+//         typeof activeEl.selectionStart === "number")
+//     ) {
+//       text = activeEl.value.slice(
+//         activeEl.selectionStart,
+//         activeEl.selectionEnd
+//       );
+//     } else if (window.getSelection) {
+//       text = window.getSelection().toString();
+//     }
+//     return text;
+//   }
+
+//   let selecteddatabasenavmenuitemcontent = "Test";
+//   let rtestatedata = props.sitestatedata.rtestatedata;
+//   if (
+//     rtestatedata.selecteddatabasenavmenuitemcontent &&
+//     rtestatedata.selecteddatabasenavmenuitemcontent !== ""
+//   ) {
+//     selecteddatabasenavmenuitemcontent =
+//       rtestatedata.selecteddatabasenavmenuitemcontent;
+//   }
+
+//   return (
+//     <div
+//       contenteditable="true"
+//       onMouseUp={(methodprops) => handleMouseUp(methodprops)}
+//       onKeyUp={(methodprops) => handleKeyUp(methodprops)}
+//     >
+//       {selecteddatabasenavmenuitemcontent}
+//     </div>
+//   );
+// }
+
+// function Testcomp2(props) {
+//   const [compstate, setCompstate] = useState({
+//     showui: true,
+//     modetype: props.modetype,
+//     rtestatedata: {
+//       selectedcontentname: "",
+//       selectedcontentvalue: "",
+//       seletedcontentvaluedivindex: "",
+//       seletedcontentvaluedivvalue: "",
+//       selectedtoolbariconname: "",
+
+//       ispagenavmenuselected: "false",
+//       isdatabasenavmenuselected: "false",
+//       selectedpagenavmenuitemname: "",
+//       selecteddatabasenavmenuitemname: "",
+//       selecteddatabasenavmenuitemcontent: "",
+//       selectedpagenavmenuitemcontent: "",
+//     },
+//   });
+
+//   useEffect(() => {
+//     alltypecompconsolelog("Testcomp2-useeffect");
+
+//     //  resettabledatainDatabase();
+//     //  fetchsiteversionpageDatafromDB();
+//     //  fetchAllsiteversionpageDatafromDB();
+//   }, []);
+
+//   let showui = async (methodprops) => {
+//     let compstatejs = JSON.parse(JSON.stringify(compstate));
+//     let methodpropsjs = JSON.parse(JSON.stringify(methodprops));
+
+//     await setCompstate({ ...compstatejs, ...methodpropsjs, showui: true });
+//   };
+//   let hideui = async (methodprops) => {
+//     let compstatejs = JSON.parse(JSON.stringify(compstate));
+//     let methodpropsjs = JSON.parse(JSON.stringify(methodprops));
+
+//     await setCompstate({ ...compstatejs, ...methodpropsjs, showui: false });
+//   };
+
+//   let fromchildhandleClick = async (methodprops) => {
+//     alltypecompconsolelog("Testcomp2-fromchildhandleClick", methodprops);
+
+//     let { type, order, sectioncolumnmetadata } = methodprops;
+
+//     let { rtestatedata } = compstate;
+
+//     let dbcontentmap = {
+//       dbnavitemone: {
+//         type: "divarray",
+//         value: [
+//           { order: 0, type: "text", value: "test1", style: "color:red;" },
+//           { order: 0, type: "text", value: "test2", style: "color:blue;" },
+//         ],
+//       },
+//       dbnavitemtwo: "dbnavitemtwo",
+//       dbnavitemthree: "dbnavitemthree",
+//     };
+
+//     if (type === "ispagenavmenuselected") {
+//       if (methodprops.value === "true") {
+//         rtestatedata.ispagenavmenuselected = "true";
+//         rtestatedata.isdatabasenavmenuselected = "false";
+//       } else {
+//         rtestatedata.ispagenavmenuselected = "false";
+//         rtestatedata.isdatabasenavmenuselected = "true";
+//       }
+
+//       await hideui({});
+//       await showui({
+//         rtestatedata: rtestatedata,
+//       });
+//     }
+
+//     if (type === "isdatabasenavmenuselected") {
+//       if (methodprops.value === "true") {
+//         rtestatedata.ispagenavmenuselected = "false";
+//         rtestatedata.isdatabasenavmenuselected = "true";
+//       } else {
+//         rtestatedata.ispagenavmenuselected = "true";
+//         rtestatedata.isdatabasenavmenuselected = "false";
+//       }
+//       await hideui({});
+//       await showui({
+//         rtestatedata: rtestatedata,
+//       });
+//     }
+
+//     if (type === "selectedpagenavmenuitemname") {
+//       rtestatedata.selectedpagenavmenuitemname = methodprops.value;
+//       rtestatedata.selectedpagenavmenuitemcontent =
+//         dbcontentmap[methodprops.value];
+//       await hideui({});
+//       await showui({
+//         rtestatedata: rtestatedata,
+//       });
+//     }
+
+//     if (type === "selecteddatabasenavmenuitemname") {
+//       rtestatedata.selecteddatabasenavmenuitemname = methodprops.value;
+//       rtestatedata.selecteddatabasenavmenuitemcontent =
+//         dbcontentmap[methodprops.value];
+//       await hideui({});
+//       await showui({
+//         rtestatedata: rtestatedata,
+//       });
+//     }
+//   };
+
+//   let fromchildhandleChange = async (methodprops) => {
+//     alltypecompconsolelog(
+//       "Testcomp2-fromchildhandleClick",
+//       fromchildhandleChange
+//     );
+//     let { type, order, sectioncolumnmetadata } = methodprops;
+
+//     let { siteversionpagetemplatedata } = compstate;
+//   };
+
+//   alltypecompconsolelog("Testcomp2-render", compstate);
+
+//   if (compstate.showui !== true) {
+//     return <></>;
+//   } else {
+//     let sitestatedata = {};
+//     sitestatedata.rtestatedata = compstate.rtestatedata;
+
+//     return (
+//       <div
+//         style={{
+//           width: "100%",
+//           height: "100vh",
+//           display: "inline-flex",
+//           alignContent: "flex-start",
+//           flexWrap: "wrap",
+//         }}
+//       >
+//         <div style={{ width: "20%", height: "100%", backgroundColor: "red" }}>
+//           <Richtexteditornavbar
+//             sitestatedata={sitestatedata}
+//             modetype={compstate.modetype}
+//             parenthandleClick={fromchildhandleClick}
+//             parenthandleChange={fromchildhandleChange}
+//           />
+//         </div>
+
+//         <div style={{ width: "80%", height: "100%", backgroundColor: "green" }}>
+//           <Richtexteditortoolbar
+//             sitestatedata={sitestatedata}
+//             modetype={compstate.modetype}
+//             parenthandleClick={fromchildhandleClick}
+//             parenthandleChange={fromchildhandleChange}
+//           />
+//           <Richtexteditoreditarea
+//             sitestatedata={sitestatedata}
+//             modetype={compstate.modetype}
+//             parenthandleClick={fromchildhandleClick}
+//             parenthandleChange={fromchildhandleChange}
+//           />
+//         </div>
+//       </div>
+//     );
+//   }
+// }
