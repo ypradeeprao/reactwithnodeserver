@@ -59,7 +59,7 @@ app.get('/express_backend', (req, res) => { //Line 9
  app.post('/retrieverecords', async (req, res) => {
   
    var x = await mongojs.retrieverecords(req) ; 
-   res.end( JSON.stringify({x}));
+   res.end( JSON.stringify(x));
  })
 
 
