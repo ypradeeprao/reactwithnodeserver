@@ -113,9 +113,8 @@ function App() {
 
         let resp =  await gettabledatafromNodejs();
         console.log(resp);
-        console.log(resp.body);
-          console.log(resp.json());
-
+      
+         
     } else {
       Showui({ viewtype: type });
     }

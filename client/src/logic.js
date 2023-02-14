@@ -2163,18 +2163,17 @@ let resp = {issuccess:"false", message:"not triggered", data:[]};
        console.log(JSON.stringify(response.data));
        console.log(response.data);
        console.log(response.data.data);
-       let respjson = JSON.parse(response); 
-       console.log(respjson);
+      
 let resp = {issuccess:"true", message:""};
-       if(respjson.data.issuccess === "true"){
+       if(response.data.issuccess === "true"){
         resp.issuccess = "true";
-        resp.data = respjson.data.data;
+        resp.data = response.data.data;
         resp.message = "";
        }
        else{
         resp.issuccess = "false";
         resp.data = [];
-        resp.message = respjson.data.message;
+        resp.message = response.data.message;
        }
       
    })
