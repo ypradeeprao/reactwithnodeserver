@@ -111,6 +111,11 @@ function App() {
         })
         .catch((err) => console.log(err));
 
+        let resp =  await gettabledatafromNodejs();
+        console.log(resp);
+        console.log(resp.body);
+          console.log(resp.json());
+
     } else {
       Showui({ viewtype: type });
     }
