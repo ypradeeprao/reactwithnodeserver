@@ -2161,6 +2161,8 @@ let resp = {issuccess:"false", message:"not triggered", data:[]};
    await axios(config)
    .then(function (response) {
        console.log(JSON.stringify(response.data));
+       console.log(response.data);
+       console.log(response.data.data);
        let respjson = JSON.parse(response); 
        console.log(respjson);
 let resp = {issuccess:"true", message:""};
