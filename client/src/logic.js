@@ -2164,7 +2164,7 @@ let resp = {issuccess:"false", message:"not triggered", data:[]};
        console.log(response.data);
        console.log(response.data.data);
       
-let resp = {issuccess:"true", message:""};
+
        if(response.data.issuccess === "true"){
         resp.issuccess = "true";
         resp.data = response.data.data;
