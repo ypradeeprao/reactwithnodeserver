@@ -2161,9 +2161,18 @@ let resp = {issuccess:"true", message:""};
    await axios(config)
    .then(function (response) {
        console.log(JSON.stringify(response.data));
-       resp.issuccess = true;
-       resp.data = response.data;
-       resp.message = '';
+let resp = {issuccess:"true", message:""};
+       if(response.data.issuccess === "true"){
+        resp.issuccess = "true";
+        resp.data = response.data.data;
+        resp.message = "";
+       }
+       else{
+        resp.issuccess = "false";
+        resp.data = [];
+        resp.message = response.data.message;
+       }
+      
    })
    .catch(function (error) {
        console.log(error);
