@@ -1,11 +1,12 @@
 var axios = require('axios');
 
 
-
+let clustername = "Cluster0";
+let databasename = "sampledb1";
 var data = JSON.stringify({
     "collection": "samplecollection1",
-    "database": "sampledb1",
-    "dataSource": "Cluster0",
+    "database": databasename,
+    "dataSource": clustername,
     "projection": {
         "_id": "63dc364a3ace6b16ecfd539e"
     }
@@ -35,8 +36,8 @@ const createtable = async function(req){
     let {tablename, tabledatalist} = req.body;
     
     let createtablejson = {
-        "dataSource": "Cluster0",
-        "database": "sampledb1",
+        "dataSource": clustername,
+        "database": databasename,
         "collection": tablename,
         "documents": [{"sampleid":"sampleid"}]
     }
@@ -63,8 +64,8 @@ const createtable = async function(req){
 
 
       let deletetablejson = {
-        "dataSource": "Cluster0",
-        "database": "sampledb1",
+        "dataSource": clustername,
+        "database": databasename,
         "collection": tablename,
         "filter": { "sampleid": "sampleid" }
     }
@@ -129,8 +130,8 @@ const createtable = async function(req){
    }
    }
     let recordsjson = {
-        "dataSource": "Cluster0",
-        "database": "sampledb1",
+        "dataSource": clustername,
+        "database": databasename,
         "collection": tablename,
         "filter": conditionexpression,
         "projection": columnsvalue,
@@ -166,8 +167,8 @@ const insertrecords = async function(req){
   let {tablename, tabledatalist} = req.body;
   
   let recordsjson = {
-      "dataSource": "Cluster0",
-      "database": "sampledb1",
+      "dataSource": clustername,
+      "database": databasename,
       "collection": tablename,
       "documents": tabledatalist
   }
@@ -195,8 +196,8 @@ const editrecords = async function(req){
     let {tablename, conditionexpression, updateexpression, upsertifnotfound} = req.body;
     
     let recordsjson = {
-        "dataSource": "Cluster0",
-        "database": "sampledb1",
+        "dataSource": clustername,
+        "database": databasename,
         "collection": tablename,
         "filter": conditionexpression,
         "update": { "$set": updateexpression },
@@ -226,8 +227,8 @@ const editrecords = async function(req){
     let {tablename, conditionexpression, updateexpression, upsertifnotfound} = req.body;
     
     let recordsjson = {
-        "dataSource": "Cluster0",
-        "database": "sampledb1",
+        "dataSource": clustername,
+        "database": databasename,
         "collection": tablename,
         "filter": conditionexpression
      
