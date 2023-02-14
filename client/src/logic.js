@@ -2127,13 +2127,20 @@ export let gettabledatafromNodejs = async (methodprops) => {
   alltypecompconsolelog("gettabledatafromNodejs-entry",methodprops);
  
 
-  let url = "/createtable";
+  let url = "/retrieverecords";
   let requestbody = JSON.stringify({
-    tablename: "bow2",
+    "tablename":"bow",
+    "conditionexpression":{"a":"b"},
+     "columns":[],
+     "sortby" :"a",
+     "sortbytype":"asc", 
+     "limit":1
+   
+
   });
   let requestheaders = {
     "Content-type": "application/json",
-    Accept: "application/json",
+    "Accept": "application/json",
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Request-Headers": "*",
   };
@@ -2142,9 +2149,9 @@ export let gettabledatafromNodejs = async (methodprops) => {
     method: "POST",
     body: requestbody,
     headers: requestheaders,
-  });
-   // .then((response) => response.json())
- //   .then((json) => console.log(json));
+  })
+  //  .then((response) => response.json())
+  // .then((json) => console.log(json));
 
   alltypecompconsolelog("gettabledatafromNodejs-response",response);
   alltypecompconsolelog("gettabledatafromNodejs-response.json",response.json());
