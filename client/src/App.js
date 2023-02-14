@@ -104,7 +104,11 @@ function App() {
     let { type } = methodprops;
     if (type === "callBackendAPI") {
       await gettabledatafromNodejs()
-        .then((res) => console.log(res))
+        .then((res) => {
+           console.log(res);
+          console.log(res.body);
+          console.log(res.json());
+        })
         .catch((err) => console.log(err));
 
     } else {
