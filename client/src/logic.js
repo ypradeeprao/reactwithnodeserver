@@ -2165,7 +2165,7 @@ export let gettabledatafromNodejs = async (methodprops) => {
   // if (response.status !== 200) {
   //   throw Error(body.message);
   // }
- // return body;
+  return response;
 };
 
 export let gettabledatafromDatabase = async (methodprops) => {
