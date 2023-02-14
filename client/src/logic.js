@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-concat */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
-
+import axios from "axios";
 import {
   templateareaitemDragpanelmetadataInitMap,
   templatearealistmetadataInit,
@@ -2127,7 +2127,10 @@ export let gettabledatafromNodejs = async (methodprops) => {
   alltypecompconsolelog("gettabledatafromNodejs-entry",methodprops);
  
 
-  let url = "/retrieverecords";
+
+
+
+
   let requestbody = JSON.stringify({
     "tablename":"bow",
     "conditionexpression":{"a":"b"},
@@ -2138,26 +2141,38 @@ export let gettabledatafromNodejs = async (methodprops) => {
    
 
   });
-  let requestheaders = {
-    "Content-type": "application/json",
+ 
+
+
+  var config = {
+    method: 'post',
+    url: '/retrieverecords',
+    headers: {
+      "Content-type": "application/json",
     "Accept": "application/json",
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Request-Headers": "*",
-  };
+    },
+    data: requestbody
+};
 
-   let response = {};
+let resp = {issuccess:"true", message:""};
 
-  await fetch(url, {
-    method: "POST",
-    body: requestbody,
-    headers: requestheaders,
-  })
-  .then(people => {
-    console.log(people);
-    response = people;
-  });
+   await axios(config)
+   .then(function (response) {
+       console.log(JSON.stringify(response.data));
+       resp.issuccess = true;
+       resp.data = [];
+       resp.message = '';
+   })
+   .catch(function (error) {
+       console.log(error);
+       resp.issuccess = false;
+       resp.data = [];
+       resp.message = error;
+   });
 
- alltypecompconsolelog("gettabledatafromNodejs-response",response);
+ alltypecompconsolelog("gettabledatafromNodejs-response",resp);
  // alltypecompconsolelog("gettabledatafromNodejs-response.json",response.json());
   // const response = await fetch('/createtable');
   //const body = await response.json();
@@ -2165,7 +2180,7 @@ export let gettabledatafromNodejs = async (methodprops) => {
   // if (response.status !== 200) {
   //   throw Error(body.message);f
   // }
-  return response;
+  return resp;
 };
 
 export let gettabledatafromDatabase = async (methodprops) => {
