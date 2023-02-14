@@ -2150,18 +2150,22 @@ export let gettabledatafromNodejs = async (methodprops) => {
     body: requestbody,
     headers: requestheaders,
   })
-  //  .then((response) => response.json())
-  // .then((json) => console.log(json));
+  .then(response => {
+    return response.json();
+  })
+  .then(people => {
+    console.log(people);
+  });
 
-  alltypecompconsolelog("gettabledatafromNodejs-response",response);
-  alltypecompconsolelog("gettabledatafromNodejs-response.json",response.json());
+//  alltypecompconsolelog("gettabledatafromNodejs-response",response);
+ // alltypecompconsolelog("gettabledatafromNodejs-response.json",response.json());
   // const response = await fetch('/createtable');
-  const body = await response.json();
+  //const body = await response.json();
   
-  if (response.status !== 200) {
-    throw Error(body.message);
-  }
-  return body;
+  // if (response.status !== 200) {
+  //   throw Error(body.message);
+  // }
+ // return body;
 };
 
 export let gettabledatafromDatabase = async (methodprops) => {

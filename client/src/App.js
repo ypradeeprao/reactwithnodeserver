@@ -56,7 +56,7 @@ function App() {
   async function fetchsitestatedatafromDB(methodprops) {
     alltypecompconsolelog("sitecomp-fetchsitestatedatafromDB");
     alltypecompconsolelog(methodprops);
-    gettabledatafromNodejs();
+   
     setCompstate({ listtablemetadata: [], showui: "true" });
   }
 
@@ -103,9 +103,10 @@ function App() {
     let { viewtype } = compstate;
     let { type } = methodprops;
     if (type === "callBackendAPI") {
-      await callBackendAPI()
-        .then((res) => console.log(res.express))
+      await gettabledatafromNodejs()
+        .then((res) => console.log(res))
         .catch((err) => console.log(err));
+
     } else {
       Showui({ viewtype: type });
     }
