@@ -2145,16 +2145,16 @@ export let gettabledatafromNodejs = async (methodprops) => {
     "Access-Control-Request-Headers": "*",
   };
 
-  const response = await fetch(url, {
+   let response = {};
+
+  await fetch(url, {
     method: "POST",
     body: requestbody,
     headers: requestheaders,
   })
-  .then(res => {
-    return res;
-  })
   .then(people => {
     console.log(people);
+    response = people;
   });
 
  alltypecompconsolelog("gettabledatafromNodejs-response",response);
@@ -2163,7 +2163,7 @@ export let gettabledatafromNodejs = async (methodprops) => {
   //const body = await response.json();
   
   // if (response.status !== 200) {
-  //   throw Error(body.message);
+  //   throw Error(body.message);f
   // }
   return response;
 };
