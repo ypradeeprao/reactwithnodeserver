@@ -2150,15 +2150,15 @@ export let gettabledatafromNodejs = async (methodprops) => {
     body: requestbody,
     headers: requestheaders,
   })
-  .then(response => {
-    return response.json();
+  .then(res => {
+    return res;
   })
   .then(people => {
     console.log(people);
   });
 
-//  alltypecompconsolelog("gettabledatafromNodejs-response",response);
- // alltypecompconsolelog("gettabledatafromNodejs-response.json",response.json());
+ alltypecompconsolelog("gettabledatafromNodejs-response",response);
+  alltypecompconsolelog("gettabledatafromNodejs-response.json",response.json());
   // const response = await fetch('/createtable');
   //const body = await response.json();
   
