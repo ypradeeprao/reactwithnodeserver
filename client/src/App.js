@@ -17,7 +17,7 @@ state = {
    
     
 
-    fetch("/createtable", {
+    fetch("/fileread", {
 	
 	// Adding method type
 	method: "POST",
