@@ -2156,21 +2156,23 @@ export let gettabledatafromNodejs = async (methodprops) => {
     data: requestbody
 };
 
-let resp = {issuccess:"true", message:""};
+let resp = {issuccess:"false", message:"not triggered", data:[]};
 
    await axios(config)
    .then(function (response) {
        console.log(JSON.stringify(response.data));
+       let respjson = JSON.parse(response); 
+       console.log(respjson);
 let resp = {issuccess:"true", message:""};
-       if(response.data.issuccess === "true"){
+       if(respjson.data.issuccess === "true"){
         resp.issuccess = "true";
-        resp.data = response.data.data;
+        resp.data = respjson.data.data;
         resp.message = "";
        }
        else{
         resp.issuccess = "false";
         resp.data = [];
-        resp.message = response.data.message;
+        resp.message = respjson.data.message;
        }
       
    })
