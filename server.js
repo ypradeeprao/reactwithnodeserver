@@ -66,7 +66,7 @@ app.get('/express_backend', (req, res) => { //Line 9
  app.post('/insertrecords', async (req, res) => {
   
    var x = await mongojs.insertrecords(req) ; 
-   res.end( JSON.stringify({}));
+   res.end( JSON.stringify(x));
  })
 
  app.post('/editrecords', async (req, res) => {
@@ -78,7 +78,7 @@ app.get('/express_backend', (req, res) => { //Line 9
  app.post('/deleterecords', async (req, res) => {
   
    var x = await mongojs.deleterecords(req) ; 
-   res.end( JSON.stringify({}));
+   res.end( JSON.stringify(x));
  })
 
  app.post('/sendmail', async (req, res) => {
