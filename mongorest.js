@@ -73,7 +73,7 @@ const createtable = async function(req){
       deletesampleconfig.url = deletemanyconfigurl;
       deletesampleconfig.data = deletetablejson;
      
-      if(resp.issuccess == true){
+      if(resp.issuccess === "true"){
       await axios(deletesampleconfig)
       .then(function (response) {
           console.log(JSON.stringify(response.data));
@@ -104,6 +104,8 @@ const createtable = async function(req){
   }
 
   const retrieverecords = async function(req){
+    console.log("retrieverecords-req");
+    console.log(req);
     let resp = {issuccess:"true", message:""};
   
     let {tablename, conditionexpression,columns, sortby,sortbytype, limit} = req.body;
@@ -117,7 +119,7 @@ const createtable = async function(req){
     }
 
   
-    let limitvalue = 1;
+    let limitvalue = 50000;
    if(limit && limit != ""){
     limitvalue = limit;
    }
@@ -158,10 +160,14 @@ const createtable = async function(req){
           resp.message = error;
       });
   
+      console.log("retrieverecords-resp");
+      console.log(resp);
       return resp;
   }
 
 const insertrecords = async function(req){
+    console.log("insertrecords-req");
+    console.log(req);
   let resp = {issuccess:"true", message:""};
 
   let {tablename, tabledatalist} = req.body;
@@ -182,11 +188,19 @@ const insertrecords = async function(req){
     await axios(insertmanyconfig)
     .then(function (response) {
         console.log(JSON.stringify(response.data));
+        resp.issuccess = "true";
+        resp.data = response.data.insertedIds;
+        resp.message = '';
     })
     .catch(function (error) {
         console.log(error);
+        resp.issuccess = "false";
+        resp.data = [];
+        resp.message = error;
     });
 
+    console.log("insertrecords-resp");
+    console.log(resp);
     return resp;
 }
 
@@ -240,13 +254,22 @@ const editrecords = async function(req){
     insertmanyconfig.data = recordsjson;
   
   
+   
+
       await axios(insertmanyconfig)
       .then(function (response) {
           console.log(JSON.stringify(response.data));
+          resp.issuccess = "true";
+          resp.data = [];
+          resp.message = '';
       })
       .catch(function (error) {
           console.log(error);
+          resp.issuccess = "false";
+          resp.data = [];
+          resp.message = error;
       });
+
   
       return resp;
   }

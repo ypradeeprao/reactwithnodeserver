@@ -8,56 +8,39 @@ import {
   alltypecompChangeHandler,
   alltypecompClickHandler,
   getbrowserLocalstorage,
-  gettabledatafromNodejs
+  gettabledatafromNodejs,
+  createtabledataNodejs,
+  insertrecordNodejs,
+  deleterecordNodejs
 } from "./logic";
 
-let callBackendAPI = async () => {
-  fetch("/createtable", {
-    // Adding method type
-    method: "POST",
-
-    // Adding body or contents to send
-    body: JSON.stringify({
-      tablename: "bow2",
-    }),
-
-    // Adding headers to the request
-    headers: {
-      "Content-type": "application/json",
-      Accept: "application/json",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Request-Headers": "*",
-    },
-  })
-    .then((response) => response.json())
-    .then((json) => console.log(json));
-
-  // const response = await fetch('/createtable');
-  //     const body = await response.json();
-  //     console.log(body);
-  //     if (response.status !== 200) {
-  //       throw Error(body.message)
-  //     }
-  //     return body;
-};
 
 function App() {
   // Declare a new state variable, which we'll call "count"
 
-  const [compstate, setCompstate] = useState(0);
+  const [compstate, setCompstate] = useState({});
+  const [uistate, setUistate] = useState({});
 
   useEffect(() => {
     alltypecompconsolelog("sitecomp-useeffect");
 
-    fetchsitestatedatafromDB();
+  
     //  fetchAllsiteversionpageDatafromDB();
+    Showui({listtablemetadata:[]  });
   }, []);
 
-  async function fetchsitestatedatafromDB(methodprops) {
-    alltypecompconsolelog("sitecomp-fetchsitestatedatafromDB");
+  async function fetchtablemetadatafromDB(methodprops) {
+    alltypecompconsolelog("sitecomp-fetchtablemetadatafromDB");
     alltypecompconsolelog(methodprops);
-   
-    setCompstate({ listtablemetadata: [], showui: "true" });
+     let listtablemetadata =[];
+    let resp =  await gettabledatafromNodejs({tablename:"tablemetadata"});
+        console.log(resp);
+        if(resp.issuccess === "true"){
+          listtablemetadata = resp.data;
+        //  Showui({  listtablemetadata: listtablemetadata });
+        }
+  
+   return listtablemetadata;
   }
 
   let Showui = async (methodprops) => {
@@ -79,45 +62,87 @@ function App() {
 
   let Databasehtml = () => {
     let { listtablemetadata } = compstate;
+    let {createtablemetadatalabel, createtablemetadataname} = uistate;
     let mainpanelhtml = [];
+    let tablenamelisthtml = [];
     let listtablemetadatajs = JSON.parse(JSON.stringify(listtablemetadata));
-    listtablemetadatajs.push({
-      label: "test table label",
-      name: "test table name",
-    });
+   
     alltypecompconsolelog("listtablemetadata", listtablemetadatajs);
 
     if (listtablemetadatajs) {
       for (let i = 0; i < listtablemetadatajs.length; i++) {
-        mainpanelhtml.push(<div>{listtablemetadatajs[i].label}</div>);
+        tablenamelisthtml.push(<>
+        <div key={listtablemetadatajs[i].name}>{listtablemetadatajs[i].label}</div>
+        <button onClick={() => handleClick({ type: "deletetablemetadatarecord", name:listtablemetadatajs[i].name })}>
+        deletetablemetadatarecord
+              </button>
+              </>);
       }
     }
-    return <>{mainpanelhtml}</>;
+    return <>
+    Label<input onChange={(e)=>handleChange({type:"createtablemetadatalabel", value:e.target.value})} defaultValue={createtablemetadatalabel} />
+    Name<input onChange={(e)=>handleChange({type:"createtablemetadataname", value:e.target.value})} defaultValue={createtablemetadataname} />
+    <button onClick={() => handleClick({ type: "createtablemetadatarecord" })}>
+    createtablemetadatarecord
+          </button>
+    {tablenamelisthtml}
+    </>;
   };
 
   let Sitemanagerhtml = () => {
     return "Sitemanagerhtml";
   };
+  let handleChange = async (methodprops) => {
+    let { type, value } = methodprops;
+    if(type === "createtablemetadatalabel"){
+      uistate.createtablemetadatalabel = value;
+      //setUistate({...uistate, createtablemetadatalabel: value });
+    }
+    if(type === "createtablemetadataname"){
+      uistate.createtablemetadataname = value;
+    //  setUistate({ ...uistate, createtablemetadataname: value });
+    }
+    console.log(uistate);
+  }
+
 
   let handleClick = async (methodprops) => {
-    let { viewtype } = compstate;
-    let { type } = methodprops;
-    if (type === "callBackendAPI") {
-      await gettabledatafromNodejs()
-        .then((res) => {
-           console.log(res);
-          console.log(res.body);
-          console.log(res.json());
-        })
-        .catch((err) => console.log(err));
+    let { viewtype, createtablemetadataname, createtablemetadatalabel } = compstate;
+    console.log(uistate);
+    let { type, name } = methodprops;
+    if (type === "createtablemetadatarecord") {
+      let createtableresp =  await insertrecordNodejs({tablename:"tablemetadata",
+       tabledatalist:[{label:uistate.createtablemetadatalabel, name:uistate.createtablemetadataname}]});
+      console.log(createtableresp);
+      if(createtableresp.issuccess === "true"){
 
-        let resp =  await gettabledatafromNodejs();
-        console.log(resp);
-      
-         
-    } else {
-      Showui({ viewtype: type });
+
+        let listtablemetadata = await fetchtablemetadatafromDB();
+        Showui({  listtablemetadata:listtablemetadata});
+      }
+      else{
+        console.log(createtableresp.message);
+      }
     }
+    else if (type === "deletetablemetadatarecord") {
+      let createtableresp =  await deleterecordNodejs({tablename:"tablemetadata",
+      conditionexpression:{ name:name}});
+      console.log(createtableresp);
+      if(createtableresp.issuccess === "true"){
+
+
+        let listtablemetadata = await fetchtablemetadatafromDB();
+        Showui({  listtablemetadata:listtablemetadata});
+      }
+      else{
+        console.log(createtableresp.message);
+      }
+    }
+     else {
+      let listtablemetadata = await fetchtablemetadatafromDB();
+      Showui({ viewtype: type , listtablemetadata:listtablemetadata});
+    }
+
   };
 
   let { viewtype, showui } = compstate;

@@ -2124,74 +2124,197 @@ export let getdroppedtemplateareaitem = (methodprops) => {
 ///////////////////////////
 
 export let gettabledatafromNodejs = async (methodprops) => {
-  alltypecompconsolelog("gettabledatafromNodejs-entry",methodprops);
- 
-
-
-
-
-
+  alltypecompconsolelog("gettabledatafromNodejs-entry", methodprops);
+  let {tablename} = methodprops;
   let requestbody = JSON.stringify({
-    "tablename":"bow",
-    "conditionexpression":{"a":"b"},
-     "columns":[],
-     "sortby" :"a",
-     "sortbytype":"asc", 
-     "limit":1
-   
-
-  });
- 
-
-
+    "tablename": tablename,
+    "conditionexpression": {},
+    "columns": [],
+    "sortby": "",
+    "sortbytype": "",
+    "limit": ""
+ });
   var config = {
     method: 'post',
     url: '/retrieverecords',
     headers: {
       "Content-type": "application/json",
-    "Accept": "application/json",
-    "Access-Control-Allow-Origin": "*",
- //   "Access-Control-Request-Headers": "*",
+      "Accept": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      //   "Access-Control-Request-Headers": "*",
     },
     data: requestbody
-};
+  };
 
-let resp = {issuccess:"false", message:"not triggered", data:[]};
+  let resp = { issuccess: "false", message: "not triggered", data: [] };
 
-   await axios(config)
-   .then(function (response) {
-       console.log(JSON.stringify(response.data));
-       console.log(response.data);
-       console.log(response.data.data);
-      
-
-       if(response.data.issuccess === "true"){
+  await axios(config)
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+      console.log(response.data);
+      console.log(response.data.data);
+      if (response.data.issuccess === "true") {
         resp.issuccess = "true";
         resp.data = response.data.data;
         resp.message = "";
-       }
-       else{
+      }
+      else {
         resp.issuccess = "false";
         resp.data = [];
         resp.message = response.data.message;
-       }
-      
-   })
-   .catch(function (error) {
-       console.log(error);
-       resp.issuccess = false;
-       resp.data = [];
-       resp.message = error;
-   });
+      }
 
- alltypecompconsolelog("gettabledatafromNodejs-response",resp);
- // alltypecompconsolelog("gettabledatafromNodejs-response.json",response.json());
-  // const response = await fetch('/createtable');
-  //const body = await response.json();
-  
-  // if (response.status !== 200) {
-  //   throw Error(body.message);f
-  // }
+    })
+    .catch(function (error) {
+      console.log(error);
+      resp.issuccess = false;
+      resp.data = [];
+      resp.message = error;
+    });
+
+  alltypecompconsolelog("gettabledatafromNodejs-response", resp);
+  return resp;
+};
+
+
+export let createtabledataNodejs = async (methodprops) => {
+  alltypecompconsolelog("createtabledataNodejs-entry", methodprops);
+  let {tablename} = methodprops;
+  let requestbody = JSON.stringify({
+    "tablename":tablename
+  });
+  var config = {
+    method: 'post',
+    url: '/createtable',
+    headers: {
+      "Content-type": "application/json",
+      "Accept": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      //   "Access-Control-Request-Headers": "*",
+    },
+    data: requestbody
+  };
+
+  let resp = { issuccess: "false", message: "not triggered", data: [] };
+
+  await axios(config)
+    .then(function (response) {
+      if (response.data.issuccess === "true") {
+        resp.issuccess = "true";
+        resp.data = response.data.data;
+        resp.message = "";
+      }
+      else {
+        resp.issuccess = "false";
+        resp.data = [];
+        resp.message = response.data.message;
+      }
+
+    })
+    .catch(function (error) {
+      console.log(error);
+      resp.issuccess = false;
+      resp.data = [];
+      resp.message = error;
+    });
+
+  alltypecompconsolelog("createtabledataNodejs-response", resp);
+  return resp;
+};
+
+export let insertrecordNodejs = async (methodprops) => {
+  alltypecompconsolelog("insertrecordNodejs-entry", methodprops);
+  let {tablename,tabledatalist} = methodprops;
+  let requestbody = JSON.stringify({
+    
+      "tablename":tablename,
+      "tabledatalist":tabledatalist
+    
+  });
+  var config = {
+    method: 'post',
+    url: '/insertrecords',
+    headers: {
+      "Content-type": "application/json",
+      "Accept": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      //   "Access-Control-Request-Headers": "*",
+    },
+    data: requestbody
+  };
+
+  let resp = { issuccess: "false", message: "not triggered", data: [] };
+
+  await axios(config)
+    .then(function (response) {
+      if (response.data.issuccess === "true") {
+        resp.issuccess = "true";
+        resp.data = response.data.data;
+        resp.message = "";
+      }
+      else {
+        resp.issuccess = "false";
+        resp.data = [];
+        resp.message = response.data.message;
+      }
+
+    })
+    .catch(function (error) {
+      console.log(error);
+      resp.issuccess = false;
+      resp.data = [];
+      resp.message = error;
+    });
+
+  alltypecompconsolelog("insertrecordNodejs-response", resp);
+  return resp;
+};
+
+export let deleterecordNodejs = async (methodprops) => {
+  alltypecompconsolelog("deleterecordNodejs-entry", methodprops);
+  let {tablename,conditionexpression} = methodprops;
+  let requestbody = JSON.stringify({
+    
+      "tablename":tablename,
+      "conditionexpression":conditionexpression
+    
+  });
+  var config = {
+    method: 'post',
+    url: '/deleterecords',
+    headers: {
+      "Content-type": "application/json",
+      "Accept": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      //   "Access-Control-Request-Headers": "*",
+    },
+    data: requestbody
+  };
+
+  let resp = { issuccess: "false", message: "not triggered", data: [] };
+
+  await axios(config)
+    .then(function (response) {
+      if (response.data.issuccess === "true") {
+        resp.issuccess = "true";
+        resp.data = [];
+        resp.message = "";
+      }
+      else {
+        resp.issuccess = "false";
+        resp.data = [];
+        resp.message = response.data.message;
+      }
+
+    })
+    .catch(function (error) {
+      console.log(error);
+      resp.issuccess = false;
+      resp.data = [];
+      resp.message = error;
+    });
+
+  alltypecompconsolelog("deleterecordNodejs-response", resp);
   return resp;
 };
 
