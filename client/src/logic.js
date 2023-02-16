@@ -2125,10 +2125,10 @@ export let getdroppedtemplateareaitem = (methodprops) => {
 
 export let gettabledatafromNodejs = async (methodprops) => {
   alltypecompconsolelog("gettabledatafromNodejs-entry", methodprops);
-  let {tablename} = methodprops;
+  let {tablename, conditionexpression} = methodprops;
   let requestbody = JSON.stringify({
     "tablename": tablename,
-    "conditionexpression": {},
+    "conditionexpression":conditionexpression,
     "columns": [],
     "sortby": "",
     "sortbytype": "",
@@ -2270,6 +2270,56 @@ export let insertrecordNodejs = async (methodprops) => {
   return resp;
 };
 
+export let updaterecordNodejs = async (methodprops) => {
+  alltypecompconsolelog("updaterecordNodejs-entry", methodprops);
+  let {tablename,conditionexpression, updateexpression, upsertifnotfound} = methodprops;
+  let requestbody = JSON.stringify({
+    
+      tablename: tablename,
+      conditionexpression: conditionexpression,
+      updateexpression:updateexpression,
+      upsertifnotfound:upsertifnotfound,
+  });
+  var config = {
+    method: 'post',
+    url: '/editrecords',
+    headers: {
+      "Content-type": "application/json",
+      "Accept": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      //   "Access-Control-Request-Headers": "*",
+    },
+    data: requestbody
+  };
+
+  let resp = { issuccess: "false", message: "not triggered", data: [] };
+
+  await axios(config)
+    .then(function (response) {
+      if (response.data.issuccess === "true") {
+        resp.issuccess = "true";
+        resp.data = [];
+        resp.message =  response.data.message;
+      }
+      else {
+        resp.issuccess = "false";
+        resp.data = [];
+        resp.message = response.data.message;
+      }
+
+    })
+    .catch(function (error) {
+      console.log(error);
+      resp.issuccess = false;
+      resp.data = [];
+      resp.message = error;
+    });
+
+  alltypecompconsolelog("updaterecordNodejs-response", resp);
+  return resp;
+};
+
+
 export let deleterecordNodejs = async (methodprops) => {
   alltypecompconsolelog("deleterecordNodejs-entry", methodprops);
   let {tablename,conditionexpression} = methodprops;
@@ -2298,7 +2348,7 @@ export let deleterecordNodejs = async (methodprops) => {
       if (response.data.issuccess === "true") {
         resp.issuccess = "true";
         resp.data = [];
-        resp.message = "";
+        resp.message = response.data.message;
       }
       else {
         resp.issuccess = "false";

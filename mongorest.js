@@ -105,7 +105,7 @@ const createtable = async function(req){
 
   const retrieverecords = async function(req){
     console.log("retrieverecords-req");
-    console.log(req);
+    console.log(req.body);
     let resp = {issuccess:"true", message:""};
   
     let {tablename, conditionexpression,columns, sortby,sortbytype, limit} = req.body;
@@ -167,7 +167,7 @@ const createtable = async function(req){
 
 const insertrecords = async function(req){
     console.log("insertrecords-req");
-    console.log(req);
+    console.log(req.body);
   let resp = {issuccess:"true", message:""};
 
   let {tablename, tabledatalist} = req.body;
@@ -205,6 +205,8 @@ const insertrecords = async function(req){
 }
 
 const editrecords = async function(req){
+    console.log("editrecords-req");
+    console.log(req.body);
     let resp = {issuccess:"true", message:""};
   
     let {tablename, conditionexpression, updateexpression, upsertifnotfound} = req.body;
@@ -227,11 +229,19 @@ const editrecords = async function(req){
       await axios(insertmanyconfig)
       .then(function (response) {
           console.log(JSON.stringify(response.data));
+          resp.issuccess = "true";
+          resp.data = [];
+          resp.message = response.data.matchedCount+'records matched'+response.data.modifiedCount+'records updated';
       })
       .catch(function (error) {
-          console.log(error);
+        console.log(error);
+        resp.issuccess = "false";
+        resp.data = [];
+        resp.message = error;
       });
   
+      console.log("editrecords-resp");
+      console.log(resp);
       return resp;
   }
 
@@ -261,7 +271,7 @@ const editrecords = async function(req){
           console.log(JSON.stringify(response.data));
           resp.issuccess = "true";
           resp.data = [];
-          resp.message = '';
+          resp.message = response.data.deletedCount+'records deleted';
       })
       .catch(function (error) {
           console.log(error);
@@ -269,7 +279,8 @@ const editrecords = async function(req){
           resp.data = [];
           resp.message = error;
       });
-
+      console.log("deleterecords-resp");
+      console.log(resp);
   
       return resp;
   }
