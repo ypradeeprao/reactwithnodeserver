@@ -14,28 +14,39 @@ import {
 
   
 export let Listdatahtml = (methodprops) => {
-  let { listdata, type, handleClick, handleChange } = methodprops;
+  let { listdata,columns, type, handleClick, handleChange } = methodprops;
 
   let listhtml = [];
   if(listdata){
   let listdatajs = JSON.parse(JSON.stringify(listdata));
-
-  alltypecompconsolelog("listdata", listdatajs);
+ 
+  alltypecompconsolelog("methodprops", methodprops);
 
   if (listdatajs) {
     for (let i = 0; i < listdatajs.length; i++) {
+      let listdataitemjs = JSON.parse(JSON.stringify(listdata[i]));
+      let columnhtml = [];
+      if(columns && columns.length > 0){
+      for(let j=0; j<columns.length; j++){
+        columnhtml.push(<>
+        {columns[j]}-  {listdataitemjs[columns[j]]}
+         
+          </>);
+      }
+      }
+
       listhtml.push(
         <>
           <div
-            key={listdatajs[i].name}
+            key={listdataitemjs.name}
             onClick={() =>
               handleClick({
                 type: "viewdata",
-                name: listdatajs[i].name,
+                name: listdataitemjs.name,
               })
             }
           >
-            {listdatajs[i].label}
+            {columnhtml}
           </div>
         </>
       );
@@ -68,12 +79,12 @@ export let Newdatahtml = (methodprops) => {
     <>
     {columnhtml}
       <button
-        onClick={() => handleClick({ type: "createdata" })}
+        onClick={() => handleClick({ name: "createdata" })}
       >
         create
       </button>
       <button
-        onClick={() => handleClick({ type: "deletealldata" })}
+        onClick={() => handleClick({ name: "deletealldata" })}
       >
         deletealldata
       </button>

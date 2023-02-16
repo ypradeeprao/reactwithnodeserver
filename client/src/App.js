@@ -22,7 +22,7 @@ function App() {
   // Declare a new state variable, which we'll call "count"
 
   const [compstate, setCompstate] = useState({});
-  const [uistate, setUistate] = useState({});
+  const [uistate, setUistate] = useState({newtablecolumnmetadata:{}});
 
   useEffect(() => {
     alltypecompconsolelog("sitecomp-useeffect");
@@ -44,6 +44,20 @@ function App() {
     }
 
     return listtablemetadata;
+  }
+  async function fetchtablecolumnmetadatafromDB(methodprops) {
+    alltypecompconsolelog("sitecomp-fetchtablecolumnmetadatafromDB");
+    alltypecompconsolelog(methodprops);
+    let {viewtablemetadata} = compstate;
+    let listtablecolumnmetadata = [];
+    let resp = await gettabledatafromNodejs({ tablename: "tablecolumnmetadata", conditionexpression: {tablename:viewtablemetadata.name} });
+    console.log(resp);
+    if (resp.issuccess === "true") {
+      listtablecolumnmetadata = resp.data;
+      //  Showui({  listtablemetadata: listtablemetadata });
+    }
+
+    return listtablecolumnmetadata;
   }
 
   let Showui = async (methodprops) => {
@@ -123,7 +137,7 @@ function App() {
           deletetablemetadatarecord
         </button>
         <div>
-          <button onClick={() => handleClick({ type: "showlisttablecolumnmetadata" })}>
+          <button onClick={() => handleClick({ type: "showlisttablecolumnmetadata",name: viewtablemetadata.name })}>
             showlisttablecolumnmetadata
           </button>
 
@@ -141,14 +155,14 @@ function App() {
         </div>
 
         {showlisttablecolumnmetadata === "true"?<> <div>
-          <Listdatahtml listdata={listtablecolumnmetadata} type="tablecolumnmetadata" 
-          handleClick={(methodprops)=>childhandleClick({...methodprops,changetype:"tablecolumnmetadata"})} 
-          handleChange={(methodprops)=>childhandleChange({...methodprops,changetype:"tablecolumnmetadata"})} 
+          <Listdatahtml listdata={listtablecolumnmetadata} columns={["label","name"]} type="tablecolumnmetadata" 
+          handleClick={(methodprops)=>childhandleClick({...methodprops,type:"listtablecolumnmetadata"})} 
+          handleChange={(methodprops)=>childhandleChange({...methodprops,type:"listtablecolumnmetadata"})} 
            />
            <Newdatahtml 
            columns={["label","name"]} type="tablecolumnmetadata" 
-           handleClick={(methodprops)=>childhandleClick({...methodprops,changetype:"tablecolumnmetadata"})} 
-           handleChange={(methodprops)=>childhandleChange({...methodprops,changetype:"tablecolumnmetadata"})} 
+           handleClick={(methodprops)=>childhandleClick({...methodprops,type:"newtablecolumnmetadata"})} 
+           handleChange={(methodprops)=>childhandleChange({...methodprops,type:"newtablecolumnmetadata"})} 
            />
         </div></>:<></>} 
        
@@ -279,7 +293,7 @@ function App() {
     }
     else if (type === "showlisttablecolumnmetadata") {
 
-      let resp = await gettabledatafromNodejs({ tablename: "tablecolmnmetadata", conditionexpression: { tablename: name } });
+      let resp = await gettabledatafromNodejs({ tablename: "tablecolumnmetadata", conditionexpression: { tablename: name } });
       console.log(resp);
       if (resp.issuccess === "true" ) {
         Showui({ listtablecolumnmetadata: resp.data, showlisttablecolumnmetadata:"true" });
@@ -294,9 +308,10 @@ function App() {
   };
 
   let childhandleChange = async (methodprops) => {
-    let { type, value } = methodprops;
-    if (type === "createtablemetadatalabel") {
-      uistate.createtablemetadatalabel = value;
+    let { type,name, value } = methodprops;
+    alltypecompconsolelog("childhandleChange",methodprops);
+    if (type === "newtablecolumnmetadata") {
+      uistate.newtablecolumnmetadata[name] = value;
       //setUistate({...uistate, createtablemetadatalabel: value });
     }
     if (type === "createtablemetadataname") {
@@ -316,23 +331,26 @@ function App() {
 
 
   let childhandleClick = async (methodprops) => {
+    alltypecompconsolelog("childhandleClick",methodprops);
     let { viewtype, createtablemetadataname, createtablemetadatalabel, viewtablemetadata } = compstate;
     console.log(uistate);
-    let { type, name } = methodprops;
+    let { type, name, value } = methodprops;
 
-    if (type === "createtablemetadatarecord") {
+    if (type === "newtablecolumnmetadata" && name === "createdata") {
+      let newtablecolumnmetadata = uistate.newtablecolumnmetadata;
+      newtablecolumnmetadata.tablename = viewtablemetadata.name;
       let createtableresp = await insertrecordNodejs({
-        tablename: "tablemetadata",
-        tabledatalist: [{ label: uistate.createtablemetadatalabel, name: uistate.createtablemetadataname }]
+        tablename: "tablecolumnmetadata",
+        tabledatalist: [newtablecolumnmetadata]
       });
       console.log(createtableresp);
       if (createtableresp.issuccess === "true") {
 
 
-        let listtablemetadata = await fetchtablemetadatafromDB();
-        Showui({ listtablemetadata: listtablemetadata, viewtablemetadata: {} });
-        uistate.createtablemetadatalabel = "";
-        uistate.createtablemetadataname = "";
+        let listtablecolumnmetadata = await fetchtablecolumnmetadatafromDB();
+        Showui({ listtablecolumnmetadata: listtablecolumnmetadata});
+     //   uistate.createtablemetadatalabel = "";
+      //  uistate.createtablemetadataname = "";
       }
       else {
         console.log(createtableresp.message);
@@ -379,17 +397,17 @@ function App() {
         console.log(createtableresp.message);
       }
     }
-    else if (type === "deletealltablemetadatarecord") {
+    else if (type === "newtablecolumnmetadata" && name === "deletealldata") {
       let createtableresp = await deleterecordNodejs({
-        tablename: "tablemetadata",
-        conditionexpression: {}
+        tablename: "tablecolumnmetadata",
+        conditionexpression: {tablename : viewtablemetadata.name }
       });
       console.log(createtableresp);
       if (createtableresp.issuccess === "true") {
 
 
-        let listtablemetadata = await fetchtablemetadatafromDB();
-        Showui({ listtablemetadata: listtablemetadata, viewtablemetadata: {} });
+        let listtablecolumnmetadata = await fetchtablecolumnmetadatafromDB();
+        Showui({ listtablecolumnmetadata: listtablecolumnmetadata});
       }
       else {
         console.log(createtableresp.message);
