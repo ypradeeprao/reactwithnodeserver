@@ -430,7 +430,7 @@ function App() {
             deletesitemetadatarecord
           </button>
           <div>
-          <Newsiteversionmetadatahtml />
+            <Newsiteversionmetadatahtml />
           </div>
         </>
       );
@@ -439,7 +439,6 @@ function App() {
       <>
         {mainpanelhtml}
         <div>
-         
           <Listsiteversionmetadatahtml />
         </div>
       </>
@@ -449,7 +448,7 @@ function App() {
   let Listsiteversionmetadatahtml = () => {
     let { listsiteversionmetadata } = compstate;
 
-    let namelisthtml = [];
+    let listhtml = [];
     if (listsiteversionmetadata && listsiteversionmetadata.length > 0) {
       let listsiteversionmetadatajs = JSON.parse(
         JSON.stringify(listsiteversionmetadata)
@@ -462,73 +461,73 @@ function App() {
 
       if (listsiteversionmetadatajs) {
         for (let i = 0; i < listsiteversionmetadatajs.length; i++) {
-          namelisthtml.push(
+          listhtml.push(
             <>
-              <div key={listsiteversionmetadatajs[i].version}>
+              <div
+                onClick={() =>
+                  handleClick({
+                    type: "viewsiteversionmetadatarecord",
+                    version: listsiteversionmetadatajs[i].version,
+                  })
+                }
+                key={listsiteversionmetadatajs[i].version}
+              >
                 {listsiteversionmetadatajs[i].description} -{" "}
                 {listsiteversionmetadatajs[i].version} -
                 {listsiteversionmetadatajs[i].isactive}
-              
-              
-
-                <button
-                  onClick={() =>
-                    handleClick({
-                      type: "viewsiteversionmetadatarecord",
-                      version: listsiteversionmetadatajs[i].version,
-                    })
-                  }
-                >
-                  viewsiteversionmetadatarecord
-                </button>
               </div>
-              <div>
-           
-                </div>
+              <div></div>
             </>
           );
         }
       }
     }
-    return <>{namelisthtml}
-       <Viewsiteversionmetadatahtml />
-       </>;
+    return (
+      <>
+        <div style={{ display: "flex", width: "100%" }}>
+          <div style={{ width: "20%" }}>{listhtml}</div>
+          <div style={{ width: "80%" }}>
+            <Viewsiteversionmetadatahtml />
+          </div>
+        </div>
+      </>
+    );
   };
 
   let Newsiteversionmetadatahtml = () => {
     let { createsitemetadatalabel, creatsitemetadataname } = uistate;
     return (
       <>
-      newsiteversionmetadatadescription
-          <input
-            onChange={(e) =>
-              handleChange({
-                type: "newsiteversionmetadatadescription",
-                value: e.target.value,
-              })
-            }
-          />
-            <button
-            onClick={() =>
-              handleClick({ type: "createsiteversionmetadatarecord" })
-            }
-          >
-            createsiteversionmetadatarecord
-          </button>
-          <button
-            onClick={() =>
-              handleClick({ type: "cloneactivesiteversionmetadatarecord" })
-            }
-          >
-            cloneactivesiteversionmetadatarecord
-          </button>
-          <button
-            onClick={() =>
-              handleClick({ type: "deleteallsiteversionmetadatarecord" })
-            }
-          >
-            deleteallsiteversionmetadatarecord
-          </button>
+        newsiteversionmetadatadescription
+        <input
+          onChange={(e) =>
+            handleChange({
+              type: "newsiteversionmetadatadescription",
+              value: e.target.value,
+            })
+          }
+        />
+        <button
+          onClick={() =>
+            handleClick({ type: "createsiteversionmetadatarecord" })
+          }
+        >
+          createsiteversionmetadatarecord
+        </button>
+        <button
+          onClick={() =>
+            handleClick({ type: "cloneactivesiteversionmetadatarecord" })
+          }
+        >
+          cloneactivesiteversionmetadatarecord
+        </button>
+        <button
+          onClick={() =>
+            handleClick({ type: "deleteallsiteversionmetadatarecord" })
+          }
+        >
+          deleteallsiteversionmetadatarecord
+        </button>
       </>
     );
   };
@@ -548,50 +547,76 @@ function App() {
             onChange={(e) =>
               handleChange({
                 type: "editsiteversionmetadata",
-                subtype:"description",
+                subtype: "description",
                 value: e.target.value,
               })
             }
             defaultValue={viewsiteversionmetadata.description}
           />
           Version
-          <input
-           
-            defaultValue={viewsiteversionmetadata.version}
-          />
-        
-        <button
-                  onClick={() =>
-                    handleClick({
-                      type: "deletesiteversionmetadatarecord",
-                      version: viewsiteversionmetadata.version,
-                    })
-                  }
-                >
-                  deletesiteversionmetadatarecord
-                </button>
-                <button
-                  onClick={() =>
-                    handleClick({
-                      type: "activatesiteversionmetadatarecord",
-                      version: viewsiteversionmetadata.version,
-                    })
-                  }
-                >
-                  activatesiteversionmetadatarecord
-                </button>
-                <button
-                  onClick={() =>
-                    handleClick({
-                      type: "clonesiteversionmetadatarecord",
-                      version: viewsiteversionmetadata.version,
-                    })
-                  }
-                >
-                  clonesiteversionmetadatarecord
-                </button>
-
-        
+          <input defaultValue={viewsiteversionmetadata.version} />
+          <button
+            onClick={() =>
+              handleClick({
+                type: "updatesiteversionmetadatarecord",
+                version: viewsiteversionmetadata.version,
+              })
+            }
+          >
+            updatesiteversionmetadatarecord
+          </button>
+          <button
+            onClick={() =>
+              handleClick({
+                type: "deletesiteversionmetadatarecord",
+                version: viewsiteversionmetadata.version,
+              })
+            }
+          >
+            deletesiteversionmetadatarecord
+          </button>
+          <button
+            onClick={() =>
+              handleClick({
+                type: "activatesiteversionmetadatarecord",
+                version: viewsiteversionmetadata.version,
+              })
+            }
+          >
+            activatesiteversionmetadatarecord
+          </button>
+          <button
+            onClick={() =>
+              handleClick({
+                type: "clonesiteversionmetadatarecord",
+                version: viewsiteversionmetadata.version,
+              })
+            }
+          >
+            clonesiteversionmetadatarecord
+          </button>
+          <button
+            onClick={() =>
+              handleClick({
+                type: "showlistsiteversionheaders",
+                version: viewsiteversionmetadata.version,
+                name: "siteversionheader",
+              })
+            }
+          >
+            showlistsiteversionheaders
+          </button>
+          <button
+            onClick={() =>
+              handleClick({
+                type: "showlistsiteversionfooters",
+                version: viewsiteversionmetadata.version,
+                name: "siteversionfooter",
+              })
+            }
+          >
+            showlistsiteversionfooters
+          </button>
         </>
       );
     }
@@ -599,13 +624,127 @@ function App() {
       <>
         {mainpanelhtml}
         <div>
-         
-         
+          <Listsiteversionhchildhtml />
         </div>
       </>
     );
   };
 
+  let Listsiteversionhchildhtml = () => {
+    let {
+      isshowlisttablechildmetadata,
+      listtablechildmetadata,
+      viewtablechildmetadata,
+      selectedchildmetadataname,
+    } = compstate;
+    console.log(compstate);
+    let listdatahtml = [];
+    if (
+      isshowlisttablechildmetadata === "true" &&
+      (selectedchildmetadataname === "siteversionheader" ||selectedchildmetadataname === "siteversionfooter")
+    ) {
+      listdatahtml.push(
+        <>
+          {" "}
+          <div>
+            <div style={{ display: "flex", width: "100%", flexWrap: "wrap" }}>
+              <div style={{ width: "100%" }}>
+                <Newdatahtml
+                  columns={[
+                    { columnlabel: "Label", columnname: "label" },
+                    { columnlabel: "Name", columnname: "name" },
+                    {
+                      columnlabel: "Type",
+                      columnname: "type",
+                      columnoptions: [
+                        { label: "Text", name: "text" },
+                        { label: "Date", name: "date" },
+                      ],
+                    },
+                  ]}
+                  type={selectedchildmetadataname}
+                  handleClick={(methodprops) =>
+                    childhandleClick({
+                      ...methodprops,
+                      type: "newtablechildmetadata",
+                    })
+                  }
+                  handleChange={(methodprops) =>
+                    childhandleChange({
+                      ...methodprops,
+                      type: "newtablechildmetadata",
+                    })
+                  }
+                />
+              </div>
+
+              <div style={{ width: "20%" }}>
+                <Listdatahtml
+                  listdata={listtablechildmetadata}
+                  columns={[
+                    { columnlabel: "Label", columnname: "label" },
+                    { columnlabel: "Name", columnname: "name" },
+                    {
+                      columnlabel: "Type",
+                      columnname: "type",
+                      columnoptions: [
+                        { label: "Text", name: "text" },
+                        { label: "Date", name: "date" },
+                      ],
+                    },
+                  ]}
+                  type={selectedchildmetadataname}
+                  handleClick={(methodprops) =>
+                    childhandleClick({
+                      ...methodprops,
+                      type: "listtablechildmetadata",
+                    })
+                  }
+                  handleChange={(methodprops) =>
+                    childhandleChange({
+                      ...methodprops,
+                      type: "listtablechildmetadata",
+                    })
+                  }
+                />
+              </div>
+              <div style={{ width: "80%" }}>
+                <Viewdatahtml
+                  viewdata={viewtablechildmetadata}
+                  columns={[
+                    { columnlabel: "Label", columnname: "label" },
+                    { columnlabel: "Name", columnname: "name" },
+                    {
+                      columnlabel: "Type",
+                      columnname: "type",
+                      columnoptions: [
+                        { label: "Text", name: "text" },
+                        { label: "Date", name: "date" },
+                      ],
+                    },
+                  ]}
+                  type={selectedchildmetadataname}
+                  handleClick={(methodprops) =>
+                    childhandleClick({
+                      ...methodprops,
+                      type: "viewtablechildmetadata",
+                    })
+                  }
+                  handleChange={(methodprops) =>
+                    childhandleChange({
+                      ...methodprops,
+                      type: "viewtablechildmetadata",
+                    })
+                  }
+                />
+              </div>
+            </div>
+          </div>
+        </>
+      );
+    }
+    return listdatahtml;
+  };
 
   let handleChange = async (methodprops) => {
     let { type, subtype, value } = methodprops;
@@ -645,8 +784,8 @@ function App() {
       uistate.newsiteversionmetadatadescription = value;
       //  setUistate({ ...uistate, createsitemetadataname: value });
     }
-    if(type ==="editsiteversionmetadata"){
-      if( uistate.editsiteversionmetadata === undefined){
+    if (type === "editsiteversionmetadata") {
+      if (uistate.editsiteversionmetadata === undefined) {
         uistate.editsiteversionmetadata = {};
       }
       uistate.editsiteversionmetadata[subtype] = value;
@@ -662,12 +801,26 @@ function App() {
       createtablemetadatalabel,
       viewtablemetadata,
       viewsitemetadata,
+      viewsiteversionmetadata,
       selectedchildmetadataname,
     } = compstate;
     console.log(uistate);
     let { type, name, version } = methodprops;
 
-    if (type === "viewdatabasemanager") {
+    if (type === "showlistsiteversionheaders" || type === "showlistsiteversionfooters") {
+      let listtablechildmetadata = await fetchlistmetadatafromDB({
+        tablename: name,
+        conditionexpression: {
+          sitename: viewsitemetadata.name,
+          siteversion: viewsiteversionmetadata.version,
+        },
+      });
+      Showui({
+        isshowlisttablechildmetadata: "true",
+        listtablechildmetadata: listtablechildmetadata,
+        selectedchildmetadataname: name,
+      });
+    } else if (type === "viewdatabasemanager") {
       let listtablemetadata = await fetchlistmetadatafromDB({
         tablename: "tablemetadata",
         conditionexpression: {},
@@ -824,7 +977,12 @@ function App() {
           tablename: "sitemetadata",
           conditionexpression: {},
         });
-        Showui({ listsitemetadata: listsitemetadata, viewsitemetadata: {} });
+        Showui({
+          listsitemetadata: listsitemetadata,
+          viewsitemetadata: {},
+          viewsiteversionmetadata: {},
+          listsiteversionmetadata: [],
+        });
         uistate.createsitemetadatalabel = "";
         uistate.createsitemetadataname = "";
       } else {
@@ -853,6 +1011,8 @@ function App() {
         Showui({
           listsitemetadata: listsitemetadata,
           viewsitemetadata: viewsitemetadata,
+          viewsiteversionmetadata: {},
+          listsiteversionmetadata: [],
         });
       } else {
         console.log(createsiteresp.message);
@@ -868,7 +1028,12 @@ function App() {
           tablename: "sitemetadata",
           conditionexpression: {},
         });
-        Showui({ listsitemetadata: listsitemetadata, viewsitemetadata: {} });
+        Showui({
+          listsitemetadata: listsitemetadata,
+          viewsitemetadata: {},
+          viewsiteversionmetadata: {},
+          listsiteversionmetadata: [],
+        });
       } else {
         console.log(createsiteresp.message);
       }
@@ -883,7 +1048,12 @@ function App() {
           tablename: "sitemetadata",
           conditionexpression: {},
         });
-        Showui({ listsitemetadata: listsitemetadata, viewsitemetadata: {} });
+        Showui({
+          listsitemetadata: listsitemetadata,
+          viewsitemetadata: {},
+          viewsiteversionmetadata: {},
+          listsiteversionmetadata: [],
+        });
       } else {
         console.log(createsiteresp.message);
       }
@@ -917,12 +1087,15 @@ function App() {
       Showui({
         viewsitemetadata: viewsitemetadata,
         listsiteversionmetadata: listsiteversionmetadata,
+        viewsiteversionmetadata: {},
       });
-    }
-    else if (type === "viewsiteversionmetadatarecord") {
+    } else if (type === "viewsiteversionmetadatarecord") {
       let resp = await gettabledatafromNodejs({
         tablename: "siteversionmetadata",
-        conditionexpression: { sitename:viewsitemetadata.name, version: version },
+        conditionexpression: {
+          sitename: viewsitemetadata.name,
+          version: version,
+        },
       });
       console.log(resp);
       let viewsiteversionmetadata = {};
@@ -930,12 +1103,16 @@ function App() {
         viewsiteversionmetadata = resp.data[0];
       }
 
-
       Showui({
         viewsiteversionmetadata: viewsiteversionmetadata,
+        isshowlisttablechildmetadata: "false",
+        listtablechildmetadata: [],
+        selectedchildmetadataname: "",
+        viewtablechildmetadata: {},
+        newtablechildmetadata: {},
+        edittablechildmetadata: {},
       });
-    } 
-    else if (type ==="createsiteversionmetadatarecord") {
+    } else if (type === "createsiteversionmetadatarecord") {
       let oldlistsiteversionmetadata = await fetchlistmetadatafromDB({
         tablename: "siteversionmetadata",
         conditionexpression: { sitename: viewsitemetadata.name },
@@ -966,13 +1143,15 @@ function App() {
           tablename: "siteversionmetadata",
           conditionexpression: { sitename: viewsitemetadata.name },
         });
-        Showui({ listsiteversionmetadata: listsiteversionmetadata });
+        Showui({
+          listsiteversionmetadata: listsiteversionmetadata,
+          viewsiteversionmetadata: {},
+        });
         uistate.newsiteversionmetadatadescription = "";
       } else {
         console.log(createsiteresp.message);
       }
-    }
-    else if (type === "cloneactivesiteversionmetadatarecord") {
+    } else if (type === "cloneactivesiteversionmetadatarecord") {
       let oldlistsiteversionmetadata = await fetchlistmetadatafromDB({
         tablename: "siteversionmetadata",
         conditionexpression: { sitename: viewsitemetadata.name },
@@ -989,18 +1168,19 @@ function App() {
       //get currentsiteverionmetadata
       let currentsiteversionmetadata = await fetchlistmetadatafromDB({
         tablename: "siteversionmetadata",
-        conditionexpression: { sitename: viewsitemetadata.name, isactive:"true" },
+        conditionexpression: {
+          sitename: viewsitemetadata.name,
+          isactive: "true",
+        },
       });
-      
+
       currentsiteversionmetadata[0].version = lastmaxversion + 1;
       currentsiteversionmetadata[0].isactive = "false";
       delete currentsiteversionmetadata[0].id;
-      delete currentsiteversionmetadata[0]._id; 
+      delete currentsiteversionmetadata[0]._id;
       let createsiteresp = await insertrecordNodejs({
         tablename: "siteversionmetadata",
-        tabledatalist: [
-          currentsiteversionmetadata[0]
-        ],
+        tabledatalist: [currentsiteversionmetadata[0]],
       });
       console.log(createsiteresp);
       if (createsiteresp.issuccess === "true") {
@@ -1008,13 +1188,15 @@ function App() {
           tablename: "siteversionmetadata",
           conditionexpression: { sitename: viewsitemetadata.name },
         });
-        Showui({ listsiteversionmetadata: listsiteversionmetadata });
+        Showui({
+          listsiteversionmetadata: listsiteversionmetadata,
+          viewsiteversionmetadata: {},
+        });
         uistate.newsiteversionmetadatadescription = "";
       } else {
         console.log(createsiteresp.message);
       }
-    }
-    else if (type === "clonesiteversionmetadatarecord") {
+    } else if (type === "clonesiteversionmetadatarecord") {
       let oldlistsiteversionmetadata = await fetchlistmetadatafromDB({
         tablename: "siteversionmetadata",
         conditionexpression: { sitename: viewsitemetadata.name },
@@ -1031,17 +1213,18 @@ function App() {
       //get currentsiteverionmetadata
       let currentsiteversionmetadata = await fetchlistmetadatafromDB({
         tablename: "siteversionmetadata",
-        conditionexpression: { sitename: viewsitemetadata.name, version:version },
+        conditionexpression: {
+          sitename: viewsitemetadata.name,
+          version: version,
+        },
       });
       currentsiteversionmetadata[0].version = lastmaxversion + 1;
       currentsiteversionmetadata[0].isactive = "false";
       delete currentsiteversionmetadata[0].id;
-      delete currentsiteversionmetadata[0]._id; 
+      delete currentsiteversionmetadata[0]._id;
       let createsiteresp = await insertrecordNodejs({
         tablename: "siteversionmetadata",
-        tabledatalist: [
-          currentsiteversionmetadata[0]
-        ],
+        tabledatalist: [currentsiteversionmetadata[0]],
       });
       console.log(createsiteresp);
       if (createsiteresp.issuccess === "true") {
@@ -1049,13 +1232,15 @@ function App() {
           tablename: "siteversionmetadata",
           conditionexpression: { sitename: viewsitemetadata.name },
         });
-        Showui({ listsiteversionmetadata: listsiteversionmetadata });
+        Showui({
+          listsiteversionmetadata: listsiteversionmetadata,
+          viewsiteversionmetadata: {},
+        });
         uistate.newsiteversionmetadatadescription = "";
       } else {
         console.log(createsiteresp.message);
       }
-    }
-     else if (type === "deletesiteversionmetadatarecord") {
+    } else if (type === "deletesiteversionmetadatarecord") {
       let createsiteresp = await deleterecordNodejs({
         tablename: "siteversionmetadata",
         conditionexpression: {
@@ -1069,12 +1254,14 @@ function App() {
           tablename: "siteversionmetadata",
           conditionexpression: { sitename: viewsitemetadata.name },
         });
-        Showui({ listsiteversionmetadata: listsiteversionmetadata });
+        Showui({
+          listsiteversionmetadata: listsiteversionmetadata,
+          viewsiteversionmetadata: {},
+        });
       } else {
         console.log(createsiteresp.message);
       }
-    }
-    else if (type === "deleteallsiteversionmetadatarecord") {
+    } else if (type === "deleteallsiteversionmetadatarecord") {
       let createsiteresp = await deleterecordNodejs({
         tablename: "siteversionmetadata",
         conditionexpression: {
@@ -1123,6 +1310,29 @@ function App() {
           console.log(createsiteresp.message);
         }
       }
+    } else if (type === "updatesiteversionmetadatarecord") {
+      let createsiteresp = await updaterecordNodejs({
+        tablename: "siteversionmetadata",
+        conditionexpression: {
+          sitename: viewsitemetadata.name,
+          version: version,
+        },
+        updateexpression: uistate.editsiteversionmetadata,
+        upsertifnotfound: false,
+      });
+
+      if (createsiteresp.issuccess === "true") {
+        let listsiteversionmetadata = await fetchlistmetadatafromDB({
+          tablename: "siteversionmetadata",
+          conditionexpression: { sitename: viewsitemetadata.name },
+        });
+        Showui({
+          listsiteversionmetadata: listsiteversionmetadata,
+          viewsiteversionmetadata: {},
+        });
+      } else {
+        console.log(createsiteresp.message);
+      }
     }
   };
 
@@ -1150,63 +1360,136 @@ function App() {
       viewtablemetadata,
       viewtablechildmetadata,
       selectedchildmetadataname,
+      viewsitemetadata,
+      viewsiteversionmetadata,
     } = compstate;
 
     console.log(uistate);
     let { type, name, value } = methodprops;
 
     if (type === "newtablechildmetadata" && name === "createdata") {
+      let createconditionexpression = {};
+      if (selectedchildmetadataname === "siteversionheader" || selectedchildmetadataname === "siteversionfooter") {
+        createconditionexpression = {
+          sitename: viewsitemetadata.name,
+          siteversion: viewsiteversionmetadata.version,
+        };
+      } else {
+        createconditionexpression = { tablename: viewtablemetadata.name };
+      }
+
       let newtablechildmetadata = uistate.newtablechildmetadata;
-      newtablechildmetadata.tablename = viewtablemetadata.name;
+      if (selectedchildmetadataname === "siteversionheader" || selectedchildmetadataname === "siteversionfooter") {
+        newtablechildmetadata.sitename = viewsitemetadata.name;
+        newtablechildmetadata.siteversion = viewsiteversionmetadata.version;
+      } else {
+        newtablechildmetadata.tablename = viewtablemetadata.name;
+      }
       let createtableresp = await insertrecordNodejs({
         tablename: selectedchildmetadataname,
         tabledatalist: [newtablechildmetadata],
       });
       console.log(createtableresp);
       if (createtableresp.issuccess === "true") {
-        let listtablechildmetadata = await gettabledatafromNodejs({
+        let resp = await gettabledatafromNodejs({
           tablename: selectedchildmetadataname,
-          conditionexpression: { tablename: viewtablemetadata.name },
+          conditionexpression: createconditionexpression,
         });
-        Showui({ listtablechildmetadata: listtablechildmetadata });
-        //   uistate.createtablemetadatalabel = "";
-        //  uistate.createtablemetadataname = "";
+        console.log(resp);
+        if (resp.issuccess === "true" && resp.data ) {
+          Showui({ listtablechildmetadata: resp.data });
+        }
       } else {
         console.log(createtableresp.message);
       }
     } else if (type === "newtablechildmetadata" && name === "deletealldata") {
+      let deleteconditionexpression = {};
+      if (selectedchildmetadataname === "siteversionheader" || selectedchildmetadataname === "siteversionfooter") {
+        deleteconditionexpression = {
+          sitename: viewsitemetadata.name,
+          siteversion: viewsiteversionmetadata.version,
+        };
+      } else {
+        deleteconditionexpression = { tablename: viewtablemetadata.name };
+      }
       let createtableresp = await deleterecordNodejs({
         tablename: selectedchildmetadataname,
-        conditionexpression: { tablename: viewtablemetadata.name },
+        conditionexpression: deleteconditionexpression,
       });
       console.log(createtableresp);
       if (createtableresp.issuccess === "true") {
-        let listtablechildmetadata = await gettabledatafromNodejs({
+        let resp = await gettabledatafromNodejs({
           tablename: selectedchildmetadataname,
-          conditionexpression: { tablename: viewtablemetadata.name },
+          conditionexpression: deleteconditionexpression,
         });
-        Showui({ listtablechildmetadata: listtablechildmetadata });
+        if (resp.issuccess === "true" && resp.data) {
+          Showui({
+            listtablechildmetadata: resp.data,
+            viewtablechildmetadata: {},
+            newtablechildmetadata: {},
+            edittablechildmetadata: {},
+          });
+        }
       } else {
         console.log(createtableresp.message);
       }
     } else if (type === "listtablechildmetadata" && name === "viewdata") {
+      let viewconditionexpression = {};
+      if (selectedchildmetadataname === "siteversionheader" || selectedchildmetadataname === "siteversionfooter") {
+        viewconditionexpression = {
+          sitename: viewsitemetadata.name,
+          siteversion: viewsiteversionmetadata.version,
+          name: value,
+        };
+      } else {
+        viewconditionexpression = {
+          tablename: viewtablemetadata.name,
+          name: value,
+        };
+      }
+
       let resp = await gettabledatafromNodejs({
         tablename: selectedchildmetadataname,
-        conditionexpression: { tablename: viewtablemetadata.name, name: value },
+        conditionexpression: viewconditionexpression,
       });
       console.log(resp);
       let viewtablechildmetadata = {};
       if (resp.issuccess === "true" && resp.data && resp.data.length > 0) {
         viewtablechildmetadata = resp.data[0];
-        Showui({ viewtablechildmetadata: viewtablechildmetadata });
+        Showui({
+          viewtablechildmetadata: viewtablechildmetadata,
+          newtablechildmetadata: {},
+          edittablechildmetadata: {},
+        });
       }
     } else if (type === "viewtablechildmetadata" && name === "updatedata") {
-      let createtableresp = await updaterecordNodejs({
-        tablename: selectedchildmetadataname,
-        conditionexpression: {
+      let updateconditionexpression = {};
+      if (selectedchildmetadataname === "siteversionheader" || selectedchildmetadataname === "siteversionfooter") {
+        updateconditionexpression = {
+          sitename: viewsitemetadata.name,
+          siteversion: viewsiteversionmetadata.version,
+          name: viewtablechildmetadata.name,
+        };
+      } else {
+        updateconditionexpression = {
           tablename: viewtablemetadata.name,
           name: viewtablechildmetadata.name,
-        },
+        };
+      }
+
+      let viewconditionexpression = {};
+      if (selectedchildmetadataname === "siteversionheader" || selectedchildmetadataname === "siteversionfooter") {
+        viewconditionexpression = {
+          sitename: viewsitemetadata.name,
+          siteversion: viewsiteversionmetadata.version,
+        };
+      } else {
+        viewconditionexpression = { tablename: viewtablemetadata.name };
+      }
+
+      let createtableresp = await updaterecordNodejs({
+        tablename: selectedchildmetadataname,
+        conditionexpression: updateconditionexpression,
         updateexpression: uistate.edittablechildmetadata,
         upsertifnotfound: true,
       });
@@ -1214,37 +1497,62 @@ function App() {
       if (createtableresp.issuccess === "true") {
         let resp = await gettabledatafromNodejs({
           tablename: selectedchildmetadataname,
-          conditionexpression: { tablename: viewtablemetadata.name },
+          conditionexpression: viewconditionexpression,
         });
         console.log(resp);
         if (resp.issuccess === "true") {
           Showui({
             listtablechildmetadata: resp.data,
             viewtablechildmetadata: {},
+            newtablechildmetadata: {},
+            edittablechildmetadata: {},
           });
         }
       } else {
         console.log(createtableresp.message);
       }
     } else if (type === "viewtablechildmetadata" && name === "deletedata") {
-      let createtableresp = await deleterecordNodejs({
-        tablename: selectedchildmetadataname,
-        conditionexpression: {
+      let updateconditionexpression = {};
+      if (selectedchildmetadataname === "siteversionheader" || selectedchildmetadataname === "siteversionfooter") {
+        updateconditionexpression = {
+          sitename: viewsitemetadata.name,
+          siteversion: viewsiteversionmetadata.version,
+          name: viewtablechildmetadata.name,
+        };
+      } else {
+        updateconditionexpression = {
           tablename: viewtablemetadata.name,
           name: viewtablechildmetadata.name,
-        },
+        };
+      }
+
+      let viewconditionexpression = {};
+      if (selectedchildmetadataname === "siteversionheader" || selectedchildmetadataname === "siteversionfooter") {
+        viewconditionexpression = {
+          sitename: viewsitemetadata.name,
+          siteversion: viewsiteversionmetadata.version,
+        };
+      } else {
+        viewconditionexpression = { tablename: viewtablemetadata.name };
+      }
+
+      let createtableresp = await deleterecordNodejs({
+        tablename: selectedchildmetadataname,
+        conditionexpression: updateconditionexpression,
       });
       console.log(createtableresp);
       if (createtableresp.issuccess === "true") {
         let resp = await gettabledatafromNodejs({
           tablename: selectedchildmetadataname,
-          conditionexpression: { tablename: viewtablemetadata.name },
+          conditionexpression: viewconditionexpression,
         });
         console.log(resp);
         if (resp.issuccess === "true") {
           Showui({
             listtablechildmetadata: resp.data,
             viewtablechildmetadata: {},
+            newtablechildmetadata: {},
+            edittablechildmetadata: {},
           });
         }
       } else {
