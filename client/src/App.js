@@ -483,14 +483,16 @@ function App() {
                 </button>
               </div>
               <div>
-              <Viewsiteversionmetadatahtml />
+           
                 </div>
             </>
           );
         }
       }
     }
-    return <>{namelisthtml}</>;
+    return <>{namelisthtml}
+       <Viewsiteversionmetadatahtml />
+       </>;
   };
 
   let Newsiteversionmetadatahtml = () => {
@@ -598,7 +600,7 @@ function App() {
         {mainpanelhtml}
         <div>
          
-          <Listsiteversionmetadatahtml />
+         
         </div>
       </>
     );
