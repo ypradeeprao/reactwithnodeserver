@@ -397,59 +397,52 @@ function App() {
       viewsitemetadata.name &&
       viewsitemetadata.name !== ""
     ) {
-      mainpanelhtml.push(<>
-        Label
-        <input
-          onChange={(e) =>
-            handleChange({
-              type: "updatesitemetadatalabel",
-              value: e.target.value,
-            })
-          }
-          defaultValue={viewsitemetadata.label}
-        />
-        Name
-        <input
-          onChange={(e) =>
-            handleChange({
-              type: "updatesitemetadataname",
-              value: e.target.value,
-            })
-          }
-          defaultValue={viewsitemetadata.name}
-        />
-        <button
-          onClick={() => handleClick({ type: "updatesitemetadatarecord" })}
-        >
-        updatesitemetadatarecord
-        </button>
-        <button
-          onClick={() => handleClick({ type: "deletesitemetadatarecord" })}
-        >
-          deletesitemetadatarecord
-        </button>
-        newsiteversionmetadatadescription
-        <input
-          onChange={(e) =>
-            handleChange({
-              type: "newsiteversionmetadatadescription",
-              value: e.target.value,
-            })
-          }
-         
-        />
-        <button
-          onClick={() => handleClick({ type: "createsiteversionmetadatarecord" })}
-        >
-          createsiteversionmetadatarecord
-        </button>
-      </>);
+      mainpanelhtml.push(
+        <>
+          Label
+          <input
+            onChange={(e) =>
+              handleChange({
+                type: "updatesitemetadatalabel",
+                value: e.target.value,
+              })
+            }
+            defaultValue={viewsitemetadata.label}
+          />
+          Name
+          <input
+            onChange={(e) =>
+              handleChange({
+                type: "updatesitemetadataname",
+                value: e.target.value,
+              })
+            }
+            defaultValue={viewsitemetadata.name}
+          />
+          <button
+            onClick={() => handleClick({ type: "updatesitemetadatarecord" })}
+          >
+            updatesitemetadatarecord
+          </button>
+          <button
+            onClick={() => handleClick({ type: "deletesitemetadatarecord" })}
+          >
+            deletesitemetadatarecord
+          </button>
+          <div>
+          <Newsiteversionmetadatahtml />
+          </div>
+        </>
+      );
     }
     return (
-    <>
-    {mainpanelhtml}
-    <div><Listsiteversionmetadatahtml /></div>
-    </>
+      <>
+        {mainpanelhtml}
+        <div>
+         
+          <Listsiteversionmetadatahtml />
+        </div>
+      </>
     );
   };
 
@@ -457,144 +450,163 @@ function App() {
     let { listsiteversionmetadata } = compstate;
 
     let namelisthtml = [];
-    if(listsiteversionmetadata && listsiteversionmetadata.length > 0){
-    let listsiteversionmetadatajs = JSON.parse(JSON.stringify(listsiteversionmetadata));
+    if (listsiteversionmetadata && listsiteversionmetadata.length > 0) {
+      let listsiteversionmetadatajs = JSON.parse(
+        JSON.stringify(listsiteversionmetadata)
+      );
 
-    alltypecompconsolelog("listsiteversionmetadata", listsiteversionmetadatajs);
+      alltypecompconsolelog(
+        "listsiteversionmetadata",
+        listsiteversionmetadatajs
+      );
 
-    if (listsiteversionmetadatajs) {
-      for (let i = 0; i < listsiteversionmetadatajs.length; i++) {
-        namelisthtml.push(
-          <>
-            <div
-              key={listsiteversionmetadatajs[i].version}
-           
-            >
-              {listsiteversionmetadatajs[i].description} - {listsiteversionmetadatajs[i].version} -{listsiteversionmetadatajs[i].isactive}
-          <button
-          onClick={() => handleClick({ type: "deletesiteversionmetadatarecord", version: listsiteversionmetadatajs[i].version})}
-        >
-          deletesiteversionmetadatarecord
-        </button>
-        <button
-          onClick={() => handleClick({ type: "activatesiteversionmetadatarecord", version: listsiteversionmetadatajs[i].version})}
-        >
-          activatesiteversionmetadatarecord
-        </button>
-        
-            </div>
-          </>
-        );
+      if (listsiteversionmetadatajs) {
+        for (let i = 0; i < listsiteversionmetadatajs.length; i++) {
+          namelisthtml.push(
+            <>
+              <div key={listsiteversionmetadatajs[i].version}>
+                {listsiteversionmetadatajs[i].description} -{" "}
+                {listsiteversionmetadatajs[i].version} -
+                {listsiteversionmetadatajs[i].isactive}
+              
+              
+
+                <button
+                  onClick={() =>
+                    handleClick({
+                      type: "viewsiteversionmetadatarecord",
+                      version: listsiteversionmetadatajs[i].version,
+                    })
+                  }
+                >
+                  viewsiteversionmetadatarecord
+                </button>
+              </div>
+              <div>
+              <Viewsiteversionmetadatahtml />
+                </div>
+            </>
+          );
+        }
       }
-    }
     }
     return <>{namelisthtml}</>;
   };
 
-    let Newsiteversionmetadatahtml = () => {
+  let Newsiteversionmetadatahtml = () => {
     let { createsitemetadatalabel, creatsitemetadataname } = uistate;
     return (
       <>
-        Label
-        <input
-          onChange={(e) =>
-            handleChange({
-              type: "createsitemetadatalabel",
-              value: e.target.value,
-            })
-          }
-          defaultValue={createsitemetadatalabel}
-        />
-        Name
-        <input
-          onChange={(e) =>
-            handleChange({
-              type: "createsitemetadataname",
-              value: e.target.value,
-            })
-          }
-          defaultValue={creatsitemetadataname}
-        />
-        <button
-          onClick={() => handleClick({ type: "createsitemetadatarecord" })}
-        >
-          createsitemetadatarecord
-        </button>
-        <button
-          onClick={() => handleClick({ type: "deleteallsitemetadatarecord" })}
-        >
-          deleteallsitemetadatarecord
-        </button>
+      newsiteversionmetadatadescription
+          <input
+            onChange={(e) =>
+              handleChange({
+                type: "newsiteversionmetadatadescription",
+                value: e.target.value,
+              })
+            }
+          />
+            <button
+            onClick={() =>
+              handleClick({ type: "createsiteversionmetadatarecord" })
+            }
+          >
+            createsiteversionmetadatarecord
+          </button>
+          <button
+            onClick={() =>
+              handleClick({ type: "cloneactivesiteversionmetadatarecord" })
+            }
+          >
+            cloneactivesiteversionmetadatarecord
+          </button>
+          <button
+            onClick={() =>
+              handleClick({ type: "deleteallsiteversionmetadatarecord" })
+            }
+          >
+            deleteallsiteversionmetadatarecord
+          </button>
       </>
     );
   };
 
   let Viewsiteversionmetadatahtml = () => {
     let mainpanelhtml = [];
-    let { viewsitemetadata } = compstate;
+    let { viewsiteversionmetadata } = compstate;
     if (
-      viewsitemetadata &&
-      viewsitemetadata.name &&
-      viewsitemetadata.name !== ""
+      viewsiteversionmetadata &&
+      viewsiteversionmetadata.version &&
+      viewsiteversionmetadata.version !== ""
     ) {
-      mainpanelhtml.push(<>
-        Label
-        <input
-          onChange={(e) =>
-            handleChange({
-              type: "updatesitemetadatalabel",
-              value: e.target.value,
-            })
-          }
-          defaultValue={viewsitemetadata.label}
-        />
-        Name
-        <input
-          onChange={(e) =>
-            handleChange({
-              type: "updatesitemetadataname",
-              value: e.target.value,
-            })
-          }
-          defaultValue={viewsitemetadata.name}
-        />
+      mainpanelhtml.push(
+        <>
+          description
+          <input
+            onChange={(e) =>
+              handleChange({
+                type: "editsiteversionmetadata",
+                subtype:"description",
+                value: e.target.value,
+              })
+            }
+            defaultValue={viewsiteversionmetadata.description}
+          />
+          Version
+          <input
+           
+            defaultValue={viewsiteversionmetadata.version}
+          />
+        
         <button
-          onClick={() => handleClick({ type: "updatesitemetadatarecord" })}
-        >
-        updatesitemetadatarecord
-        </button>
-        <button
-          onClick={() => handleClick({ type: "deletesitemetadatarecord" })}
-        >
-          deletesitemetadatarecord
-        </button>
-        newsiteversionmetadatadescription
-        <input
-          onChange={(e) =>
-            handleChange({
-              type: "newsiteversionmetadatadescription",
-              value: e.target.value,
-            })
-          }
-         
-        />
-        <button
-          onClick={() => handleClick({ type: "createsiteversionmetadatarecord" })}
-        >
-          createsiteversionmetadatarecord
-        </button>
-      </>);
+                  onClick={() =>
+                    handleClick({
+                      type: "deletesiteversionmetadatarecord",
+                      version: viewsiteversionmetadata.version,
+                    })
+                  }
+                >
+                  deletesiteversionmetadatarecord
+                </button>
+                <button
+                  onClick={() =>
+                    handleClick({
+                      type: "activatesiteversionmetadatarecord",
+                      version: viewsiteversionmetadata.version,
+                    })
+                  }
+                >
+                  activatesiteversionmetadatarecord
+                </button>
+                <button
+                  onClick={() =>
+                    handleClick({
+                      type: "clonesiteversionmetadatarecord",
+                      version: viewsiteversionmetadata.version,
+                    })
+                  }
+                >
+                  clonesiteversionmetadatarecord
+                </button>
+
+        
+        </>
+      );
     }
     return (
-    <>
-    {mainpanelhtml}
-    <div><Listsiteversionmetadatahtml /></div>
-    </>
+      <>
+        {mainpanelhtml}
+        <div>
+         
+          <Listsiteversionmetadatahtml />
+        </div>
+      </>
     );
   };
 
+
   let handleChange = async (methodprops) => {
-    let { type, value } = methodprops;
+    let { type, subtype, value } = methodprops;
     if (type === "createtablemetadatalabel") {
       uistate.createtablemetadatalabel = value;
       //setUistate({...uistate, createtablemetadatalabel: value });
@@ -631,7 +643,13 @@ function App() {
       uistate.newsiteversionmetadatadescription = value;
       //  setUistate({ ...uistate, createsitemetadataname: value });
     }
-    
+    if(type ==="editsiteversionmetadata"){
+      if( uistate.editsiteversionmetadata === undefined){
+        uistate.editsiteversionmetadata = {};
+      }
+      uistate.editsiteversionmetadata[subtype] = value;
+    }
+
     console.log(uistate);
   };
 
@@ -814,7 +832,7 @@ function App() {
       let createsiteresp = await updaterecordNodejs({
         tablename: "sitemetadata",
         conditionexpression: { name: viewsitemetadata.name },
-        updateexpression: { label: uistate.updatesitemetadatalabel  },
+        updateexpression: { label: uistate.updatesitemetadatalabel },
         upsertifnotfound: true,
       });
       console.log(createsiteresp);
@@ -883,38 +901,60 @@ function App() {
         conditionexpression: { sitename: name },
       });
       console.log(versionresp);
-   
-      let listsiteversionmetadata=[];
-     
-      if (versionresp.issuccess === "true" && versionresp.data && versionresp.data.length > 0) {
+
+      let listsiteversionmetadata = [];
+
+      if (
+        versionresp.issuccess === "true" &&
+        versionresp.data &&
+        versionresp.data.length > 0
+      ) {
         listsiteversionmetadata = versionresp.data;
       }
 
-      Showui({ viewsitemetadata: viewsitemetadata, listsiteversionmetadata:listsiteversionmetadata });
+      Showui({
+        viewsitemetadata: viewsitemetadata,
+        listsiteversionmetadata: listsiteversionmetadata,
+      });
     }
-    else if (type === "createsiteversionmetadatarecord") {
+    else if (type === "viewsiteversionmetadatarecord") {
+      let resp = await gettabledatafromNodejs({
+        tablename: "siteversionmetadata",
+        conditionexpression: { sitename:viewsitemetadata.name, version: version },
+      });
+      console.log(resp);
+      let viewsiteversionmetadata = {};
+      if (resp.issuccess === "true" && resp.data && resp.data.length > 0) {
+        viewsiteversionmetadata = resp.data[0];
+      }
 
+
+      Showui({
+        viewsiteversionmetadata: viewsiteversionmetadata,
+      });
+    } 
+    else if (type ==="createsiteversionmetadatarecord") {
       let oldlistsiteversionmetadata = await fetchlistmetadatafromDB({
         tablename: "siteversionmetadata",
-        conditionexpression: { sitename:viewsitemetadata.name},
+        conditionexpression: { sitename: viewsitemetadata.name },
       });
       let lastmaxversion = 0;
-      if(oldlistsiteversionmetadata && oldlistsiteversionmetadata.length > 0){
-      for(let i=0; i<oldlistsiteversionmetadata.length; i++){
-      if(oldlistsiteversionmetadata[i].version > lastmaxversion){
-        lastmaxversion = oldlistsiteversionmetadata[i].version;
-      }
-      }
+      if (oldlistsiteversionmetadata && oldlistsiteversionmetadata.length > 0) {
+        for (let i = 0; i < oldlistsiteversionmetadata.length; i++) {
+          if (oldlistsiteversionmetadata[i].version > lastmaxversion) {
+            lastmaxversion = oldlistsiteversionmetadata[i].version;
+          }
+        }
       }
 
       let createsiteresp = await insertrecordNodejs({
         tablename: "siteversionmetadata",
         tabledatalist: [
           {
-            sitename:viewsitemetadata.name,
-            description:uistate.newsiteversionmetadatadescription,
-            version: lastmaxversion+1,
-           isactive:"false"
+            sitename: viewsitemetadata.name,
+            description: uistate.newsiteversionmetadatadescription,
+            version: lastmaxversion + 1,
+            isactive: "false",
           },
         ],
       });
@@ -922,51 +962,166 @@ function App() {
       if (createsiteresp.issuccess === "true") {
         let listsiteversionmetadata = await fetchlistmetadatafromDB({
           tablename: "siteversionmetadata",
-          conditionexpression: { sitename:viewsitemetadata.name},
+          conditionexpression: { sitename: viewsitemetadata.name },
         });
-        Showui({ listsiteversionmetadata: listsiteversionmetadata, });
+        Showui({ listsiteversionmetadata: listsiteversionmetadata });
         uistate.newsiteversionmetadatadescription = "";
       } else {
         console.log(createsiteresp.message);
       }
     }
-    else if (type === "deletesiteversionmetadatarecord") {
+    else if (type === "cloneactivesiteversionmetadatarecord") {
+      let oldlistsiteversionmetadata = await fetchlistmetadatafromDB({
+        tablename: "siteversionmetadata",
+        conditionexpression: { sitename: viewsitemetadata.name },
+      });
+      let lastmaxversion = 0;
+      if (oldlistsiteversionmetadata && oldlistsiteversionmetadata.length > 0) {
+        for (let i = 0; i < oldlistsiteversionmetadata.length; i++) {
+          if (oldlistsiteversionmetadata[i].version > lastmaxversion) {
+            lastmaxversion = oldlistsiteversionmetadata[i].version;
+          }
+        }
+      }
+
+      //get currentsiteverionmetadata
+      let currentsiteversionmetadata = await fetchlistmetadatafromDB({
+        tablename: "siteversionmetadata",
+        conditionexpression: { sitename: viewsitemetadata.name, isactive:"true" },
+      });
+      
+      currentsiteversionmetadata[0].version = lastmaxversion + 1;
+      currentsiteversionmetadata[0].isactive = "false";
+      delete currentsiteversionmetadata[0].id;
+      delete currentsiteversionmetadata[0]._id; 
+      let createsiteresp = await insertrecordNodejs({
+        tablename: "siteversionmetadata",
+        tabledatalist: [
+          currentsiteversionmetadata[0]
+        ],
+      });
+      console.log(createsiteresp);
+      if (createsiteresp.issuccess === "true") {
+        let listsiteversionmetadata = await fetchlistmetadatafromDB({
+          tablename: "siteversionmetadata",
+          conditionexpression: { sitename: viewsitemetadata.name },
+        });
+        Showui({ listsiteversionmetadata: listsiteversionmetadata });
+        uistate.newsiteversionmetadatadescription = "";
+      } else {
+        console.log(createsiteresp.message);
+      }
+    }
+    else if (type === "clonesiteversionmetadatarecord") {
+      let oldlistsiteversionmetadata = await fetchlistmetadatafromDB({
+        tablename: "siteversionmetadata",
+        conditionexpression: { sitename: viewsitemetadata.name },
+      });
+      let lastmaxversion = 0;
+      if (oldlistsiteversionmetadata && oldlistsiteversionmetadata.length > 0) {
+        for (let i = 0; i < oldlistsiteversionmetadata.length; i++) {
+          if (oldlistsiteversionmetadata[i].version > lastmaxversion) {
+            lastmaxversion = oldlistsiteversionmetadata[i].version;
+          }
+        }
+      }
+
+      //get currentsiteverionmetadata
+      let currentsiteversionmetadata = await fetchlistmetadatafromDB({
+        tablename: "siteversionmetadata",
+        conditionexpression: { sitename: viewsitemetadata.name, version:version },
+      });
+      currentsiteversionmetadata[0].version = lastmaxversion + 1;
+      currentsiteversionmetadata[0].isactive = "false";
+      delete currentsiteversionmetadata[0].id;
+      delete currentsiteversionmetadata[0]._id; 
+      let createsiteresp = await insertrecordNodejs({
+        tablename: "siteversionmetadata",
+        tabledatalist: [
+          currentsiteversionmetadata[0]
+        ],
+      });
+      console.log(createsiteresp);
+      if (createsiteresp.issuccess === "true") {
+        let listsiteversionmetadata = await fetchlistmetadatafromDB({
+          tablename: "siteversionmetadata",
+          conditionexpression: { sitename: viewsitemetadata.name },
+        });
+        Showui({ listsiteversionmetadata: listsiteversionmetadata });
+        uistate.newsiteversionmetadatadescription = "";
+      } else {
+        console.log(createsiteresp.message);
+      }
+    }
+     else if (type === "deletesiteversionmetadatarecord") {
       let createsiteresp = await deleterecordNodejs({
         tablename: "siteversionmetadata",
-        conditionexpression: { sitename:viewsitemetadata.name, version: version },
+        conditionexpression: {
+          sitename: viewsitemetadata.name,
+          version: version,
+        },
       });
       console.log(createsiteresp);
       if (createsiteresp.issuccess === "true") {
         let listsiteversionmetadata = await fetchlistmetadatafromDB({
           tablename: "siteversionmetadata",
-          conditionexpression: { sitename:viewsitemetadata.name},
+          conditionexpression: { sitename: viewsitemetadata.name },
         });
-        Showui({ listsiteversionmetadata: listsiteversionmetadata, });
+        Showui({ listsiteversionmetadata: listsiteversionmetadata });
       } else {
         console.log(createsiteresp.message);
       }
     }
-    else if (type === "activatesiteversionmetadatarecord") {
-      let createsiteresp = await updaterecordNodejs({
+    else if (type === "deleteallsiteversionmetadatarecord") {
+      let createsiteresp = await deleterecordNodejs({
         tablename: "siteversionmetadata",
-        conditionexpression: { sitename: viewsitemetadata.name, version: version },
-        updateexpression: { isactive: "true"  },
-        upsertifnotfound: true,
+        conditionexpression: {
+          sitename: viewsitemetadata.name,
+        },
       });
       console.log(createsiteresp);
       if (createsiteresp.issuccess === "true") {
         let listsiteversionmetadata = await fetchlistmetadatafromDB({
           tablename: "siteversionmetadata",
-          conditionexpression: { sitename:viewsitemetadata.name},
+          conditionexpression: { sitename: viewsitemetadata.name },
         });
-        Showui({ listsiteversionmetadata: listsiteversionmetadata, });
+        Showui({ listsiteversionmetadata: listsiteversionmetadata });
       } else {
         console.log(createsiteresp.message);
       }
-    }
+    } else if (type === "activatesiteversionmetadatarecord") {
+      let inactiveoldsiteresp = await updaterecordNodejs({
+        tablename: "siteversionmetadata",
+        conditionexpression: {
+          sitename: viewsitemetadata.name,
+          isactive: "true",
+        },
+        updateexpression: { isactive: "false" },
+        upsertifnotfound: false,
+      });
 
-    
-    
+      if (inactiveoldsiteresp.issuccess === "true") {
+        let createsiteresp = await updaterecordNodejs({
+          tablename: "siteversionmetadata",
+          conditionexpression: {
+            sitename: viewsitemetadata.name,
+            version: version,
+          },
+          updateexpression: { isactive: "true" },
+          upsertifnotfound: true,
+        });
+        console.log(createsiteresp);
+        if (createsiteresp.issuccess === "true") {
+          let listsiteversionmetadata = await fetchlistmetadatafromDB({
+            tablename: "siteversionmetadata",
+            conditionexpression: { sitename: viewsitemetadata.name },
+          });
+          Showui({ listsiteversionmetadata: listsiteversionmetadata });
+        } else {
+          console.log(createsiteresp.message);
+        }
+      }
+    }
   };
 
   let childhandleChange = async (methodprops) => {
