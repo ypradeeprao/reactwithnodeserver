@@ -16,6 +16,7 @@ import {
 } from "./logic";
 
 import { Listdatahtml, Viewdatahtml, Newdatahtml } from "./tablechildmetadata";
+import {Richtextareacomp} from "./richtextareacomp";
 
 function App() {
   // Declare a new state variable, which we'll call "count"
@@ -832,7 +833,11 @@ function App() {
         conditionexpression: {},
       });
       Showui({ viewtype: type, listsitemetadata: listtablemetadata });
-    } else if (type === "createtablemetadatarecord") {
+    }
+    else if (type === "viewrichtextarea") {
+      Showui({ viewtype: type, });
+    }
+     else if (type === "createtablemetadatarecord") {
       let createtableresp = await insertrecordNodejs({
         tablename: "tablemetadata",
         tabledatalist: [
@@ -1577,8 +1582,16 @@ function App() {
           <button onClick={() => handleClick({ type: "viewsitemanager" })}>
             viewsitemanager
           </button>
+
+        
+
+          <button onClick={() => handleClick({ type: "viewrichtextarea" })}>
+          viewrichtextarea
+          </button>
+
         </div>
 
+        {viewtype === "viewrichtextarea" ? <><Richtextareacomp /></>:<></>}
         {viewtype === "viewdatabasemanager" ? (
           <div
             style={{
