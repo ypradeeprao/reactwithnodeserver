@@ -118,9 +118,27 @@ export let Newdatahtml = (methodprops) => {
 };
 
 export let Viewdatahtml = (methodprops) => {
-  let { viewdata, columns, handleClick, handleChange } = methodprops;
+  let { viewdata, columns, buttons, handleClick, handleChange } = methodprops;
   let columnhtml = [];
-  if (viewdata && Object.keys(viewdata).length > 0 && columns && columns.length > 0) {
+  let buttonshtml = [];
+  if (buttons && buttons.length > 0) {
+    for (let j = 0; j < buttons.length; j++) {
+      buttonshtml.push(
+        <>
+          <button onClick={() => handleClick({ name: buttons[j].columnname })}>
+            {buttons[j].columnlabel}
+          </button>
+        </>
+      );
+    }
+  }
+
+  if (
+    viewdata &&
+    Object.keys(viewdata).length > 0 &&
+    columns &&
+    columns.length > 0
+  ) {
     for (let i = 0; i < columns.length; i++) {
       let columnoptions = columns[i].columnoptions;
 
@@ -149,21 +167,10 @@ export let Viewdatahtml = (methodprops) => {
             list={columns[i].columnname}
           />
           <datalist id={columns[i].columnname}>{columnoptionshtml}</datalist>
-
-         
         </>
       );
     }
-    columnhtml.push(<>
-      <button onClick={() => handleClick({ name: "updatedata" })}>
-  update
-</button>
-<button onClick={() => handleClick({ name: "deletedata" })}>
-  delete
-</button>
-</>);
+    columnhtml.push(<>{buttonshtml}</>);
   }
-  return <>{columnhtml}  
-
-</>;
+  return <>{columnhtml}</>;
 };

@@ -1427,6 +1427,131 @@ let templateareaitemsectioncolumnconsolelog = (key, value) => {
   console.log(value);
 };
 
+export let browserlocalstoragedata = async () => {
+  let browserlocalstoragedata = await getbrowserLocalstorage();
+  return browserlocalstoragedata;
+};
+
+
+
+export let urldata = async () => {
+  let totalurl = window.location.href;
+
+  let urldata = {
+    totalurl: totalurl,
+    baseurl: window.location.hostname,
+    domain: document.domain,
+    title: document.title,
+    sitename:"",
+    pagename: "",
+    urlhashdataparams: { hash1: "hash1test" },
+    urlsearchdataparams: { a: "b" },
+    hash: window.location.hash,
+    path: window.location.pathname,
+    search: window.location.search,
+  };
+
+
+  return urldata;
+};
+
+export let devicedata = async () => {
+   // current time
+   let todaydatetime = new Date();
+   let currenttimeiniso = todaydatetime.toISOString();
+
+   // device parameters
+   let devicedatajs = {
+     windowinnerwidth: window.innerWidth,
+     windowinnerheight: window.innerHeight,
+     screenwidth: window.screen.width,
+     screenheight: window.screen.height,
+     isdesktop: "true",
+     istab: "false",
+     isphone: "false",
+     width: "small/medium/large/xlarge",
+     isbrowserorapp: "true/false",
+     currenttimeiniso: currenttimeiniso,
+   };
+   return devicedatajs;
+}
+
+export let orgdata = async () => {
+  let datajs ={};
+  let listdata = await fetchlistmetadatafromDB({
+    tablename: "orgmetadata",
+    conditionexpression: {
+      name: "testorg1",
+    },
+  });
+  if(listdata && listdata.length > 0){
+    datajs = listdata[0];
+  }
+  return datajs;
+}
+
+
+
+export let signedinuserdata = async () => {
+  let datajs ={};
+  return datajs;
+}
+
+export let dbuserdata = async (methodprops) => {
+  let {signedinusername} = methodprops;
+  let datajs ={};
+  let listdata = await fetchlistmetadatafromDB({
+    tablename: "usermetadata",
+    conditionexpression: {
+      signedinusername: signedinusername,
+    },
+  });
+  if(listdata && listdata.length > 0){
+    datajs = listdata[0];
+  }
+  return datajs;
+ }
+
+
+export let dbuserprofiledata = async (methodprops) => {
+  let {dbuserprofilename} = methodprops;
+  let datajs ={};
+  let listdata = await fetchlistmetadatafromDB({
+    tablename: "profilemetadata",
+    conditionexpression: {
+      name: dbuserprofilename,
+    },
+  });
+  if(listdata && listdata.length > 0){
+    datajs = listdata[0];
+  }
+  return datajs;
+}
+
+
+export let haspageaccessmetadata = async (methodprops) => {
+  let {dbuserprofilename,pagename} = methodprops;
+  let haspageaccessmetadata = false;
+  let listdata = await fetchlistmetadatafromDB({
+    tablename: "pageaccessmetadata",
+    conditionexpression: {
+      profilename: dbuserprofilename,
+      pagename:pagename
+    },
+  });
+  if(listdata && listdata.length > 0){
+    haspageaccessmetadata = true;
+  }
+  return haspageaccessmetadata;
+}
+
+export let currenttimeiniso = () => {
+  let todaydatetime = new Date();
+  let currenttimeiniso = todaydatetime.toISOString();
+  return currenttimeiniso;
+};
+
+
 export let alltypecompconsolelog = (key, value) => {
   console.log(key);
   console.log(value);
@@ -2122,6 +2247,24 @@ export let getdroppedtemplateareaitem = (methodprops) => {
 };
 
 ///////////////////////////
+
+async function fetchlistmetadatafromDB(methodprops) {
+  alltypecompconsolelog("sitecomp-fetchlistmetadatafromDB");
+  alltypecompconsolelog(methodprops);
+  let { tablename, conditionexpression } = methodprops;
+  let listmetadata = [];
+  let resp = await gettabledatafromNodejs({
+    tablename: tablename,
+    conditionexpression: conditionexpression,
+  });
+  console.log(resp);
+  if (resp.issuccess === "true") {
+    listmetadata = resp.data;
+    //  Showui({  listtablemetadata: listtablemetadata });
+  }
+
+  return listmetadata;
+}
 
 export let gettabledatafromNodejs = async (methodprops) => {
   alltypecompconsolelog("gettabledatafromNodejs-entry", methodprops);
