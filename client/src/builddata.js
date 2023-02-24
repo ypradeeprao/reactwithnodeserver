@@ -18,6 +18,7 @@ import {
 } from "./logic";
 
 import { Listdatahtml, Viewdatahtml, Newdatahtml } from "./tablechildmetadata";
+import {Richtextareacomp} from "./richtextareacomp";
 
 function App() {
   // Declare a new state variable, which we'll call "count"
@@ -1641,6 +1642,9 @@ function App() {
 
           <button onClick={() => handleClick({ type: "viewsitemanager" })}>
             viewsitemanager
+          </button>
+          <button onClick={() => handleClick({ type: "viewrichtextarea" })}>
+          viewrichtextarea
           </button>
         </div>
 
