@@ -16,7 +16,7 @@ import {
   currenttimeiniso,
 } from "./logic";
 import { Sitecomp } from "./sitecomp";
-
+import {Richtextareacomp} from "./richtextareacomp";
 import { Listdatahtml, Viewdatahtml, Newdatahtml } from "./tablechildmetadata";
 
 function App() {
@@ -29,6 +29,7 @@ function App() {
   });
 
   useEffect(() => {
+    
     alltypecompconsolelog("sitecomp-useeffect");
 
     //  fetchAllsiteversionpageDatafromDB();
@@ -110,9 +111,9 @@ function App() {
     return (
       <>
        
-       <Sitecomp />
-
-      
+       {/* <Sitecomp /> */}
+fdf
+      <Richtextareacomp />
       </>
     );
   }

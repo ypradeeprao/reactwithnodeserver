@@ -14,6 +14,7 @@ import {
   dbuserprofiledata,
   haspageaccessmetadata
 } from "./logic";
+import {Richtextareacomp} from "./richtextareacomp";
 // import {
 //   templatearealistmetadataInit
 // } from "./constants";
@@ -31,9 +32,9 @@ export function Sitecomp(props) {
   });
 
   useEffect(() => {
-    alltypecompconsolelog("sitecomp-useeffect");
-
-    handleInit();
+    alltypecompconsolelog("sitecomp-useeffect1");
+  //alert(2);
+ //   handleInit();
     //  fetchAllsiteversionpageDatafromDB();
   }, []);
 
@@ -248,7 +249,7 @@ export function Sitecomp(props) {
 
   //   alltypecompconsolelog(sitestatedata);
   // };
-
+alert(1);
    return null;
 
   // if (compstate.showui !== true) {

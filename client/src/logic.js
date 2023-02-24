@@ -10,7 +10,7 @@ import {
 
 ///////////////////////////
 
-let dragstart = (ev) => {
+export let dragstart = (ev) => {
   alltypecompconsolelog("dragstart");
   alltypecompconsolelog(ev.target.dataset);
   ev.dataTransfer.setData("paneltype", ev.target.dataset.type);
@@ -30,16 +30,16 @@ let dragstart = (ev) => {
   }
 };
 
-let allowDrop = (ev) => {
+export let allowDrop = (ev) => {
   // ev.target.style.backgroundColor = "lightblue";
   ev.preventDefault();
 };
 
-let dragEnter = (ev) => {
+export let dragEnter = (ev) => {
   ev.target.style.backgroundColor = "lightblue";
 };
 
-let dragLeave = (ev) => {
+export let dragLeave = (ev) => {
   ev.target.style.backgroundColor = "";
   // ev.preventDefault();
 };
@@ -127,6 +127,116 @@ const sortArray = (items, orderby, typeofsortby) => {
     });
   }
 };
+
+export const dragdropHandler2 = (methodprops) => {
+  alltypecompconsolelog("dragdropHandler-render", methodprops);
+  let propsJS = JSON.parse(JSON.stringify(methodprops));
+  let {
+    changingobjectarray,
+  subobject,
+    operationtype,
+    preposttext,
+    draggedcomporder,
+    neworder,
+  } = propsJS;
+
+
+  let changingobjectArraySorted = [];
+ 
+    changingobjectArraySorted = sortArray(
+      changingobjectarray,
+      "order",
+      "integer"
+    );
+  
+    if (operationtype === "add") {
+      if (changingobjectArraySorted.length === 0) {
+        changingobjectArraySorted.push(subobject);
+      } else {
+        if (neworder === "") {
+          changingobjectArraySorted.push(subobject);
+        } else {
+          let changingobjectArraySortedU = [];
+          for (let i = 0; i < changingobjectArraySorted.length; i++) {
+            if (
+              changingobjectArraySorted[i].order === neworder &&
+              preposttext === "pre"
+            ) {
+              changingobjectArraySortedU.push(subobject);
+              changingobjectArraySortedU.push(changingobjectArraySorted[i]);
+            } else if (
+              changingobjectArraySorted[i].order === neworder &&
+              preposttext === "post"
+            ) {
+              changingobjectArraySortedU.push(changingobjectArraySorted[i]);
+              changingobjectArraySortedU.push(subobject);
+            } else {
+              changingobjectArraySortedU.push(changingobjectArraySorted[i]);
+            }
+          }
+          changingobjectArraySorted = changingobjectArraySortedU;
+        }
+      }
+    }
+
+
+    if (operationtype === "delete") {
+      
+       
+          let changingobjectArraySortedU = [];
+          for (let i = 0; i < changingobjectArraySorted.length; i++) {
+            if (
+              changingobjectArraySorted[i].order !== subobject.order
+            ) {
+              changingobjectArraySortedU.push(changingobjectArraySorted[i]);
+            } 
+          }
+          changingobjectArraySorted = changingobjectArraySortedU;
+        
+      
+    }
+
+
+    if (operationtype === "swap") {
+      let changingobjectArraySortedU = [];
+      for (let i = 0; i < changingobjectArraySorted.length; i++) {
+        if (changingobjectArraySorted[i].order === draggedcomporder) {
+          subobject = changingobjectArraySorted[i];
+        } else {
+          changingobjectArraySortedU.push(changingobjectArraySorted[i]);
+        }
+      }
+  
+      let changingobjectArraySortedU2 = [];
+      for (let i = 0; i < changingobjectArraySortedU.length; i++) {
+        if (
+          changingobjectArraySortedU[i].order === neworder &&
+          preposttext === "pre"
+        ) {
+          changingobjectArraySortedU2.push(subobject);
+          changingobjectArraySortedU2.push(changingobjectArraySortedU[i]);
+        } else if (
+          changingobjectArraySortedU[i].order === neworder &&
+          preposttext === "post"
+        ) {
+          changingobjectArraySortedU2.push(changingobjectArraySortedU[i]);
+          changingobjectArraySortedU2.push(subobject);
+        } else {
+          changingobjectArraySortedU2.push(changingobjectArraySortedU[i]);
+        }
+      }
+      changingobjectArraySorted = changingobjectArraySortedU2;
+    }
+
+
+
+    for (let i = 0; i < changingobjectArraySorted.length; i++) {
+      changingobjectArraySorted[i].order = i;
+    }
+
+    return changingobjectArraySorted;
+
+}
 
 const dragdropHandler = (methodprops) => {
   alltypecompconsolelog("dragdropHandler-render", methodprops);
