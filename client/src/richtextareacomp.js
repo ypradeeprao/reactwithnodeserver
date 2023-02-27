@@ -1,8 +1,15 @@
 import React, { Component, useState, useEffect, createRef } from "react";
-import {dragdropHandler2} from "./logic";
+import { dragdropHandler2 } from "./logic";
 import {
-  alltypecompconsolelog, replacedynamictext, gettabledatafromDatabase, alltypecompClickHandler,
-  allowDrop, dragstart, dragEnter, dragLeave, inserttabledatainDatabase
+  alltypecompconsolelog,
+  replacedynamictext,
+  gettabledatafromDatabase,
+  alltypecompClickHandler,
+  allowDrop,
+  dragstart,
+  dragEnter,
+  dragLeave,
+  inserttabledatainDatabase,
 } from "./logic";
 
 function createMarkup() {
@@ -17,22 +24,22 @@ function MyComponent() {
 
 export function Richtextareacomp() {
   const [compstate, setCompstate] = useState({
-    viewitem: {},
-    htmlarray: [
+    viewsectioncolumn: {},
+    sectioncolumnsarray: [
       {
         type: "div",
         innerhtml: "Test",
-        style: { backgroundColor: "red" },
+        style: { backgroundColor: "red", display: "inline-flex" },
         order: 0,
       },
       {
         type: "div",
         innerhtml: "Test1",
-        style: { backgroundColor: "yellow" },
+        style: { backgroundColor: "yellow", display: "inline-flex" },
         order: 1,
       },
     ],
-    popularstylesinputoptions: {
+    editsectioncolumnsstyleinputvalues: {
       color: {
         paramname: "color",
         options: ["red", "blue", "yellow", "green"],
@@ -51,154 +58,386 @@ export function Richtextareacomp() {
         options: ["50px", "100px", "25%", "50%", "100%", "50vw", "100vw"],
       },
     },
-    popularstyles: {
+    addsectioncolumnsobject: {
       general: [
         {
           type: "div",
-          innerhtml: "Test",
-          style: { backgroundColor: "brown" },
+          innerhtml: "Paragraph",
+          style: { display: "inline-flex", padding: "5px" },
           order: 0,
+          sectioncolumnmetadata: {
+            type: "div",
+            innerhtml: "Paragraph",
+            style: {},
+            order: "",
+          },
+        },
+      ],
+      text: [
+        {
+          type: "div",
+          innerhtml: "Paragraph",
+          style: { display: "inline-flex", padding: "5px" },
+          order: 0,
+          sectioncolumnmetadata: {
+            type: "div",
+            innerhtml: "Paragraph",
+            style: {},
+            order: "",
+          },
         },
         {
           type: "div",
-          innerhtml: "Test1",
-          style: { backgroundColor: "blue" },
+          innerhtml: "Inline text",
+          style: { display: "inline-flex", padding: "5px" },
           order: 1,
+          sectioncolumnmetadata: {
+            type: "div",
+            innerhtml: "Inline text sample",
+            style: {
+              display: "inline-flex",
+            },
+            order: "",
+          },
         },
         {
           type: "div",
-          innerhtml: "Test",
-          style: { color: "orange" },
+          innerhtml: "Heading",
+          style: { display: "inline-flex", padding: "5px" },
           order: 2,
+          sectioncolumnmetadata: {
+            type: "div",
+            innerhtml: "Heading",
+            style: {
+              display: "inline-flex",
+              fontSize: "50px",
+              fontWeight: "bold",
+            },
+            order: "",
+          },
         },
         {
           type: "div",
-          innerhtml: "Test",
-          style: { fontWeight: "bold" },
+          innerhtml: "Subheading",
+          style: { display: "inline-flex", padding: "5px" },
           order: 3,
+          sectioncolumnmetadata: {
+            type: "div",
+            innerhtml: "Subheading",
+            style: {
+              display: "inline-flex",
+              fontSize: "30px",
+              fontWeight: "bold",
+            },
+            order: "",
+          },
+        },
+        {
+          type: "div",
+          innerhtml: "Quote",
+          style: { display: "inline-flex", padding: "5px" },
+          order: 4,
+          sectioncolumnmetadata: {
+            type: "div",
+            innerhtml: "'Quote'",
+            style: {
+              display: "inline-flex",
+              fontWeight: "bold",
+            },
+            order: "",
+          },
+        },
+        {
+          type: "div",
+          innerhtml: "Underlinetext",
+          style: { display: "inline-flex", padding: "5px" },
+          order: 5,
+          sectioncolumnmetadata: {
+            type: "div",
+            innerhtml: "Underlinetext",
+            style: {
+              display: "inline-flex",
+              textDecoration: "underline",
+            },
+            order: "",
+          },
+        },
+        {
+          type: "div",
+          innerhtml: "Heighlightedtext",
+          style: { display: "inline-flex", padding: "5px" },
+          order: 6,
+          sectioncolumnmetadata: {
+            type: "div",
+            innerhtml: "Heighlightedtext",
+            style: {
+              display: "inline-flex",
+              backgroundColor: "#FFFF00",
+            },
+            order: "",
+          },
+        },
+        {
+          type: "div",
+          innerhtml: "Boldtext",
+          style: { display: "inline-flex", padding: "5px" },
+          order: 7,
+          sectioncolumnmetadata: {
+            type: "div",
+            innerhtml: "Boldtext",
+            style: {
+              display: "inline-flex",
+              fontWeight: "bold",
+            },
+            order: "",
+          },
+        },
+      ],
+    },
+    editsectioncolumnsstyleobject: {
+      general: [
+        {
+          type: "div",
+          innerhtml: "bgbrown",
+          style: { display: "inline-flex", backgroundColor: "brown" },
+          order: 0,
+          assignstyle: { backgroundColor: "brown" },
+        },
+        {
+          type: "div",
+          innerhtml: "bgblue",
+          style: { display: "inline-flex", backgroundColor: "blue" },
+          order: 1,
+          assignstyle: { backgroundColor: "blue" },
+        },
+        {
+          type: "div",
+          innerhtml: "colororange",
+          style: { display: "inline-flex", color: "orange" },
+          order: 2,
+          assignstyle: { color: "orange" },
+        },
+        {
+          type: "div",
+          innerhtml: "bold",
+          style: { display: "inline-flex", fontWeight: "bold" },
+          order: 3,
+          assignstyle: { fontWeight: "bold" },
         },
       ],
       color: [
         {
           type: "div",
-          innerhtml: "Test",
-          style: { color: "blue" },
+          innerhtml: "colorblue",
+          style: { display: "inline-flex", color: "blue" },
           order: 0,
+          assignstyle: { color: "blue" },
         },
       ],
 
       bgcolor: [
         {
           type: "div",
-          innerhtml: "Test",
-          style: { backgroundColor: "blue" },
+          innerhtml: "blue",
+          style: { display: "inline-flex", backgroundColor: "blue" },
           order: 0,
+          assignstyle: { backgroundColor: "blue" },
         },
         {
           type: "div",
-          innerhtml: "Test",
-          style: { backgroundColor: "yellow" },
+          innerhtml: "yellow",
+          style: { display: "inline-flex", backgroundColor: "yellow" },
           order: 1,
+          assignstyle: { backgroundColor: "yellow" },
         },
       ],
       font: [
         {
           type: "div",
-          innerhtml: "Test",
-          style: { fontWeight: "bold" },
+          innerhtml: "bold",
+          style: { display: "inline-flex", fontWeight: "bold" },
           order: 0,
+          assignstyle: { fontWeight: "bold" },
         },
         {
           type: "div",
-          innerhtml: "Test",
-          style: { fontWeight: "normal" },
+          innerhtml: "normal",
+          style: { display: "inline-flex", fontWeight: "normal" },
           order: 1,
+          assignstyle: { fontWeight: "normal" },
         },
       ],
       fontsize: [
         {
           type: "div",
-          innerhtml: "Test",
-          style: { fontSize: "10px" },
+          innerhtml: "10px",
+          style: { display: "inline-flex", fontSize: "10px" },
           order: 0,
+          assignstyle: { fontSize: "10px" },
         },
         {
           type: "div",
-          innerhtml: "Test",
-          style: { fontSize: "20px" },
+          innerhtml: "20px",
+          style: { display: "inline-flex", fontSize: "20px" },
           order: 1,
+          assignstyle: { fontSize: "20px" },
+        },
+      ],
+      fontfamily: [
+        {
+          type: "div",
+          innerhtml: "times",
+          style: { display: "inline-flex", fontFamily: "times" },
+          order: 0,
+          assignstyle: { fontFamily: "times" },
+        },
+        {
+          type: "div",
+          innerhtml: "courier",
+          style: { display: "inline-flex", fontFamily: "courier" },
+          order: 0,
+          assignstyle: { fontFamily: "courier" },
         },
       ],
       align: [
         {
           type: "div",
-          innerhtml: "Test",
-          style: { textAlign: "left" },
+          innerhtml: "left",
+          style: { display: "inline-flex", textAlign: "left" },
           order: 0,
+          assignstyle: { textAlign: "left" },
         },
         {
           type: "div",
-          innerhtml: "Test",
-          style: { textAlign: "center" },
+          innerhtml: "center",
+          style: { display: "inline-flex", textAlign: "center" },
           order: 1,
+          assignstyle: { textAlign: "center" },
         },
         {
           type: "div",
-          innerhtml: "Test",
-          style: { textAlign: "right" },
+          innerhtml: "right",
+          style: { display: "inline-flex", textAlign: "right" },
           order: 2,
+          assignstyle: { textAlign: "right" },
+        },
+      ],
+      width: [
+        {
+          type: "div",
+          innerhtml: "auto",
+          style: { display: "inline-flex" },
+          order: 0,
+          assignstyle: { width: "initial" },
+        },
+        {
+          type: "div",
+          innerhtml: "100px",
+          style: { display: "inline-flex" },
+          order: 0,
+          assignstyle: { width: "100px", overflow: "auto" },
+        },
+        {
+          type: "div",
+          innerhtml: "200px",
+          style: { display: "inline-flex" },
+          order: 1,
+          assignstyle: { width: "200px", overflow: "auto" },
+        },
+        {
+          type: "div",
+          innerhtml: "25%",
+          style: { display: "inline-flex" },
+          order: 2,
+          assignstyle: { width: "25%", overflow: "auto" },
+        },
+        {
+          type: "div",
+          innerhtml: "50%",
+          style: { display: "inline-flex" },
+          order: 3,
+          assignstyle: { width: "50%", overflow: "auto" },
+        },
+        {
+          type: "div",
+          innerhtml: "100%",
+          style: { display: "inline-flex" },
+          order: 4,
+          assignstyle: { width: "100%", overflow: "auto" },
+        },
+        {
+          type: "div",
+          innerhtml: "50vh",
+          style: { display: "inline-flex" },
+          order: 2,
+          assignstyle: { width: "50vh", overflow: "auto" },
+        },
+        {
+          type: "div",
+          innerhtml: "100vh",
+          style: { display: "inline-flex" },
+          order: 5,
+          assignstyle: { width: "100vh", overflow: "auto" },
         },
       ],
       height: [
         {
           type: "div",
           innerhtml: "100px",
-          style: { height: "100px", overflow: "auto" },
+          style: { display: "inline-flex" },
           order: 0,
+          assignstyle: { height: "100px", overflow: "auto" },
         },
         {
           type: "div",
           innerhtml: "200px",
-          style: { height: "200px", overflow: "auto" },
+          style: { display: "inline-flex" },
           order: 1,
+          assignstyle: { height: "200px", overflow: "auto" },
         },
         {
           type: "div",
           innerhtml: "25%",
-          style: { height: "25%", overflow: "auto" },
+          style: { display: "inline-flex" },
           order: 2,
+          assignstyle: { height: "25%", overflow: "auto" },
         },
         {
           type: "div",
           innerhtml: "50%",
-          style: { height: "50%", overflow: "auto" },
+          style: { display: "inline-flex" },
           order: 3,
+          assignstyle: { height: "50%", overflow: "auto" },
         },
         {
           type: "div",
           innerhtml: "100%",
-          style: { height: "100%", overflow: "auto" },
+          style: { display: "inline-flex" },
           order: 4,
+          assignstyle: { height: "100%", overflow: "auto" },
         },
         {
           type: "div",
           innerhtml: "50vh",
-          style: { height: "50vh", overflow: "auto" },
+          style: { display: "inline-flex" },
           order: 2,
+          assignstyle: { height: "50vh", overflow: "auto" },
         },
         {
           type: "div",
           innerhtml: "100vh",
-          style: { height: "100vh", overflow: "auto" },
+          style: { display: "inline-flex" },
           order: 5,
+          assignstyle: { height: "100vh", overflow: "auto" },
         },
       ],
     },
 
-    selectedpopularstyletype: "general",
+    editsectioncolumnstyletype: "general",
+    showaddsectioncolumnpanel: true,
   });
   const [uistate, setUistate] = useState({
-    edititem: {},
+    editsectioncolumn: {},
   });
 
   let Showui = async (methodprops) => {
@@ -217,235 +456,339 @@ export function Richtextareacomp() {
   let handleChange = async (methodprops) => {
     console.log(methodprops);
     console.log(uistate);
-    let { viewitem } = compstate;
+    let { viewsectioncolumn } = compstate;
     let { type, subtype, value } = methodprops;
-    if (type === "edititem" && subtype == "innerhtml") {
-      uistate.edititem.innerhtml = value;
+    if (type === "editsectioncolumn" && subtype == "innerhtml") {
+      uistate.editsectioncolumn.innerhtml = value;
     }
-    if (type === "popularstylesinputvalue") {
-      uistate.popularstylesinputvalue = value;
+    if (type === "editsectioncolumnstyleinputvalue") {
+      uistate.editsectioncolumnstyleinputvalue = value;
     }
   };
 
   let handleClick = async (methodprops) => {
-    let { order, type, value } = methodprops;
+    let { order, type, value, preposttext } = methodprops;
     let {
-      htmlarray,
-      popularstyles,
-      popularstylesinputoptions,
-      selectedpopularstyletype,
+      sectioncolumnsarray,
+      addsectioncolumnsobject,
+      editsectioncolumnsstyleobject,
+      editsectioncolumnsstyleinputvalues,
+      editsectioncolumnstyletype,
+      showaddsectioncolumnpanel,
+      addsectioncolumnpaneltype,
     } = compstate;
 
     console.log(methodprops);
     console.log(uistate);
-    if (type == "selectitem") {
-      let viewitem = {};
-      for (let i = 0; i < htmlarray.length; i++) {
-        let htmlarrayitem = htmlarray[i];
-        if (htmlarrayitem.order === order) {
-          viewitem = htmlarrayitem;
+    if (type == "sectioncolumnhandleclick") {
+      let viewsectioncolumn = {};
+      for (let i = 0; i < sectioncolumnsarray.length; i++) {
+        let sectioncolumnarrayitem = sectioncolumnsarray[i];
+        if (sectioncolumnarrayitem.order === order) {
+          viewsectioncolumn = sectioncolumnarrayitem;
         }
       }
 
-      Showui({ viewitem: viewitem, isshowotherstyles: true });
-      uistate.edititem = viewitem;
+      Showui({
+        viewsectioncolumn: viewsectioncolumn,
+        isshoweditsectioncolumnstyles: true,
+        showaddsectioncolumnpanel: false,
+      });
+      uistate.editsectioncolumn = viewsectioncolumn;
       setUistate(uistate);
-    } else if (type === "showotherstyles") {
-      Showui({ isshowotherstyles: true });
-    } 
-    else if (type === "duplicatehtmlitem") {
-     
-      let viewitemjs = {};
-      for (let i = 0; i < htmlarray.length; i++) {
-        let htmlarrayitem = htmlarray[i];
-        if (htmlarrayitem.order === compstate.viewitem.order) {
-          viewitemjs = htmlarray[i] ;
+    } else if (type === "showeditsectioncolumnstyles") {
+      Showui({
+        isshoweditsectioncolumnstyles: true,
+        showaddsectioncolumnpanel: false,
+      });
+    } else if (type === "addsectioncolumn") {
+      Showui({
+        showaddsectioncolumnpanel: true,
+        addsectioncolumnpaneltype: "general",
+        isshoweditsectioncolumnstyles: false,
+      });
+    } else if (type === "addsectioncolumnpanelitemhandleclick") {
+      let addingsubobject = {};
+      if (
+        showaddsectioncolumnpanel === true &&
+        addsectioncolumnpaneltype &&
+        addsectioncolumnpaneltype !== ""
+      ) {
+        for (
+          let j = 0;
+          j < addsectioncolumnsobject[addsectioncolumnpaneltype].length;
+          j++
+        ) {
+          let addsectioncolumnoptionsitem = JSON.parse(
+            JSON.stringify(
+              addsectioncolumnsobject[addsectioncolumnpaneltype][j]
+            )
+          );
+          if (addsectioncolumnoptionsitem.order === order) {
+            addingsubobject = addsectioncolumnoptionsitem.sectioncolumnmetadata;
+          }
         }
       }
 
-      let changingobjectarray = dragdropHandler2({
-        changingobjectarray: htmlarray,
-        subobject: viewitemjs,
+      let sectioncolumnarrayjs = JSON.parse(
+        JSON.stringify(sectioncolumnsarray)
+      );
+      console.log(sectioncolumnarrayjs);
+      sectioncolumnarrayjs = dragdropHandler2({
+        changingobjectarray: sectioncolumnarrayjs,
+        subobject: addingsubobject,
         operationtype: "add",
         preposttext: "",
         draggedcomporder: "",
         neworder: "",
       });
-   console.log(changingobjectarray);
 
-      Showui({ htmlarray: changingobjectarray, viewitem: {}, isshowotherstyles: false });
-      uistate.edititem = {};
+      Showui({
+        sectioncolumnsarray: sectioncolumnarrayjs,
+        viewsectioncolumn: {},
+      });
+      uistate.editsectioncolumn = {};
       setUistate(uistate);
-    } 
-    else if (type === "deletehtmlitem") {
-     
-      let viewitemjs = {};
-      for (let i = 0; i < htmlarray.length; i++) {
-        let htmlarrayitem = htmlarray[i];
-        if (htmlarrayitem.order === compstate.viewitem.order) {
-          viewitemjs = htmlarray[i] ;
+    } else if (type === "duplicatesectioncolumn") {
+      let viewsectioncolumnitemjs = {};
+      for (let i = 0; i < sectioncolumnsarray.length; i++) {
+        let sectioncolumnarrayitem = sectioncolumnsarray[i];
+        if (
+          sectioncolumnarrayitem.order === compstate.viewsectioncolumn.order
+        ) {
+          viewsectioncolumnitemjs = sectioncolumnsarray[i];
         }
       }
 
       let changingobjectarray = dragdropHandler2({
-        changingobjectarray: htmlarray,
-        subobject: viewitemjs,
+        changingobjectarray: sectioncolumnsarray,
+        subobject: viewsectioncolumnitemjs,
+        operationtype: "add",
+        preposttext: "",
+        draggedcomporder: "",
+        neworder: "",
+      });
+      console.log(changingobjectarray);
+
+      Showui({
+        sectioncolumnsarray: changingobjectarray,
+        viewsectioncolumn: {},
+        isshoweditsectioncolumnstyles: false,
+      });
+      uistate.editsectioncolumn = {};
+      setUistate(uistate);
+    } else if (type === "deletesectioncolumn") {
+      let viewsectioncolumnitemjs = {};
+      for (let i = 0; i < sectioncolumnsarray.length; i++) {
+        let sectioncolumnarrayitem = sectioncolumnsarray[i];
+        if (
+          sectioncolumnarrayitem.order === compstate.viewsectioncolumn.order
+        ) {
+          viewsectioncolumnitemjs = sectioncolumnsarray[i];
+        }
+      }
+
+      let changingobjectarray = dragdropHandler2({
+        changingobjectarray: sectioncolumnsarray,
+        subobject: viewsectioncolumnitemjs,
         operationtype: "delete",
         preposttext: "",
         draggedcomporder: "",
         neworder: "",
       });
-   console.log(changingobjectarray);
+      console.log(changingobjectarray);
 
-      Showui({ htmlarray: changingobjectarray, viewitem: {}, isshowotherstyles: false });
-      uistate.edititem = {};
+      Showui({
+        sectioncolumnsarray: changingobjectarray,
+        viewsectioncolumn: {},
+        isshoweditsectioncolumnstyles: false,
+      });
+      uistate.editsectioncolumn = {};
       setUistate(uistate);
-    } 
-    else if (type === "addhtmlitem") {
-    }
-    else if (type === "savefromedititem") {
-      let viewitem = {};
-      for (let i = 0; i < htmlarray.length; i++) {
-        let htmlarrayitem = htmlarray[i];
-        if (htmlarrayitem.order === compstate.viewitem.order) {
-          htmlarray[i] = uistate.edititem;
-        }
-      }
+    } else if (type === "dropsectioncolumn") {
+      var draggedcomporder = methodprops.e.dataTransfer.getData("order");
 
-      Showui({ htmlarray: htmlarray, viewitem: {}, isshowotherstyles: false });
-      uistate.edititem = {};
+      sectioncolumnsarray = dragdropHandler2({
+        changingobjectarray: sectioncolumnsarray,
+        subobject: {},
+        operationtype: "swap",
+        preposttext: methodprops.preposttext,
+        draggedcomporder: parseInt(draggedcomporder),
+        neworder: methodprops.order,
+      });
+
+      Showui({
+        sectioncolumnsarray: sectioncolumnsarray,
+        viewsectioncolumn: {},
+        isshoweditsectioncolumnstyles: false,
+      });
+      uistate.editsectioncolumn = {};
       setUistate(uistate);
-    } else if (type === "showinpopularstyles") {
-      Showui({ viewitem: uistate.edititem });
-    } else if (type === "savefrompopularstyles") {
-      let popularstylesitemjs = {};
-      for (let j = 0; j < popularstyles[selectedpopularstyletype].length; j++) {
-        if (popularstyles[selectedpopularstyletype][j].order === order) {
-          popularstylesitemjs = popularstyles[selectedpopularstyletype][j];
-        }
-      }
-      let htmlarrayjs = JSON.parse(JSON.stringify(htmlarray));
-      let viewitemjs = {};
-      for (let i = 0; i < htmlarrayjs.length; i++) {
-        let htmlarrayitem = htmlarrayjs[i];
-        if (htmlarrayitem.order === compstate.viewitem.order) {
-          htmlarrayjs[i] = compstate.viewitem;
-
-          let returnedTarget = Object.assign(
-            {},
-            htmlarrayjs[i].style,
-            popularstylesitemjs.style
-          );
-
-          if (selectedpopularstyletype === "general") {
-            returnedTarget = popularstylesitemjs.style;
-          }
-
-          htmlarrayjs[i].style = returnedTarget;
-          console.log(returnedTarget);
-          viewitemjs = htmlarrayjs[i];
+    } else if (type === "savefromeditsectioncolumn") {
+      let viewsectioncolumn = {};
+      for (let i = 0; i < sectioncolumnsarray.length; i++) {
+        let sectioncolumnarrayitem = sectioncolumnsarray[i];
+        if (
+          sectioncolumnarrayitem.order === compstate.viewsectioncolumn.order
+        ) {
+          sectioncolumnsarray[i] = uistate.editsectioncolumn;
         }
       }
 
       Showui({
-        htmlarray: htmlarrayjs,
-        viewitem: viewitemjs,
+        sectioncolumnsarray: sectioncolumnsarray,
+        viewsectioncolumn: {},
+        isshoweditsectioncolumnstyles: false,
       });
-      uistate.edititem = viewitemjs;
+      uistate.editsectioncolumn = {};
       setUistate(uistate);
-    } else if (type === "selectpopularstyletype") {
-      Showui({ selectedpopularstyletype: value });
-    } else if (type === "savefrompopularstylesinputvalue") {
-      if (
-        selectedpopularstyletype &&
-        selectedpopularstyletype !== "" &&
-        popularstylesinputoptions[selectedpopularstyletype] &&
-        uistate.popularstylesinputvalue &&
-        uistate.popularstylesinputvalue != ""
+    } else if (type === "showineditsectioncolumnstyles") {
+      Showui({ viewsectioncolumn: uistate.editsectioncolumn });
+    } else if (type === "handleclickfromeditsectioncolumnstyle") {
+      let editsectioncolumnstyleitemjs = {};
+      for (
+        let j = 0;
+        j < editsectioncolumnsstyleobject[editsectioncolumnstyletype].length;
+        j++
       ) {
-        let currentpopularstylesinputoptions =
-          popularstylesinputoptions[selectedpopularstyletype];
-        let popularstylesinputvalueobject = {};
-        popularstylesinputvalueobject[
-          currentpopularstylesinputoptions.paramname
-        ] = uistate.popularstylesinputvalue;
+        if (
+          editsectioncolumnsstyleobject[editsectioncolumnstyletype][j].order ===
+          order
+        ) {
+          editsectioncolumnstyleitemjs =
+            editsectioncolumnsstyleobject[editsectioncolumnstyletype][j];
+        }
+      }
+      let sectioncolumnarrayjs = JSON.parse(
+        JSON.stringify(sectioncolumnsarray)
+      );
+      let viewsectioncolumnitemjs = {};
+      for (let i = 0; i < sectioncolumnarrayjs.length; i++) {
+        let sectioncolumnarrayitem = sectioncolumnarrayjs[i];
+        if (
+          sectioncolumnarrayitem.order === compstate.viewsectioncolumn.order
+        ) {
+          sectioncolumnarrayjs[i] = compstate.viewsectioncolumn;
 
-        let htmlarrayjs = JSON.parse(JSON.stringify(htmlarray));
-        let viewitemjs = {};
-        for (let i = 0; i < htmlarrayjs.length; i++) {
-          let htmlarrayitem = htmlarrayjs[i];
-          if (htmlarrayitem.order === compstate.viewitem.order) {
-            htmlarrayjs[i] = compstate.viewitem;
+          let returnedTarget = Object.assign(
+            {},
+            sectioncolumnarrayjs[i].style,
+            editsectioncolumnstyleitemjs.assignstyle
+          );
+
+          if (editsectioncolumnstyletype === "general") {
+            returnedTarget = editsectioncolumnstyleitemjs.assignstyle;
+          }
+
+          sectioncolumnarrayjs[i].style = returnedTarget;
+          console.log(returnedTarget);
+          viewsectioncolumnitemjs = sectioncolumnarrayjs[i];
+        }
+      }
+
+      Showui({
+        sectioncolumnsarray: sectioncolumnarrayjs,
+        viewsectioncolumn: viewsectioncolumnitemjs,
+      });
+      uistate.editsectioncolumn = viewsectioncolumnitemjs;
+      setUistate(uistate);
+    } else if (type === "editsectioncolumnstyletype") {
+      Showui({ editsectioncolumnstyletype: value });
+    } else if (type === "addsectioncolumnpaneltype") {
+      Showui({ addsectioncolumnpaneltype: value });
+    } else if (type === "savefromeditsectioncolumnstylesinputvalue") {
+      if (
+        editsectioncolumnstyletype &&
+        editsectioncolumnstyletype !== "" &&
+        editsectioncolumnsstyleinputvalues[editsectioncolumnstyletype] &&
+        uistate.editsectioncolumnstyleinputvalue &&
+        uistate.editsectioncolumnstyleinputvalue !== ""
+      ) {
+        let currenteditsectioncolumnstyleobject =
+          editsectioncolumnsstyleinputvalues[editsectioncolumnstyletype];
+        let editsectioncolumnstyleinputobject = {};
+        editsectioncolumnstyleinputobject[
+          currenteditsectioncolumnstyleobject.paramname
+        ] = uistate.editsectioncolumnstyleinputvalue;
+
+        let sectioncolumnarrayjs = JSON.parse(
+          JSON.stringify(sectioncolumnsarray)
+        );
+        let viewsectioncolumnitemjs = {};
+        for (let i = 0; i < sectioncolumnarrayjs.length; i++) {
+          let sectioncolumnarrayitem = sectioncolumnarrayjs[i];
+          if (
+            sectioncolumnarrayitem.order === compstate.viewsectioncolumn.order
+          ) {
+            sectioncolumnarrayjs[i] = compstate.viewsectioncolumn;
 
             let returnedTarget = Object.assign(
               {},
-              htmlarrayjs[i].style,
-              popularstylesinputvalueobject
+              sectioncolumnarrayjs[i].style,
+              editsectioncolumnstyleinputobject
             );
 
-            htmlarrayjs[i].style = returnedTarget;
+            sectioncolumnarrayjs[i].style = returnedTarget;
             console.log(returnedTarget);
-            viewitemjs = htmlarrayjs[i];
+            viewsectioncolumnitemjs = sectioncolumnarrayjs[i];
           }
         }
 
         Showui({
-          htmlarray: htmlarrayjs,
-          viewitem: viewitemjs,
+          sectioncolumnsarray: sectioncolumnarrayjs,
+          viewsectioncolumn: viewsectioncolumnitemjs,
         });
-        uistate.edititem = viewitemjs;
+        uistate.editsectioncolumn = viewsectioncolumnitemjs;
         setUistate(uistate);
       }
-    }
-    else if (type === "executeallowdrop") {
+    } else if (type === "executeallowdrop") {
       allowDrop(methodprops.e);
-    } else if (type === "executedragstart" ) {
+    } else if (type === "executedragstart") {
       dragstart(methodprops.e);
-    } else if (type === "executedragenter" ) {
+    } else if (type === "executedragenter") {
       dragEnter(methodprops.e);
     } else if (type === "executedragleave") {
       dragLeave(methodprops.e);
     }
   };
 
-  let Editpanel = (methodprops) => {
-    let { viewitem } = compstate;
+  // let Editpanel = (methodprops) => {
+  //   let { viewsectioncolumn } = compstate;
 
-    let mainpanelhtml = [];
+  //   let mainpanelhtml = [];
 
-    if (viewitem && Object.keys(viewitem).length > 0) {
-      mainpanelhtml.push(
-        <textarea
-          style={{ width: "90%", height: "50px", padding: "10px" }}
-          defaultValue={viewitem.innerhtml}
-          onChange={(e) =>
-            handleChange({
-              type: "edititem",
-              subtype: "innerhtml",
-              value: e.target.value,
-            })
-          }
-        />
-      );
-    }
+  //   if (viewsectioncolumn && Object.keys(viewsectioncolumn).length > 0) {
+  //     mainpanelhtml.push(
+  //       <textarea
+  //         style={{ width: "90%", height: "50px", padding: "10px" }}
+  //         defaultValue={viewsectioncolumn.innerhtml}
+  //         onChange={(e) =>
+  //           handleChange({
+  //             type: "editsectioncolumn",
+  //             subtype: "innerhtml",
+  //             value: e.target.value,
+  //           })
+  //         }
+  //       />
+  //     );
+  //   }
 
-    return <div style={{ padding: "0px", width: "100%" }}>{mainpanelhtml}</div>;
-  };
+  //   return <div style={{ padding: "0px", width: "100%" }}>{mainpanelhtml}</div>;
+  // };
 
   let Editcontentpanel = (methodprops) => {
-    let { viewitem } = compstate;
+    let { viewsectioncolumn } = compstate;
 
     let mainpanelhtml = [];
 
-    if (viewitem && Object.keys(viewitem).length > 0) {
-   
+    if (viewsectioncolumn && Object.keys(viewsectioncolumn).length > 0) {
       mainpanelhtml.push(
         <Itemhtml
-        iscontenteditable={true}
-          item={viewitem}
+          iscontenteditable={true}
+          item={viewsectioncolumn}
           oninputjs={(e) =>
             handleChange({
-              type: "edititem",
+              type: "editsectioncolumn",
               subtype: "innerhtml",
               value: e.target.innerHTML,
             })
@@ -457,42 +800,38 @@ export function Richtextareacomp() {
     return <div style={{ padding: "0px", width: "100%" }}>{mainpanelhtml}</div>;
   };
 
-  let Popularstyleshtml = (methodprops) => {
+  let Addsectioncolumnhtml = (methodprops) => {
     let {
-      isshowotherstyles,
-      viewitem,
-      popularstyles,
-      popularstylesinputoptions,
-      selectedpopularstyletype,
+      showaddsectioncolumnpanel,
+      addsectioncolumnpaneltype,
+      addsectioncolumnsobject,
     } = compstate;
-    let { edititem } = uistate;
+
     let mainpanelhtml = [];
 
     if (
-      isshowotherstyles === true &&
-      selectedpopularstyletype &&
-      selectedpopularstyletype !== ""
+      showaddsectioncolumnpanel === true &&
+      addsectioncolumnpaneltype &&
+      addsectioncolumnpaneltype !== ""
     ) {
-      for (let j = 0; j < popularstyles[selectedpopularstyletype].length; j++) {
-        let popularstylesitem = JSON.parse(
-          JSON.stringify(popularstyles[selectedpopularstyletype][j])
+      for (
+        let j = 0;
+        j < addsectioncolumnsobject[addsectioncolumnpaneltype].length;
+        j++
+      ) {
+        let addsectioncolumnoptionsitem = JSON.parse(
+          JSON.stringify(addsectioncolumnsobject[addsectioncolumnpaneltype][j])
         );
-        let viewitemjs = JSON.parse(JSON.stringify(viewitem));
-        let edititemjs = JSON.parse(JSON.stringify(edititem));
 
-        popularstylesitem.innerhtml = viewitemjs.innerhtml;
-        if (edititemjs && Object.keys(edititemjs).length > 0) {
-          popularstylesitem.innerhtml = edititemjs.innerhtml;
-        }
-        popularstylesitem.style.height = undefined;
+        addsectioncolumnoptionsitem.style.height = undefined;
 
         mainpanelhtml.push(
           <Itemhtml
-            item={popularstylesitem}
+            item={addsectioncolumnoptionsitem}
             onclickjs={() =>
               handleClick({
-                type: "savefrompopularstyles",
-                order: popularstylesitem.order,
+                type: "addsectioncolumnpanelitemhandleclick",
+                order: addsectioncolumnoptionsitem.order,
               })
             }
           />
@@ -503,37 +842,107 @@ export function Richtextareacomp() {
     return <>{mainpanelhtml}</>;
   };
 
-  let Popularstylesinputhtml = (methodprops) => {
+  let Editsectioncolumnstyleshtml = (methodprops) => {
     let {
-      isshowotherstyles,
-      viewitem,
-      popularstyles,
-      popularstylesinputoptions,
-      selectedpopularstyletype,
+      isshoweditsectioncolumnstyles,
+      viewsectioncolumn,
+      editsectioncolumnsstyleobject,
+      editsectioncolumnsstyleinputvalues,
+      editsectioncolumnstyletype,
     } = compstate;
-    let { edititem } = uistate;
+    let { editsectioncolumn } = uistate;
     let mainpanelhtml = [];
 
     if (
-      isshowotherstyles === true &&
-      selectedpopularstyletype &&
-      selectedpopularstyletype !== ""
+      isshoweditsectioncolumnstyles === true &&
+      editsectioncolumnstyletype &&
+      editsectioncolumnstyletype !== ""
     ) {
-      let popularstylesinputoptionshtml = [];
+      for (
+        let j = 0;
+        j < editsectioncolumnsstyleobject[editsectioncolumnstyletype].length;
+        j++
+      ) {
+        let editsectioncolumnstylesitem = JSON.parse(
+          JSON.stringify(
+            editsectioncolumnsstyleobject[editsectioncolumnstyletype][j]
+          )
+        );
+        let viewsectioncolumnitemjs = JSON.parse(
+          JSON.stringify(viewsectioncolumn)
+        );
+        let editsectioncolumnitemjs = JSON.parse(
+          JSON.stringify(editsectioncolumn)
+        );
 
-      let currentpopularstylesinputoptions =
-        popularstylesinputoptions[selectedpopularstyletype];
+        if (
+          false &&
+          editsectioncolumnstyletype !== "align" &&
+          editsectioncolumnstyletype !== "width" &&
+          editsectioncolumnstyletype !== "height"
+        ) {
+          editsectioncolumnstylesitem.innerhtml =
+            viewsectioncolumnitemjs.innerhtml;
+          if (
+            editsectioncolumnitemjs &&
+            Object.keys(editsectioncolumnitemjs).length > 0
+          ) {
+            editsectioncolumnstylesitem.innerhtml =
+              editsectioncolumnitemjs.innerhtml;
+          }
+        }
+        editsectioncolumnstylesitem.style.height = undefined;
+
+        mainpanelhtml.push(
+          <div style={{ padding: "5px", display: "inline-flex" }}>
+            <Itemhtml
+              item={editsectioncolumnstylesitem}
+              onclickjs={() =>
+                handleClick({
+                  type: "handleclickfromeditsectioncolumnstyle",
+                  order: editsectioncolumnstylesitem.order,
+                })
+              }
+            />
+          </div>
+        );
+      }
+    }
+
+    return <>{mainpanelhtml}</>;
+  };
+
+  let Editsectioncolumnstylesinputhtml = (methodprops) => {
+    let {
+      isshoweditsectioncolumnstyles,
+      viewsectioncolumn,
+      editsectioncolumnsstyleobject,
+      editsectioncolumnsstyleinputvalues,
+      editsectioncolumnstyletype,
+    } = compstate;
+    let { editsectioncolumn } = uistate;
+    let mainpanelhtml = [];
+
+    if (
+      isshoweditsectioncolumnstyles === true &&
+      editsectioncolumnstyletype &&
+      editsectioncolumnstyletype !== ""
+    ) {
+      let editsectioncolumnstylesinputoptionshtml = [];
+
+      let currenteditsectioncolumnstyleobject =
+        editsectioncolumnsstyleinputvalues[editsectioncolumnstyletype];
       if (
-        currentpopularstylesinputoptions &&
-        currentpopularstylesinputoptions.options
+        currenteditsectioncolumnstyleobject &&
+        currenteditsectioncolumnstyleobject.options
       ) {
         for (
           let j = 0;
-          j < currentpopularstylesinputoptions.options.length;
+          j < currenteditsectioncolumnstyleobject.options.length;
           j++
         ) {
-          popularstylesinputoptionshtml.push(
-            <option value={currentpopularstylesinputoptions.options[j]} />
+          editsectioncolumnstylesinputoptionshtml.push(
+            <option value={currenteditsectioncolumnstyleobject.options[j]} />
           );
         }
       }
@@ -544,20 +953,20 @@ export function Richtextareacomp() {
             style={{ width: "20%" }}
             onChange={(e) =>
               handleChange({
-                type: "popularstylesinputvalue",
+                type: "editsectioncolumnstyleinputvalue",
                 value: e.target.value,
               })
             }
-            list="popularstylesinputoptions"
+            list="editsectioncolumnsstyleinputvalues"
           />
-          <datalist id="popularstylesinputoptions">
-            {popularstylesinputoptionshtml}
+          <datalist id="editsectioncolumnsstyleinputvalues">
+            {editsectioncolumnstylesinputoptionshtml}
           </datalist>
           <div
             style={{ padding: "10px", display: "inline" }}
             onClick={() =>
               handleClick({
-                type: "savefrompopularstylesinputvalue",
+                type: "savefromeditsectioncolumnstylesinputvalue",
                 value: "align",
               })
             }
@@ -572,17 +981,20 @@ export function Richtextareacomp() {
   };
 
   let Itemhtml = (methodprops) => {
-    let { item, onclickjs, onchangejs, oninputjs, iscontenteditable,draggable } = methodprops;
+    let {
+      item,
+      onclickjs,
+      onchangejs,
+      oninputjs,
+      iscontenteditable,
+      draggable,
+    } = methodprops;
 
     let mainpanelhtml = [];
     if (item && item.innerhtml) {
       mainpanelhtml.push(
-       
-
-
-
-<div
-          style={{ ...item.style, display: "inline-block" }}
+        <div
+          style={{ ...item.style }}
           data-type={"rteitem"}
           data-order={item.order}
           data-dragtemplatename={item.dragtemplatename}
@@ -602,31 +1014,22 @@ export function Richtextareacomp() {
           }
           onDrop={(e) =>
             handleClick({
-              type: "dropalltypecompprepost",
+              type: "dropsectioncolumn",
               order: item.order,
               e,
               preposttext: "pre",
             })
           }
         >
-         
-
           <div
-          style={item.style}
-          onClick={onclickjs}
-          onInput={oninputjs}
-          contentEditable={iscontenteditable}
-           dangerouslySetInnerHTML={{__html: item.innerhtml}} 
-        >
-          {/* {item.innerhtml} */}
+            onClick={onclickjs}
+            onInput={oninputjs}
+            contentEditable={iscontenteditable}
+            dangerouslySetInnerHTML={{ __html: item.innerhtml }}
+          >
+            {/* {item.innerhtml} */}
+          </div>
         </div>
-
-
-
-        </div>
-
-
-
       );
     }
 
@@ -634,18 +1037,21 @@ export function Richtextareacomp() {
   };
 
   let Arrayhtml = (methodprops) => {
-    let { htmlarray, selecteditemorder } = compstate;
+    let { sectioncolumnsarray, selecteditemorder } = compstate;
 
-    console.log(htmlarray);
+    console.log(sectioncolumnsarray);
     let mainpanelhtml = [];
-    for (let i = 0; i < htmlarray.length; i++) {
-      let htmlarrayitem = htmlarray[i];
+    for (let i = 0; i < sectioncolumnsarray.length; i++) {
+      let sectioncolumnarrayitem = sectioncolumnsarray[i];
       mainpanelhtml.push(
         <Itemhtml
-        draggable={true}
-          item={htmlarrayitem}
+          draggable={true}
+          item={sectioncolumnarrayitem}
           onclickjs={() =>
-            handleClick({ type: "selectitem", order: htmlarrayitem.order })
+            handleClick({
+              type: "sectioncolumnhandleclick",
+              order: sectioncolumnarrayitem.order,
+            })
           }
         />
       );
@@ -653,15 +1059,22 @@ export function Richtextareacomp() {
     return <>{mainpanelhtml}</>;
   };
 
-  let { htmlarray, selecteditemorder } = compstate;
+  let {
+    sectioncolumnsarray,
+    showaddsectioncolumnpanel,
+    isshoweditsectioncolumnstyles,
+    editsectioncolumnstyletype,
+  } = compstate;
   console.log(compstate);
   console.log(uistate);
   return (
     <>
-      <div dangerouslySetInnerHTML={{__html: '<b>testt</b>'}} />
+     
+
+
 
       <div style={{ height: "60vh", overflow: "auto" }}>
-        <Arrayhtml htmlarray={htmlarray} />
+        <Arrayhtml sectioncolumnsarray={sectioncolumnsarray} />
       </div>
 
       <div
@@ -675,94 +1088,302 @@ export function Richtextareacomp() {
         <div style={{ width: "50%", height: "100%", overflow: "auto" }}>
           {/* <Editpanel/> */}
 
-<Editcontentpanel />
-          <div onClick={() => handleClick({ type: "savefromedititem" })}>
-            OK
-          </div>
-          <div onClick={() => handleClick({ type: "showinpopularstyles" })}>
-            showinpopularstyles
-          </div>
-          <div onClick={() => handleClick({ type: "duplicatehtmlitem" })}>
-            duplicate
-          </div>
-          <div onClick={() => handleClick({ type: "deletehtmlitem" })}>
-          deletehtmlitem
-          </div>
-          Editcontentpanel
-        </div>
-        <div style={{ width: "50%", height: "100%", overflow: "auto" }}>
-          <div style={{ display: "flex", flexWrap: "wrap" }}>
-            <div
-              style={{ padding: "10px" }}
-              onClick={() =>
-                handleClick({
-                  type: "selectpopularstyletype",
-                  value: "general",
-                })
-              }
-            >
-              General
-            </div>
-            <div
-              style={{ padding: "10px" }}
-              onClick={() =>
-                handleClick({ type: "selectpopularstyletype", value: "color" })
-              }
-            >
-              color
-            </div>
-            <div
-              style={{ padding: "10px" }}
-              onClick={() =>
-                handleClick({
-                  type: "selectpopularstyletype",
-                  value: "bgcolor",
-                })
-              }
-            >
-              bgcolor
-            </div>
-            <div
-              style={{ padding: "10px" }}
-              onClick={() =>
-                handleClick({ type: "selectpopularstyletype", value: "font" })
-              }
-            >
-              font
-            </div>
-            <div
-              style={{ padding: "10px" }}
-              onClick={() =>
-                handleClick({
-                  type: "selectpopularstyletype",
-                  value: "fontsize",
-                })
-              }
-            >
-              fontsize
-            </div>
-            <div
-              style={{ padding: "10px" }}
-              onClick={() =>
-                handleClick({ type: "selectpopularstyletype", value: "align" })
-              }
-            >
-              align
-            </div>
+          <Editcontentpanel />
 
-            <div
-              style={{ padding: "10px" }}
-              onClick={() =>
-                handleClick({ type: "selectpopularstyletype", value: "height" })
-              }
-            >
-              height
-            </div>
-          </div>
-          
-          <Popularstyleshtml />
-          <Popularstylesinputhtml />
+          {isshoweditsectioncolumnstyles !== true ? (
+            <>
+              <div onClick={() => handleClick({ type: "addsectioncolumn" })}>
+                addsectioncolumn
+              </div>
+            </>
+          ) : (
+            <></>
+          )}
+
+          {isshoweditsectioncolumnstyles === true ? (
+            <>
+              <div
+                onClick={() =>
+                  handleClick({ type: "savefromeditsectioncolumn" })
+                }
+              >
+                OK
+              </div>
+              <div
+                onClick={() =>
+                  handleClick({ type: "showineditsectioncolumnstyles" })
+                }
+              >
+                showineditsectioncolumnstyles
+              </div>
+              <div
+                onClick={() => handleClick({ type: "duplicatesectioncolumn" })}
+              >
+                duplicate
+              </div>
+              <div onClick={() => handleClick({ type: "deletesectioncolumn" })}>
+                deletesectioncolumn
+              </div>
+            </>
+          ) : (
+            <></>
+          )}
         </div>
+        {showaddsectioncolumnpanel === true ? (
+          <>
+            <div style={{ width: "50%", height: "100%", overflow: "auto" }}>
+              <div style={{ display: "flex", flexWrap: "wrap" }}>
+                <div
+                  style={{ padding: "10px" }}
+                  onClick={() =>
+                    handleClick({
+                      type: "addsectioncolumnpaneltype",
+                      value: "general",
+                    })
+                  }
+                >
+                  general
+                </div>
+                <div
+                  style={{ padding: "10px" }}
+                  onClick={() =>
+                    handleClick({
+                      type: "addsectioncolumnpaneltype",
+                      value: "text",
+                    })
+                  }
+                >
+                  text
+                </div>
+                <div
+                  style={{ padding: "10px" }}
+                  onClick={() =>
+                    handleClick({
+                      type: "addsectioncolumnpaneltype",
+                      value: "image",
+                    })
+                  }
+                >
+                  image
+                </div>
+                <div
+                  style={{ padding: "10px" }}
+                  onClick={() =>
+                    handleClick({
+                      type: "addsectioncolumnpaneltype",
+                      value: "video",
+                    })
+                  }
+                >
+                  video
+                </div>
+                <div
+                  style={{ padding: "10px" }}
+                  onClick={() =>
+                    handleClick({
+                      type: "addsectioncolumnpaneltype",
+                      value: "icon",
+                    })
+                  }
+                >
+                  icon
+                </div>
+                <div
+                  style={{ padding: "10px" }}
+                  onClick={() =>
+                    handleClick({
+                      type: "addsectioncolumnpaneltype",
+                      value: "input",
+                    })
+                  }
+                >
+                  input
+                </div>
+                <div
+                  style={{ padding: "10px" }}
+                  onClick={() =>
+                    handleClick({
+                      type: "addsectioncolumnpaneltype",
+                      value: "url",
+                    })
+                  }
+                >
+                  url
+                </div>
+              </div>
+
+              <Addsectioncolumnhtml />
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
+
+        {isshoweditsectioncolumnstyles === true ? (
+          <>
+            <div
+              style={{
+                width: "50%",
+                height: "100%",
+                overflow: "auto",
+                display: "flex",
+              }}
+            >
+              <div style={{ width: "30%", height: "100%", overflow: "auto" }}>
+                <div style={{ display: "flex", flexWrap: "wrap" }}>
+                  <div
+                    style={
+                      editsectioncolumnstyletype === "general"
+                        ? { padding: "10px", backgroundColor: "grey" }
+                        : { padding: "10px" }
+                    }
+                    onClick={() =>
+                      handleClick({
+                        type: "editsectioncolumnstyletype",
+                        value: "general",
+                      })
+                    }
+                  >
+                    General
+                  </div>
+                  <div
+                    style={
+                      editsectioncolumnstyletype === "color"
+                        ? { padding: "10px", backgroundColor: "grey" }
+                        : { padding: "10px" }
+                    }
+                    onClick={() =>
+                      handleClick({
+                        type: "editsectioncolumnstyletype",
+                        value: "color",
+                      })
+                    }
+                  >
+                    color
+                  </div>
+                  <div
+                    style={
+                      editsectioncolumnstyletype === "bgcolor"
+                        ? { padding: "10px", backgroundColor: "grey" }
+                        : { padding: "10px" }
+                    }
+                    onClick={() =>
+                      handleClick({
+                        type: "editsectioncolumnstyletype",
+                        value: "bgcolor",
+                      })
+                    }
+                  >
+                    bgcolor
+                  </div>
+                  <div
+                    style={
+                      editsectioncolumnstyletype === "font"
+                        ? { padding: "10px", backgroundColor: "grey" }
+                        : { padding: "10px" }
+                    }
+                    onClick={() =>
+                      handleClick({
+                        type: "editsectioncolumnstyletype",
+                        value: "font",
+                      })
+                    }
+                  >
+                    font
+                  </div>
+                  <div
+                    style={
+                      editsectioncolumnstyletype === "fontsize"
+                        ? { padding: "10px", backgroundColor: "grey" }
+                        : { padding: "10px" }
+                    }
+                    onClick={() =>
+                      handleClick({
+                        type: "editsectioncolumnstyletype",
+                        value: "fontsize",
+                      })
+                    }
+                  >
+                    fontsize
+                  </div>
+                  <div
+                    style={
+                      editsectioncolumnstyletype === "fontfamily"
+                        ? { padding: "10px", backgroundColor: "grey" }
+                        : { padding: "10px" }
+                    }
+                    onClick={() =>
+                      handleClick({
+                        type: "editsectioncolumnstyletype",
+                        value: "fontfamily",
+                      })
+                    }
+                  >
+                    fontfamily
+                  </div>
+
+                  <div
+                    style={
+                      editsectioncolumnstyletype === "align"
+                        ? { padding: "10px", backgroundColor: "grey" }
+                        : { padding: "10px" }
+                    }
+                    onClick={() =>
+                      handleClick({
+                        type: "editsectioncolumnstyletype",
+                        value: "align",
+                      })
+                    }
+                  >
+                    align
+                  </div>
+
+                  <div
+                    style={
+                      editsectioncolumnstyletype === "width"
+                        ? { padding: "10px", backgroundColor: "grey" }
+                        : { padding: "10px" }
+                    }
+                    onClick={() =>
+                      handleClick({
+                        type: "editsectioncolumnstyletype",
+                        value: "width",
+                      })
+                    }
+                  >
+                    width
+                  </div>
+
+                  <div
+                    style={
+                      editsectioncolumnstyletype === "height"
+                        ? { padding: "10px", backgroundColor: "grey" }
+                        : { padding: "10px" }
+                    }
+                    onClick={() =>
+                      handleClick({
+                        type: "editsectioncolumnstyletype",
+                        value: "height",
+                      })
+                    }
+                  >
+                    height
+                  </div>
+                </div>
+              </div>
+              <div style={{ width: "70%", height: "100%", overflow: "auto" }}>
+                <div>
+                  <Editsectioncolumnstyleshtml />
+                </div>
+                <div>
+                  <Editsectioncolumnstylesinputhtml />
+                </div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
       </div>
     </>
   );
