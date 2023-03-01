@@ -10,8 +10,15 @@ import {
   dragEnter,
   dragLeave,
   inserttabledatainDatabase,
+  fetchlistmetadatafromDB,
+  createtabledataNodejs,
+  insertrecordNodejs,
+  updaterecordNodejs,
+  deleterecordNodejs,
 } from "./logic";
 
+window.jsPDF = window.jspdf.jsPDF;
+let html2canvas;
 function createMarkup() {
   return { __html: "First &middot; Second" };
 }
@@ -63,12 +70,51 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "Paragraph",
+          name:"Paragraph",
           style: { display: "inline-flex", padding: "5px" },
           order: 0,
           sectioncolumnmetadata: {
             type: "div",
             innerhtml: "Paragraph",
-            style: {},
+            style: {width:"100%"},
+            order: "",
+          },
+        },
+        {
+          type: "div",
+          innerhtml: "Underline Heading",
+          name:"UnderlineHeading",
+          style: { display: "inline-flex", padding: "5px" },
+          order: 1,
+          sectioncolumnmetadata: {
+            type: "div",
+            innerhtml: "Underline Heading",
+            style: {
+              paddingBottom:"5px",
+              borderBottom:"1px solid black",
+              width:"100%",
+              fontWeight:"bold",
+              fontSize:"30px"
+            },
+            order: "",
+          },
+        },
+        {
+          type: "div",
+          innerhtml: "Underline SubHeading",
+          name:"UnderlineSubHeading",
+          style: { display: "inline-flex", padding: "5px" },
+          order: 2,
+          sectioncolumnmetadata: {
+            type: "div",
+            innerhtml: "Underline SubHeading",
+            style: {
+              paddingBottom:"5px",
+              borderBottom:"1px solid black",
+              width:"100%",
+              fontWeight:"bold",
+              fontSize:"20px"
+            },
             order: "",
           },
         },
@@ -77,6 +123,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "Paragraph",
+          name:"Paragraph",
           style: { display: "inline-flex", padding: "5px" },
           order: 0,
           sectioncolumnmetadata: {
@@ -89,6 +136,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "Inline text",
+          name:"Inlinetext",
           style: { display: "inline-flex", padding: "5px" },
           order: 1,
           sectioncolumnmetadata: {
@@ -103,6 +151,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "Heading",
+          name:"Heading",
           style: { display: "inline-flex", padding: "5px" },
           order: 2,
           sectioncolumnmetadata: {
@@ -119,6 +168,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "Subheading",
+          name:"Subheading",
           style: { display: "inline-flex", padding: "5px" },
           order: 3,
           sectioncolumnmetadata: {
@@ -135,6 +185,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "Quote",
+          name:"Quote",
           style: { display: "inline-flex", padding: "5px" },
           order: 4,
           sectioncolumnmetadata: {
@@ -150,6 +201,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "Underlinetext",
+          name:"Underlinetext",
           style: { display: "inline-flex", padding: "5px" },
           order: 5,
           sectioncolumnmetadata: {
@@ -165,6 +217,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "Heighlightedtext",
+          name:"Heighlightedtext",
           style: { display: "inline-flex", padding: "5px" },
           order: 6,
           sectioncolumnmetadata: {
@@ -180,6 +233,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "Boldtext",
+          name:"Boldtext",
           style: { display: "inline-flex", padding: "5px" },
           order: 7,
           sectioncolumnmetadata: {
@@ -199,6 +253,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "bgbrown",
+          name:"bgbrown",
           style: { display: "inline-flex", backgroundColor: "brown" },
           order: 0,
           assignstyle: { backgroundColor: "brown" },
@@ -206,6 +261,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "bgblue",
+          name:"bgblue",
           style: { display: "inline-flex", backgroundColor: "blue" },
           order: 1,
           assignstyle: { backgroundColor: "blue" },
@@ -213,6 +269,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "colororange",
+          name:"colororange",
           style: { display: "inline-flex", color: "orange" },
           order: 2,
           assignstyle: { color: "orange" },
@@ -220,15 +277,235 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "bold",
+          name:"bold",
           style: { display: "inline-flex", fontWeight: "bold" },
           order: 3,
           assignstyle: { fontWeight: "bold" },
         },
       ],
+      padding: [
+        {
+          type: "div",
+          innerhtml: "auto",
+          name:"auto",
+          style: { display: "inline-flex",  },
+          order: 0,
+          assignstyle: { paddingLeft: "initial",paddingRight: "initial",
+          paddingTop: "initial",paddingBottom: "initial" },
+        },
+        {
+          type: "div",
+          innerhtml: "10px",
+          name:"10px",
+          style: { display: "inline-flex",  },
+          order: 0,
+          assignstyle: { paddingLeft: "10px",paddingRight: "10px",
+          paddingTop: "10px",paddingBottom: "10px" },
+        },
+        {
+          type: "div",
+          innerhtml: "20px",
+          name:"20px",
+          style: { display: "inline-flex",  },
+          order: 0,
+          assignstyle: { paddingLeft: "20px",paddingRight: "20px",
+          paddingTop: "20px",paddingBottom: "20px" },
+        },
+        {
+          type: "div",
+          innerhtml: "30px",
+          name:"30px",
+          style: { display: "inline-flex",  },
+          order: 0,
+          assignstyle: { paddingLeft: "30px",paddingRight: "30px",
+          paddingTop: "30px",paddingBottom: "30px" },
+        },
+      ],
+      margin: [
+        {
+          type: "div",
+          innerhtml: "auto",
+          name:"auto",
+          style: { display: "inline-flex",  },
+          order: 0,
+          assignstyle: { marginLeft: "initial",marginRight: "initial",
+          marginTop: "initial",marginBottom: "initial" },
+        },
+        {
+          type: "div",
+          innerhtml: "10px",
+          name:"10px",
+          style: { display: "inline-flex",  },
+          order: 0,
+          assignstyle: { marginLeft: "10px",marginRight: "10px",
+          marginTop: "10px",marginBottom: "10px" },
+        },
+        {
+          type: "div",
+          innerhtml: "20px",
+          name:"20px",
+          style: { display: "inline-flex",  },
+          order: 0,
+          assignstyle: { marginLeft: "20px",marginRight: "20px",
+          marginTop: "20px",marginBottom: "20px" },
+        },
+        {
+          type: "div",
+          innerhtml: "30px",
+          name:"30px",
+          style: { display: "inline-flex",  },
+          order: 0,
+          assignstyle: { marginLeft: "30px",marginRight: "30px",
+          marginTop: "30px",marginBottom: "30px" },
+        },
+
+
+      ],
+      paddinghorizontal: [
+        {
+          type: "div",
+          innerhtml: "auto",
+          name:"auto",
+          style: { display: "inline-flex",  },
+          order: 0,
+          assignstyle: { paddingLeft: "initial", paddingRight: "initial" },
+        },
+        {
+          type: "div",
+          innerhtml: "10px",
+          name:"10px",
+          style: { display: "inline-flex",  },
+          order: 0,
+          assignstyle: { paddingLeft: "10px", paddingRight: "10px" },
+        },
+        {
+          type: "div",
+          innerhtml: "20px",
+          name:"20px",
+          style: { display: "inline-flex",  },
+          order: 0,
+          assignstyle: { paddingLeft: "20px", paddingRight: "20px" },
+        },
+        {
+          type: "div",
+          innerhtml: "30px",
+          name:"30px",
+          style: { display: "inline-flex",  },
+          order: 0,
+          assignstyle: { paddingLeft: "30px", paddingRight: "30px" },
+        },
+      ],
+      marginhorizontal: [
+        {
+          type: "div",
+          innerhtml: "auto",
+          name:"auto",
+          style: { display: "inline-flex",  },
+          order: 0,
+          assignstyle: { marginLeft: "initial", marginRight: "initial" },
+        },
+        {
+          type: "div",
+          innerhtml: "10px",
+          name:"10px",
+          style: { display: "inline-flex",  },
+          order: 0,
+          assignstyle: { marginLeft: "10px", marginRight: "10px" },
+        },
+        {
+          type: "div",
+          innerhtml: "20px",
+          name:"20px",
+          style: { display: "inline-flex",  },
+          order: 0,
+          assignstyle: { marginLeft: "20px", marginRight: "20px" },
+        },
+        {
+          type: "div",
+          innerhtml: "30px",
+          name:"30px",
+          style: { display: "inline-flex",  },
+          order: 0,
+          assignstyle: { marginLeft: "30px", marginRight: "30px" },
+        },
+
+
+      ],
+      paddingvertical: [
+        {
+          type: "div",
+          innerhtml: "auto",
+          name:"auto",
+          style: { display: "inline-flex",  },
+          order: 0,
+          assignstyle: { paddingTop: "initial", paddingBottom: "initial" },
+        },
+        {
+          type: "div",
+          innerhtml: "10px",
+          name:"10px",
+          style: { display: "inline-flex",  },
+          order: 0,
+          assignstyle: { paddingTop: "10px", paddingBottom: "10px" },
+        },
+        {
+          type: "div",
+          innerhtml: "20px",
+          name:"20px",
+          style: { display: "inline-flex",  },
+          order: 0,
+          assignstyle: { paddingTop: "20px", paddingBottom: "20px" },
+        },
+        {
+          type: "div",
+          innerhtml: "30px",
+          name:"30px",
+          style: { display: "inline-flex",  },
+          order: 0,
+          assignstyle: { paddingTop: "30px", paddingBottom: "30px" },
+        },
+      ],
+      marginvertical: [
+        {
+          type: "div",
+          innerhtml: "auto",
+          name:"auto",
+          style: { display: "inline-flex",  },
+          order: 0,
+          assignstyle: { marginTop: "initial", marginBottom: "initial" },
+        },
+        {
+          type: "div",
+          innerhtml: "10px",
+          name:"10px",
+          style: { display: "inline-flex",  },
+          order: 0,
+          assignstyle: { marginTop: "10px", marginBottom: "10px" },
+        },
+        {
+          type: "div",
+          innerhtml: "20px",
+          name:"20px",
+          style: { display: "inline-flex",  },
+          order: 0,
+          assignstyle: { marginTop: "20px", marginBottom: "20px" },
+        },
+        {
+          type: "div",
+          innerhtml: "30px",
+          name:"30px",
+          style: { display: "inline-flex",  },
+          order: 0,
+          assignstyle: { marginTop: "30px", marginBottom: "30px" },
+        },
+
+
+      ],
       color: [
         {
           type: "div",
           innerhtml: "colorblue",
+          name:"colorblue",
           style: { display: "inline-flex", color: "blue" },
           order: 0,
           assignstyle: { color: "blue" },
@@ -239,6 +516,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "blue",
+           name:"blue",
           style: { display: "inline-flex", backgroundColor: "blue" },
           order: 0,
           assignstyle: { backgroundColor: "blue" },
@@ -246,6 +524,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "yellow",
+          name:"yellow",
           style: { display: "inline-flex", backgroundColor: "yellow" },
           order: 1,
           assignstyle: { backgroundColor: "yellow" },
@@ -255,6 +534,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "bold",
+          name:"bold",
           style: { display: "inline-flex", fontWeight: "bold" },
           order: 0,
           assignstyle: { fontWeight: "bold" },
@@ -262,6 +542,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "normal",
+          name:"normal",
           style: { display: "inline-flex", fontWeight: "normal" },
           order: 1,
           assignstyle: { fontWeight: "normal" },
@@ -271,6 +552,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "10px",
+            name:"10px",
           style: { display: "inline-flex", fontSize: "10px" },
           order: 0,
           assignstyle: { fontSize: "10px" },
@@ -278,6 +560,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "20px",
+          name:"20px",
           style: { display: "inline-flex", fontSize: "20px" },
           order: 1,
           assignstyle: { fontSize: "20px" },
@@ -287,6 +570,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "times",
+          name:"times",
           style: { display: "inline-flex", fontFamily: "times" },
           order: 0,
           assignstyle: { fontFamily: "times" },
@@ -294,6 +578,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "courier",
+          name:"courier",
           style: { display: "inline-flex", fontFamily: "courier" },
           order: 0,
           assignstyle: { fontFamily: "courier" },
@@ -303,6 +588,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "left",
+            name:"left",
           style: { display: "inline-flex", textAlign: "left" },
           order: 0,
           assignstyle: { textAlign: "left" },
@@ -310,6 +596,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "center",
+          name:"center",
           style: { display: "inline-flex", textAlign: "center" },
           order: 1,
           assignstyle: { textAlign: "center" },
@@ -317,6 +604,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "right",
+          name:"right",
           style: { display: "inline-flex", textAlign: "right" },
           order: 2,
           assignstyle: { textAlign: "right" },
@@ -326,6 +614,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "auto",
+          name:"auto",
           style: { display: "inline-flex" },
           order: 0,
           assignstyle: { width: "initial" },
@@ -333,101 +622,123 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "100px",
+          name:"100px",
           style: { display: "inline-flex" },
-          order: 0,
+          order: 1,
           assignstyle: { width: "100px", overflow: "auto" },
         },
         {
           type: "div",
           innerhtml: "200px",
+          name:"200px",
           style: { display: "inline-flex" },
-          order: 1,
+          order: 2,
           assignstyle: { width: "200px", overflow: "auto" },
         },
         {
           type: "div",
           innerhtml: "25%",
+          name:"25%",
           style: { display: "inline-flex" },
-          order: 2,
+          order: 3,
           assignstyle: { width: "25%", overflow: "auto" },
         },
         {
           type: "div",
           innerhtml: "50%",
+          name:"50%",
           style: { display: "inline-flex" },
-          order: 3,
+          order: 4,
           assignstyle: { width: "50%", overflow: "auto" },
         },
         {
           type: "div",
           innerhtml: "100%",
+          name:"100%",
           style: { display: "inline-flex" },
-          order: 4,
+          order: 5,
           assignstyle: { width: "100%", overflow: "auto" },
         },
         {
           type: "div",
           innerhtml: "50vh",
+          name:"50vh",
           style: { display: "inline-flex" },
-          order: 2,
+          order: 6,
           assignstyle: { width: "50vh", overflow: "auto" },
         },
         {
           type: "div",
           innerhtml: "100vh",
+          name:"100vh",
           style: { display: "inline-flex" },
-          order: 5,
+          order: 7,
           assignstyle: { width: "100vh", overflow: "auto" },
         },
       ],
       height: [
         {
           type: "div",
-          innerhtml: "100px",
+          innerhtml: "auto",
+          name:"auto",
           style: { display: "inline-flex" },
           order: 0,
+          assignstyle: { height: "initial" },
+        },
+        {
+          type: "div",
+          innerhtml: "100px",
+          name:"100px",
+          style: { display: "inline-flex" },
+          order: 1,
           assignstyle: { height: "100px", overflow: "auto" },
         },
         {
           type: "div",
           innerhtml: "200px",
+          name:"200px",
           style: { display: "inline-flex" },
-          order: 1,
+          order: 2,
           assignstyle: { height: "200px", overflow: "auto" },
         },
         {
           type: "div",
           innerhtml: "25%",
+          name:"25%",
           style: { display: "inline-flex" },
-          order: 2,
+          order: 3,
           assignstyle: { height: "25%", overflow: "auto" },
         },
         {
           type: "div",
           innerhtml: "50%",
+          name:"50%",
           style: { display: "inline-flex" },
-          order: 3,
+          order: 4,
           assignstyle: { height: "50%", overflow: "auto" },
         },
         {
           type: "div",
           innerhtml: "100%",
+          name:"100%",
           style: { display: "inline-flex" },
-          order: 4,
+          order: 5,
           assignstyle: { height: "100%", overflow: "auto" },
         },
         {
           type: "div",
           innerhtml: "50vh",
+          name:"50vh",
           style: { display: "inline-flex" },
-          order: 2,
+          order: 6,
           assignstyle: { height: "50vh", overflow: "auto" },
         },
         {
           type: "div",
           innerhtml: "100vh",
+          name:"100vh",
           style: { display: "inline-flex" },
-          order: 5,
+          order: 7,
           assignstyle: { height: "100vh", overflow: "auto" },
         },
       ],
@@ -440,6 +751,33 @@ export function Richtextareacomp() {
     editsectioncolumn: {},
   });
 
+  useEffect(() => {
+    alltypecompconsolelog("sitecomp-useeffect");
+
+      fetchAllsiteversionpageDatafromDB();
+   
+  }, []);
+
+let fetchAllsiteversionpageDatafromDB = async () =>{
+
+
+  let listtablechildmetadata = await fetchlistmetadatafromDB({
+    tablename: "bookdata",
+    conditionexpression: {
+      name: "test",
+   },
+  });
+  console.log(listtablechildmetadata);
+  let sectioncolumnsarrayjs = [];
+  if(listtablechildmetadata && listtablechildmetadata[0] && listtablechildmetadata[0].data){
+    sectioncolumnsarrayjs = listtablechildmetadata[0].data;
+  }
+  Showui({
+    sectioncolumnsarray:sectioncolumnsarrayjs
+  });
+}
+
+
   let Showui = async (methodprops) => {
     let compstatejs = JSON.parse(JSON.stringify(compstate));
     let methodpropsjs = JSON.parse(JSON.stringify(methodprops));
@@ -451,6 +789,18 @@ export function Richtextareacomp() {
     let methodpropsjs = JSON.parse(JSON.stringify(methodprops));
 
     await setCompstate({ ...compstatejs, ...methodpropsjs, showui: "false" });
+  };
+
+  let handleSelect = async (methodprops) => {
+    console.log(methodprops);
+    let { type, subtype, value,e } = methodprops;
+    if (type === "selecttextinsectioncolumn" && subtype === "innerhtml") {
+       
+      console.log(`You selected: ${e.target.innerHTML}`); 
+      console.log(`You selected: ${e.target.selectionStart}`);
+      console.log(`You selected: ${e.target.selectionEnd}`);
+    }
+    
   };
 
   let handleChange = async (methodprops) => {
@@ -467,7 +817,7 @@ export function Richtextareacomp() {
   };
 
   let handleClick = async (methodprops) => {
-    let { order, type, value, preposttext } = methodprops;
+    let {name, order, type, value, preposttext } = methodprops;
     let {
       sectioncolumnsarray,
       addsectioncolumnsobject,
@@ -480,6 +830,8 @@ export function Richtextareacomp() {
 
     console.log(methodprops);
     console.log(uistate);
+    
+
     if (type == "sectioncolumnhandleclick") {
       let viewsectioncolumn = {};
       for (let i = 0; i < sectioncolumnsarray.length; i++) {
@@ -501,7 +853,38 @@ export function Richtextareacomp() {
         isshoweditsectioncolumnstyles: true,
         showaddsectioncolumnpanel: false,
       });
-    } else if (type === "addsectioncolumn") {
+    } else if (type === "updatetoserver") {
+      let createtableresp = await updaterecordNodejs({
+        tablename: "bookdata",
+        conditionexpression: { name: "test" },
+        updateexpression: { data: sectioncolumnsarray },
+        upsertifnotfound: true,
+      });
+      console.log(createtableresp);
+      if (createtableresp.issuccess === "true") {
+      }
+    }
+    else if (type === "generatepdf") {
+     
+      var doc = new window.jsPDF();          
+      var elementHandler = {
+        '#ignorePDF': function (element, renderer) {
+          return true;
+        }
+      };
+      var source = window.document.getElementsByTagName("body")[0];
+      doc.fromHTML(
+          source,
+          15,
+          15,
+          {
+            'width': 180,'elementHandlers': elementHandler
+          });
+      
+      doc.output("dataurlnewwindow");
+      
+    }
+    else if (type === "addsectioncolumn") {
       Showui({
         showaddsectioncolumnpanel: true,
         addsectioncolumnpaneltype: "general",
@@ -524,7 +907,7 @@ export function Richtextareacomp() {
               addsectioncolumnsobject[addsectioncolumnpaneltype][j]
             )
           );
-          if (addsectioncolumnoptionsitem.order === order) {
+          if (addsectioncolumnoptionsitem.name === name) {
             addingsubobject = addsectioncolumnoptionsitem.sectioncolumnmetadata;
           }
         }
@@ -652,8 +1035,8 @@ export function Richtextareacomp() {
         j++
       ) {
         if (
-          editsectioncolumnsstyleobject[editsectioncolumnstyletype][j].order ===
-          order
+          editsectioncolumnsstyleobject[editsectioncolumnstyletype][j].name ===
+          name
         ) {
           editsectioncolumnstyleitemjs =
             editsectioncolumnsstyleobject[editsectioncolumnstyletype][j];
@@ -669,7 +1052,7 @@ export function Richtextareacomp() {
           sectioncolumnarrayitem.order === compstate.viewsectioncolumn.order
         ) {
           sectioncolumnarrayjs[i] = compstate.viewsectioncolumn;
-
+              console.log(editsectioncolumnstyleitemjs);
           let returnedTarget = Object.assign(
             {},
             sectioncolumnarrayjs[i].style,
@@ -793,6 +1176,15 @@ export function Richtextareacomp() {
               value: e.target.innerHTML,
             })
           }
+
+          onselectjs={(e) =>
+            handleSelect({
+              type: "selecttextinsectioncolumn",
+              subtype: "innerhtml",
+              value: e.target.innerHTML,
+              e:e
+            })
+          }
         />
       );
     }
@@ -823,7 +1215,7 @@ export function Richtextareacomp() {
           JSON.stringify(addsectioncolumnsobject[addsectioncolumnpaneltype][j])
         );
 
-        addsectioncolumnoptionsitem.style.height = undefined;
+        addsectioncolumnoptionsitem.style.height = "initial";
 
         mainpanelhtml.push(
           <Itemhtml
@@ -831,7 +1223,7 @@ export function Richtextareacomp() {
             onclickjs={() =>
               handleClick({
                 type: "addsectioncolumnpanelitemhandleclick",
-                order: addsectioncolumnoptionsitem.order,
+                name: addsectioncolumnoptionsitem.name,
               })
             }
           />
@@ -891,7 +1283,7 @@ export function Richtextareacomp() {
               editsectioncolumnitemjs.innerhtml;
           }
         }
-        editsectioncolumnstylesitem.style.height = undefined;
+        editsectioncolumnstylesitem.style.height = "initial";
 
         mainpanelhtml.push(
           <div style={{ padding: "5px", display: "inline-flex" }}>
@@ -900,7 +1292,7 @@ export function Richtextareacomp() {
               onclickjs={() =>
                 handleClick({
                   type: "handleclickfromeditsectioncolumnstyle",
-                  order: editsectioncolumnstylesitem.order,
+                  name: editsectioncolumnstylesitem.name,
                 })
               }
             />
@@ -985,6 +1377,7 @@ export function Richtextareacomp() {
       item,
       onclickjs,
       onchangejs,
+      onselectjs,
       oninputjs,
       iscontenteditable,
       draggable,
@@ -1001,27 +1394,29 @@ export function Richtextareacomp() {
           data-dragtemplatetype={item.dragtemplatetype}
           draggable={draggable}
           onDragOver={(e) =>
-            handleClick({ e, type: "executeallowdrop", order: item.order })
+            handleClick({ e, type: "executeallowdrop", order: item.order, name:item.name })
           }
           onDragStart={(e) =>
-            handleClick({ e, type: "executedragstart", order: item.order })
+            handleClick({ e, type: "executedragstart", order: item.order, name:item.name })
           }
           onDragEnter={(e) =>
-            handleClick({ e, type: "executedragenter", order: item.order })
+            handleClick({ e, type: "executedragenter", order: item.order , name:item.name})
           }
           onDragLeave={(e) =>
-            handleClick({ e, type: "executedragleave", order: item.order })
+            handleClick({ e, type: "executedragleave", order: item.order , name:item.name})
           }
           onDrop={(e) =>
             handleClick({
               type: "dropsectioncolumn",
               order: item.order,
+               name:item.name,
               e,
               preposttext: "pre",
             })
           }
         >
           <div
+            onSelect={onselectjs}
             onClick={onclickjs}
             onInput={oninputjs}
             contentEditable={iscontenteditable}
@@ -1074,7 +1469,9 @@ export function Richtextareacomp() {
 
 
       <div style={{ height: "60vh", overflow: "auto" }}>
+      <div style={{ display: "flex", flexWrap:"wrap" }}>
         <Arrayhtml sectioncolumnsarray={sectioncolumnsarray} />
+        </div>
       </div>
 
       <div
@@ -1087,8 +1484,28 @@ export function Richtextareacomp() {
       >
         <div style={{ width: "50%", height: "100%", overflow: "auto" }}>
           {/* <Editpanel/> */}
+          <div
+                onClick={() =>
+                  handleClick({ type: "updatetoserver" })
+                }
+              >
+                Updatetoserver
+              </div>
 
+              <div
+                onClick={() =>
+                  handleClick({ type: "generatepdf" })
+                }
+              >
+                generatepdf
+              </div>
+              <div id="content">
+   tet
+</div>
+
+          <div style={{ display: "flex", flexWrap:"wrap"}}>
           <Editcontentpanel />
+          </div>
 
           {isshoweditsectioncolumnstyles !== true ? (
             <>
@@ -1227,6 +1644,7 @@ export function Richtextareacomp() {
                 height: "100%",
                 overflow: "auto",
                 display: "flex",
+                 flexWrap:"wrap"
               }}
             >
               <div style={{ width: "30%", height: "100%", overflow: "auto" }}>
@@ -1275,6 +1693,96 @@ export function Richtextareacomp() {
                     }
                   >
                     bgcolor
+                  </div>
+                  <div
+                    style={
+                      editsectioncolumnstyletype === "padding"
+                        ? { padding: "10px", backgroundColor: "grey" }
+                        : { padding: "10px" }
+                    }
+                    onClick={() =>
+                      handleClick({
+                        type: "editsectioncolumnstyletype",
+                        value: "padding",
+                      })
+                    }
+                  >
+                    padding
+                  </div>
+                  <div
+                    style={
+                      editsectioncolumnstyletype === "margin"
+                        ? { padding: "10px", backgroundColor: "grey" }
+                        : { padding: "10px" }
+                    }
+                    onClick={() =>
+                      handleClick({
+                        type: "editsectioncolumnstyletype",
+                        value: "margin",
+                      })
+                    }
+                  >
+                    margin
+                  </div>
+                  <div
+                    style={
+                      editsectioncolumnstyletype === "paddinghorizontal"
+                        ? { padding: "10px", backgroundColor: "grey" }
+                        : { padding: "10px" }
+                    }
+                    onClick={() =>
+                      handleClick({
+                        type: "editsectioncolumnstyletype",
+                        value: "paddinghorizontal",
+                      })
+                    }
+                  >
+                    paddingH
+                  </div>
+                  <div
+                    style={
+                      editsectioncolumnstyletype === "marginhorizontal"
+                        ? { padding: "10px", backgroundColor: "grey" }
+                        : { padding: "10px" }
+                    }
+                    onClick={() =>
+                      handleClick({
+                        type: "editsectioncolumnstyletype",
+                        value: "marginhorizontal",
+                      })
+                    }
+                  >
+                    marginH
+                  </div>
+                  <div
+                    style={
+                      editsectioncolumnstyletype === "paddingvertical"
+                        ? { padding: "10px", backgroundColor: "grey" }
+                        : { padding: "10px" }
+                    }
+                    onClick={() =>
+                      handleClick({
+                        type: "editsectioncolumnstyletype",
+                        value: "paddingvertical",
+                      })
+                    }
+                  >
+                    paddingV
+                  </div>
+                  <div
+                    style={
+                      editsectioncolumnstyletype === "marginvertical"
+                        ? { padding: "10px", backgroundColor: "grey" }
+                        : { padding: "10px" }
+                    }
+                    onClick={() =>
+                      handleClick({
+                        type: "editsectioncolumnstyletype",
+                        value: "marginvertical",
+                      })
+                    }
+                  >
+                    marginV
                   </div>
                   <div
                     style={
@@ -1360,6 +1868,7 @@ export function Richtextareacomp() {
                         ? { padding: "10px", backgroundColor: "grey" }
                         : { padding: "10px" }
                     }
+                    
                     onClick={() =>
                       handleClick({
                         type: "editsectioncolumnstyletype",

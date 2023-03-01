@@ -2358,7 +2358,7 @@ export let getdroppedtemplateareaitem = (methodprops) => {
 
 ///////////////////////////
 
-async function fetchlistmetadatafromDB(methodprops) {
+export async function fetchlistmetadatafromDB(methodprops) {
   alltypecompconsolelog("sitecomp-fetchlistmetadatafromDB");
   alltypecompconsolelog(methodprops);
   let { tablename, conditionexpression } = methodprops;
