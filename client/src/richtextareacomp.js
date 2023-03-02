@@ -70,31 +70,31 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "Paragraph",
-          name:"Paragraph",
+          name: "Paragraph",
           style: { display: "inline-flex", padding: "5px" },
           order: 0,
           sectioncolumnmetadata: {
             type: "div",
             innerhtml: "Paragraph",
-            style: {width:"100%"},
+            style: { width: "100%" },
             order: "",
           },
         },
         {
           type: "div",
           innerhtml: "Underline Heading",
-          name:"UnderlineHeading",
+          name: "UnderlineHeading",
           style: { display: "inline-flex", padding: "5px" },
           order: 1,
           sectioncolumnmetadata: {
             type: "div",
             innerhtml: "Underline Heading",
             style: {
-              paddingBottom:"5px",
-              borderBottom:"1px solid black",
-              width:"100%",
-              fontWeight:"bold",
-              fontSize:"30px"
+              paddingBottom: "5px",
+              borderBottom: "1px solid black",
+              width: "100%",
+              fontWeight: "bold",
+              fontSize: "30px",
             },
             order: "",
           },
@@ -102,18 +102,18 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "Underline SubHeading",
-          name:"UnderlineSubHeading",
+          name: "UnderlineSubHeading",
           style: { display: "inline-flex", padding: "5px" },
           order: 2,
           sectioncolumnmetadata: {
             type: "div",
             innerhtml: "Underline SubHeading",
             style: {
-              paddingBottom:"5px",
-              borderBottom:"1px solid black",
-              width:"100%",
-              fontWeight:"bold",
-              fontSize:"20px"
+              paddingBottom: "5px",
+              borderBottom: "1px solid black",
+              width: "100%",
+              fontWeight: "bold",
+              fontSize: "20px",
             },
             order: "",
           },
@@ -123,7 +123,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "Paragraph",
-          name:"Paragraph",
+          name: "Paragraph",
           style: { display: "inline-flex", padding: "5px" },
           order: 0,
           sectioncolumnmetadata: {
@@ -136,7 +136,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "Inline text",
-          name:"Inlinetext",
+          name: "Inlinetext",
           style: { display: "inline-flex", padding: "5px" },
           order: 1,
           sectioncolumnmetadata: {
@@ -151,7 +151,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "Heading",
-          name:"Heading",
+          name: "Heading",
           style: { display: "inline-flex", padding: "5px" },
           order: 2,
           sectioncolumnmetadata: {
@@ -168,7 +168,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "Subheading",
-          name:"Subheading",
+          name: "Subheading",
           style: { display: "inline-flex", padding: "5px" },
           order: 3,
           sectioncolumnmetadata: {
@@ -185,7 +185,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "Quote",
-          name:"Quote",
+          name: "Quote",
           style: { display: "inline-flex", padding: "5px" },
           order: 4,
           sectioncolumnmetadata: {
@@ -201,7 +201,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "Underlinetext",
-          name:"Underlinetext",
+          name: "Underlinetext",
           style: { display: "inline-flex", padding: "5px" },
           order: 5,
           sectioncolumnmetadata: {
@@ -217,7 +217,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "Heighlightedtext",
-          name:"Heighlightedtext",
+          name: "Heighlightedtext",
           style: { display: "inline-flex", padding: "5px" },
           order: 6,
           sectioncolumnmetadata: {
@@ -233,7 +233,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "Boldtext",
-          name:"Boldtext",
+          name: "Boldtext",
           style: { display: "inline-flex", padding: "5px" },
           order: 7,
           sectioncolumnmetadata: {
@@ -253,7 +253,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "bgbrown",
-          name:"bgbrown",
+          name: "bgbrown",
           style: { display: "inline-flex", backgroundColor: "brown" },
           order: 0,
           assignstyle: { backgroundColor: "brown" },
@@ -261,7 +261,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "bgblue",
-          name:"bgblue",
+          name: "bgblue",
           style: { display: "inline-flex", backgroundColor: "blue" },
           order: 1,
           assignstyle: { backgroundColor: "blue" },
@@ -269,7 +269,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "colororange",
-          name:"colororange",
+          name: "colororange",
           style: { display: "inline-flex", color: "orange" },
           order: 2,
           assignstyle: { color: "orange" },
@@ -277,7 +277,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "bold",
-          name:"bold",
+          name: "bold",
           style: { display: "inline-flex", fontWeight: "bold" },
           order: 3,
           assignstyle: { fontWeight: "bold" },
@@ -287,110 +287,140 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "auto",
-          name:"auto",
-          style: { display: "inline-flex",  },
+          name: "auto",
+          style: { display: "inline-flex" },
           order: 0,
-          assignstyle: { paddingLeft: "initial",paddingRight: "initial",
-          paddingTop: "initial",paddingBottom: "initial" },
+          assignstyle: {
+            paddingLeft: "initial",
+            paddingRight: "initial",
+            paddingTop: "initial",
+            paddingBottom: "initial",
+          },
         },
         {
           type: "div",
           innerhtml: "10px",
-          name:"10px",
-          style: { display: "inline-flex",  },
+          name: "10px",
+          style: { display: "inline-flex" },
           order: 0,
-          assignstyle: { paddingLeft: "10px",paddingRight: "10px",
-          paddingTop: "10px",paddingBottom: "10px" },
+          assignstyle: {
+            paddingLeft: "10px",
+            paddingRight: "10px",
+            paddingTop: "10px",
+            paddingBottom: "10px",
+          },
         },
         {
           type: "div",
           innerhtml: "20px",
-          name:"20px",
-          style: { display: "inline-flex",  },
+          name: "20px",
+          style: { display: "inline-flex" },
           order: 0,
-          assignstyle: { paddingLeft: "20px",paddingRight: "20px",
-          paddingTop: "20px",paddingBottom: "20px" },
+          assignstyle: {
+            paddingLeft: "20px",
+            paddingRight: "20px",
+            paddingTop: "20px",
+            paddingBottom: "20px",
+          },
         },
         {
           type: "div",
           innerhtml: "30px",
-          name:"30px",
-          style: { display: "inline-flex",  },
+          name: "30px",
+          style: { display: "inline-flex" },
           order: 0,
-          assignstyle: { paddingLeft: "30px",paddingRight: "30px",
-          paddingTop: "30px",paddingBottom: "30px" },
+          assignstyle: {
+            paddingLeft: "30px",
+            paddingRight: "30px",
+            paddingTop: "30px",
+            paddingBottom: "30px",
+          },
         },
       ],
       margin: [
         {
           type: "div",
           innerhtml: "auto",
-          name:"auto",
-          style: { display: "inline-flex",  },
+          name: "auto",
+          style: { display: "inline-flex" },
           order: 0,
-          assignstyle: { marginLeft: "initial",marginRight: "initial",
-          marginTop: "initial",marginBottom: "initial" },
+          assignstyle: {
+            marginLeft: "initial",
+            marginRight: "initial",
+            marginTop: "initial",
+            marginBottom: "initial",
+          },
         },
         {
           type: "div",
           innerhtml: "10px",
-          name:"10px",
-          style: { display: "inline-flex",  },
+          name: "10px",
+          style: { display: "inline-flex" },
           order: 0,
-          assignstyle: { marginLeft: "10px",marginRight: "10px",
-          marginTop: "10px",marginBottom: "10px" },
+          assignstyle: {
+            marginLeft: "10px",
+            marginRight: "10px",
+            marginTop: "10px",
+            marginBottom: "10px",
+          },
         },
         {
           type: "div",
           innerhtml: "20px",
-          name:"20px",
-          style: { display: "inline-flex",  },
+          name: "20px",
+          style: { display: "inline-flex" },
           order: 0,
-          assignstyle: { marginLeft: "20px",marginRight: "20px",
-          marginTop: "20px",marginBottom: "20px" },
+          assignstyle: {
+            marginLeft: "20px",
+            marginRight: "20px",
+            marginTop: "20px",
+            marginBottom: "20px",
+          },
         },
         {
           type: "div",
           innerhtml: "30px",
-          name:"30px",
-          style: { display: "inline-flex",  },
+          name: "30px",
+          style: { display: "inline-flex" },
           order: 0,
-          assignstyle: { marginLeft: "30px",marginRight: "30px",
-          marginTop: "30px",marginBottom: "30px" },
+          assignstyle: {
+            marginLeft: "30px",
+            marginRight: "30px",
+            marginTop: "30px",
+            marginBottom: "30px",
+          },
         },
-
-
       ],
       paddinghorizontal: [
         {
           type: "div",
           innerhtml: "auto",
-          name:"auto",
-          style: { display: "inline-flex",  },
+          name: "auto",
+          style: { display: "inline-flex" },
           order: 0,
           assignstyle: { paddingLeft: "initial", paddingRight: "initial" },
         },
         {
           type: "div",
           innerhtml: "10px",
-          name:"10px",
-          style: { display: "inline-flex",  },
+          name: "10px",
+          style: { display: "inline-flex" },
           order: 0,
           assignstyle: { paddingLeft: "10px", paddingRight: "10px" },
         },
         {
           type: "div",
           innerhtml: "20px",
-          name:"20px",
-          style: { display: "inline-flex",  },
+          name: "20px",
+          style: { display: "inline-flex" },
           order: 0,
           assignstyle: { paddingLeft: "20px", paddingRight: "20px" },
         },
         {
           type: "div",
           innerhtml: "30px",
-          name:"30px",
-          style: { display: "inline-flex",  },
+          name: "30px",
+          style: { display: "inline-flex" },
           order: 0,
           assignstyle: { paddingLeft: "30px", paddingRight: "30px" },
         },
@@ -399,68 +429,66 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "auto",
-          name:"auto",
-          style: { display: "inline-flex",  },
+          name: "auto",
+          style: { display: "inline-flex" },
           order: 0,
           assignstyle: { marginLeft: "initial", marginRight: "initial" },
         },
         {
           type: "div",
           innerhtml: "10px",
-          name:"10px",
-          style: { display: "inline-flex",  },
+          name: "10px",
+          style: { display: "inline-flex" },
           order: 0,
           assignstyle: { marginLeft: "10px", marginRight: "10px" },
         },
         {
           type: "div",
           innerhtml: "20px",
-          name:"20px",
-          style: { display: "inline-flex",  },
+          name: "20px",
+          style: { display: "inline-flex" },
           order: 0,
           assignstyle: { marginLeft: "20px", marginRight: "20px" },
         },
         {
           type: "div",
           innerhtml: "30px",
-          name:"30px",
-          style: { display: "inline-flex",  },
+          name: "30px",
+          style: { display: "inline-flex" },
           order: 0,
           assignstyle: { marginLeft: "30px", marginRight: "30px" },
         },
-
-
       ],
       paddingvertical: [
         {
           type: "div",
           innerhtml: "auto",
-          name:"auto",
-          style: { display: "inline-flex",  },
+          name: "auto",
+          style: { display: "inline-flex" },
           order: 0,
           assignstyle: { paddingTop: "initial", paddingBottom: "initial" },
         },
         {
           type: "div",
           innerhtml: "10px",
-          name:"10px",
-          style: { display: "inline-flex",  },
+          name: "10px",
+          style: { display: "inline-flex" },
           order: 0,
           assignstyle: { paddingTop: "10px", paddingBottom: "10px" },
         },
         {
           type: "div",
           innerhtml: "20px",
-          name:"20px",
-          style: { display: "inline-flex",  },
+          name: "20px",
+          style: { display: "inline-flex" },
           order: 0,
           assignstyle: { paddingTop: "20px", paddingBottom: "20px" },
         },
         {
           type: "div",
           innerhtml: "30px",
-          name:"30px",
-          style: { display: "inline-flex",  },
+          name: "30px",
+          style: { display: "inline-flex" },
           order: 0,
           assignstyle: { paddingTop: "30px", paddingBottom: "30px" },
         },
@@ -469,43 +497,41 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "auto",
-          name:"auto",
-          style: { display: "inline-flex",  },
+          name: "auto",
+          style: { display: "inline-flex" },
           order: 0,
           assignstyle: { marginTop: "initial", marginBottom: "initial" },
         },
         {
           type: "div",
           innerhtml: "10px",
-          name:"10px",
-          style: { display: "inline-flex",  },
+          name: "10px",
+          style: { display: "inline-flex" },
           order: 0,
           assignstyle: { marginTop: "10px", marginBottom: "10px" },
         },
         {
           type: "div",
           innerhtml: "20px",
-          name:"20px",
-          style: { display: "inline-flex",  },
+          name: "20px",
+          style: { display: "inline-flex" },
           order: 0,
           assignstyle: { marginTop: "20px", marginBottom: "20px" },
         },
         {
           type: "div",
           innerhtml: "30px",
-          name:"30px",
-          style: { display: "inline-flex",  },
+          name: "30px",
+          style: { display: "inline-flex" },
           order: 0,
           assignstyle: { marginTop: "30px", marginBottom: "30px" },
         },
-
-
       ],
       color: [
         {
           type: "div",
           innerhtml: "colorblue",
-          name:"colorblue",
+          name: "colorblue",
           style: { display: "inline-flex", color: "blue" },
           order: 0,
           assignstyle: { color: "blue" },
@@ -516,7 +542,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "blue",
-           name:"blue",
+          name: "blue",
           style: { display: "inline-flex", backgroundColor: "blue" },
           order: 0,
           assignstyle: { backgroundColor: "blue" },
@@ -524,7 +550,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "yellow",
-          name:"yellow",
+          name: "yellow",
           style: { display: "inline-flex", backgroundColor: "yellow" },
           order: 1,
           assignstyle: { backgroundColor: "yellow" },
@@ -534,7 +560,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "bold",
-          name:"bold",
+          name: "bold",
           style: { display: "inline-flex", fontWeight: "bold" },
           order: 0,
           assignstyle: { fontWeight: "bold" },
@@ -542,7 +568,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "normal",
-          name:"normal",
+          name: "normal",
           style: { display: "inline-flex", fontWeight: "normal" },
           order: 1,
           assignstyle: { fontWeight: "normal" },
@@ -552,7 +578,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "10px",
-            name:"10px",
+          name: "10px",
           style: { display: "inline-flex", fontSize: "10px" },
           order: 0,
           assignstyle: { fontSize: "10px" },
@@ -560,7 +586,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "20px",
-          name:"20px",
+          name: "20px",
           style: { display: "inline-flex", fontSize: "20px" },
           order: 1,
           assignstyle: { fontSize: "20px" },
@@ -570,7 +596,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "times",
-          name:"times",
+          name: "times",
           style: { display: "inline-flex", fontFamily: "times" },
           order: 0,
           assignstyle: { fontFamily: "times" },
@@ -578,7 +604,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "courier",
-          name:"courier",
+          name: "courier",
           style: { display: "inline-flex", fontFamily: "courier" },
           order: 0,
           assignstyle: { fontFamily: "courier" },
@@ -588,7 +614,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "left",
-            name:"left",
+          name: "left",
           style: { display: "inline-flex", textAlign: "left" },
           order: 0,
           assignstyle: { textAlign: "left" },
@@ -596,7 +622,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "center",
-          name:"center",
+          name: "center",
           style: { display: "inline-flex", textAlign: "center" },
           order: 1,
           assignstyle: { textAlign: "center" },
@@ -604,7 +630,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "right",
-          name:"right",
+          name: "right",
           style: { display: "inline-flex", textAlign: "right" },
           order: 2,
           assignstyle: { textAlign: "right" },
@@ -614,7 +640,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "auto",
-          name:"auto",
+          name: "auto",
           style: { display: "inline-flex" },
           order: 0,
           assignstyle: { width: "initial" },
@@ -622,7 +648,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "100px",
-          name:"100px",
+          name: "100px",
           style: { display: "inline-flex" },
           order: 1,
           assignstyle: { width: "100px", overflow: "auto" },
@@ -630,7 +656,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "200px",
-          name:"200px",
+          name: "200px",
           style: { display: "inline-flex" },
           order: 2,
           assignstyle: { width: "200px", overflow: "auto" },
@@ -638,7 +664,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "25%",
-          name:"25%",
+          name: "25%",
           style: { display: "inline-flex" },
           order: 3,
           assignstyle: { width: "25%", overflow: "auto" },
@@ -646,7 +672,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "50%",
-          name:"50%",
+          name: "50%",
           style: { display: "inline-flex" },
           order: 4,
           assignstyle: { width: "50%", overflow: "auto" },
@@ -654,7 +680,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "100%",
-          name:"100%",
+          name: "100%",
           style: { display: "inline-flex" },
           order: 5,
           assignstyle: { width: "100%", overflow: "auto" },
@@ -662,7 +688,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "50vh",
-          name:"50vh",
+          name: "50vh",
           style: { display: "inline-flex" },
           order: 6,
           assignstyle: { width: "50vh", overflow: "auto" },
@@ -670,7 +696,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "100vh",
-          name:"100vh",
+          name: "100vh",
           style: { display: "inline-flex" },
           order: 7,
           assignstyle: { width: "100vh", overflow: "auto" },
@@ -680,7 +706,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "auto",
-          name:"auto",
+          name: "auto",
           style: { display: "inline-flex" },
           order: 0,
           assignstyle: { height: "initial" },
@@ -688,7 +714,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "100px",
-          name:"100px",
+          name: "100px",
           style: { display: "inline-flex" },
           order: 1,
           assignstyle: { height: "100px", overflow: "auto" },
@@ -696,7 +722,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "200px",
-          name:"200px",
+          name: "200px",
           style: { display: "inline-flex" },
           order: 2,
           assignstyle: { height: "200px", overflow: "auto" },
@@ -704,7 +730,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "25%",
-          name:"25%",
+          name: "25%",
           style: { display: "inline-flex" },
           order: 3,
           assignstyle: { height: "25%", overflow: "auto" },
@@ -712,7 +738,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "50%",
-          name:"50%",
+          name: "50%",
           style: { display: "inline-flex" },
           order: 4,
           assignstyle: { height: "50%", overflow: "auto" },
@@ -720,7 +746,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "100%",
-          name:"100%",
+          name: "100%",
           style: { display: "inline-flex" },
           order: 5,
           assignstyle: { height: "100%", overflow: "auto" },
@@ -728,7 +754,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "50vh",
-          name:"50vh",
+          name: "50vh",
           style: { display: "inline-flex" },
           order: 6,
           assignstyle: { height: "50vh", overflow: "auto" },
@@ -736,7 +762,7 @@ export function Richtextareacomp() {
         {
           type: "div",
           innerhtml: "100vh",
-          name:"100vh",
+          name: "100vh",
           style: { display: "inline-flex" },
           order: 7,
           assignstyle: { height: "100vh", overflow: "auto" },
@@ -754,29 +780,38 @@ export function Richtextareacomp() {
   useEffect(() => {
     alltypecompconsolelog("sitecomp-useeffect");
 
-      fetchAllsiteversionpageDatafromDB();
-   
+    fetchAllsiteversionpageDatafromDB();
   }, []);
 
-let fetchAllsiteversionpageDatafromDB = async () =>{
+  let fetchAllsiteversionpageDatafromDB = async () => {
+    let bookchapterdata = await fetchlistmetadatafromDB({
+      tablename: "bookchapterdata",
+      conditionexpression: {
+        bookname: "testbook",
+      },
+    });
+    console.log(bookchapterdata);
 
-
-  let listtablechildmetadata = await fetchlistmetadatafromDB({
-    tablename: "bookdata",
-    conditionexpression: {
-      name: "test",
-   },
-  });
-  console.log(listtablechildmetadata);
-  let sectioncolumnsarrayjs = [];
-  if(listtablechildmetadata && listtablechildmetadata[0] && listtablechildmetadata[0].data){
-    sectioncolumnsarrayjs = listtablechildmetadata[0].data;
-  }
-  Showui({
-    sectioncolumnsarray:sectioncolumnsarrayjs
-  });
-}
-
+    let listtablechildmetadata = await fetchlistmetadatafromDB({
+      tablename: "bookdata",
+      conditionexpression: {
+        name: "test",
+      },
+    });
+    console.log(listtablechildmetadata);
+    let sectioncolumnsarrayjs = [];
+    if (
+      listtablechildmetadata &&
+      listtablechildmetadata[0] &&
+      listtablechildmetadata[0].data
+    ) {
+      sectioncolumnsarrayjs = listtablechildmetadata[0].data;
+    }
+    Showui({
+      sectioncolumnsarray: sectioncolumnsarrayjs,
+      bookchapterdata: bookchapterdata,
+    });
+  };
 
   let Showui = async (methodprops) => {
     let compstatejs = JSON.parse(JSON.stringify(compstate));
@@ -793,14 +828,12 @@ let fetchAllsiteversionpageDatafromDB = async () =>{
 
   let handleSelect = async (methodprops) => {
     console.log(methodprops);
-    let { type, subtype, value,e } = methodprops;
+    let { type, subtype, value, e } = methodprops;
     if (type === "selecttextinsectioncolumn" && subtype === "innerhtml") {
-       
-      console.log(`You selected: ${e.target.innerHTML}`); 
+      console.log(`You selected: ${e.target.innerHTML}`);
       console.log(`You selected: ${e.target.selectionStart}`);
       console.log(`You selected: ${e.target.selectionEnd}`);
     }
-    
   };
 
   let handleChange = async (methodprops) => {
@@ -817,7 +850,7 @@ let fetchAllsiteversionpageDatafromDB = async () =>{
   };
 
   let handleClick = async (methodprops) => {
-    let {name, order, type, value, preposttext } = methodprops;
+    let { name, order, type, value, preposttext } = methodprops;
     let {
       sectioncolumnsarray,
       addsectioncolumnsobject,
@@ -830,7 +863,6 @@ let fetchAllsiteversionpageDatafromDB = async () =>{
 
     console.log(methodprops);
     console.log(uistate);
-    
 
     if (type == "sectioncolumnhandleclick") {
       let viewsectioncolumn = {};
@@ -863,28 +895,21 @@ let fetchAllsiteversionpageDatafromDB = async () =>{
       console.log(createtableresp);
       if (createtableresp.issuccess === "true") {
       }
-    }
-    else if (type === "generatepdf") {
-     
-      var doc = new window.jsPDF();          
+    } else if (type === "generatepdf") {
+      var doc = new window.jsPDF();
       var elementHandler = {
-        '#ignorePDF': function (element, renderer) {
+        "#ignorePDF": function (element, renderer) {
           return true;
-        }
+        },
       };
       var source = window.document.getElementsByTagName("body")[0];
-      doc.fromHTML(
-          source,
-          15,
-          15,
-          {
-            'width': 180,'elementHandlers': elementHandler
-          });
-      
+      doc.fromHTML(source, 15, 15, {
+        width: 180,
+        elementHandlers: elementHandler,
+      });
+
       doc.output("dataurlnewwindow");
-      
-    }
-    else if (type === "addsectioncolumn") {
+    } else if (type === "addsectioncolumn") {
       Showui({
         showaddsectioncolumnpanel: true,
         addsectioncolumnpaneltype: "general",
@@ -1052,7 +1077,7 @@ let fetchAllsiteversionpageDatafromDB = async () =>{
           sectioncolumnarrayitem.order === compstate.viewsectioncolumn.order
         ) {
           sectioncolumnarrayjs[i] = compstate.viewsectioncolumn;
-              console.log(editsectioncolumnstyleitemjs);
+          console.log(editsectioncolumnstyleitemjs);
           let returnedTarget = Object.assign(
             {},
             sectioncolumnarrayjs[i].style,
@@ -1176,13 +1201,12 @@ let fetchAllsiteversionpageDatafromDB = async () =>{
               value: e.target.innerHTML,
             })
           }
-
           onselectjs={(e) =>
             handleSelect({
               type: "selecttextinsectioncolumn",
               subtype: "innerhtml",
               value: e.target.innerHTML,
-              e:e
+              e: e,
             })
           }
         />
@@ -1394,22 +1418,42 @@ let fetchAllsiteversionpageDatafromDB = async () =>{
           data-dragtemplatetype={item.dragtemplatetype}
           draggable={draggable}
           onDragOver={(e) =>
-            handleClick({ e, type: "executeallowdrop", order: item.order, name:item.name })
+            handleClick({
+              e,
+              type: "executeallowdrop",
+              order: item.order,
+              name: item.name,
+            })
           }
           onDragStart={(e) =>
-            handleClick({ e, type: "executedragstart", order: item.order, name:item.name })
+            handleClick({
+              e,
+              type: "executedragstart",
+              order: item.order,
+              name: item.name,
+            })
           }
           onDragEnter={(e) =>
-            handleClick({ e, type: "executedragenter", order: item.order , name:item.name})
+            handleClick({
+              e,
+              type: "executedragenter",
+              order: item.order,
+              name: item.name,
+            })
           }
           onDragLeave={(e) =>
-            handleClick({ e, type: "executedragleave", order: item.order , name:item.name})
+            handleClick({
+              e,
+              type: "executedragleave",
+              order: item.order,
+              name: item.name,
+            })
           }
           onDrop={(e) =>
             handleClick({
               type: "dropsectioncolumn",
               order: item.order,
-               name:item.name,
+              name: item.name,
               e,
               preposttext: "pre",
             })
@@ -1454,23 +1498,89 @@ let fetchAllsiteversionpageDatafromDB = async () =>{
     return <>{mainpanelhtml}</>;
   };
 
+  let Bookchapterarrayhtml = (methodprops) => {
+    let { bookchapterdata } = compstate;
+
+    console.log(bookchapterdata);
+    let mainpanelhtml = [];
+    if (
+      bookchapterdata === undefined
+    ) {
+      return <></>;
+    } else if (bookchapterdata) {
+      for (let i = 0; i < bookchapterdata.length; i++) {
+        let arrayitem = bookchapterdata[i];
+        mainpanelhtml.push(
+          <div
+            onClick={() =>
+              handleClick({
+                type: "bookchapterdatahandleclick",
+                name: arrayitem.name,
+              })
+            }
+          >
+            {arrayitem.label}
+          </div>
+        );
+      }
+      return <div style={{ width: "20%" }}>{mainpanelhtml}</div>;
+    }
+  
+  };
+
+  let Bookchaptersectionarrayhtml = (methodprops) => {
+    let { bookchaptersectiondata, selectedchaptername } = compstate;
+
+    console.log(bookchaptersectiondata);
+    let mainpanelhtml = [];
+    if (
+      bookchaptersectiondata === undefined &&
+      selectedchaptername === undefined &&
+      selectedchaptername === ""
+    ) {
+      return <></>;
+    } else if (
+      bookchaptersectiondata &&
+      selectedchaptername &&
+      selectedchaptername !== ""
+    ) {
+      for (let i = 0; i < bookchaptersectiondata.length; i++) {
+        let arrayitem = bookchaptersectiondata[i];
+        mainpanelhtml.push(
+          <div
+            onClick={() =>
+              handleClick({
+                type: "bookchaptersectiondatahandleclick",
+                name: arrayitem.name,
+              })
+            }
+          >
+            {arrayitem.label}
+          </div>
+        );
+      }
+      return <div style={{ width: "20%" }}>{mainpanelhtml}</div>;
+    }
+  };
+
   let {
     sectioncolumnsarray,
     showaddsectioncolumnpanel,
     isshoweditsectioncolumnstyles,
     editsectioncolumnstyletype,
+    selectedchaptername,
+    selectedsectionname,
   } = compstate;
   console.log(compstate);
   console.log(uistate);
   return (
     <>
-     
-
-
-
       <div style={{ height: "60vh", overflow: "auto" }}>
-      <div style={{ display: "flex", flexWrap:"wrap" }}>
-        <Arrayhtml sectioncolumnsarray={sectioncolumnsarray} />
+        <div style={{ display: "flex", flexWrap: "wrap", width: "100%" }}>
+          <Bookchapterarrayhtml />
+
+          <Arrayhtml sectioncolumnsarray={sectioncolumnsarray} />
+          <Bookchaptersectionarrayhtml />
         </div>
       </div>
 
@@ -1484,27 +1594,17 @@ let fetchAllsiteversionpageDatafromDB = async () =>{
       >
         <div style={{ width: "50%", height: "100%", overflow: "auto" }}>
           {/* <Editpanel/> */}
-          <div
-                onClick={() =>
-                  handleClick({ type: "updatetoserver" })
-                }
-              >
-                Updatetoserver
-              </div>
+          <div onClick={() => handleClick({ type: "updatetoserver" })}>
+            Updatetoserver
+          </div>
 
-              <div
-                onClick={() =>
-                  handleClick({ type: "generatepdf" })
-                }
-              >
-                generatepdf
-              </div>
-              <div id="content">
-   tet
-</div>
+          <div onClick={() => handleClick({ type: "generatepdf" })}>
+            generatepdf
+          </div>
+          <div id="content">tet</div>
 
-          <div style={{ display: "flex", flexWrap:"wrap"}}>
-          <Editcontentpanel />
+          <div style={{ display: "flex", flexWrap: "wrap" }}>
+            <Editcontentpanel />
           </div>
 
           {isshoweditsectioncolumnstyles !== true ? (
@@ -1644,7 +1744,7 @@ let fetchAllsiteversionpageDatafromDB = async () =>{
                 height: "100%",
                 overflow: "auto",
                 display: "flex",
-                 flexWrap:"wrap"
+                flexWrap: "wrap",
               }}
             >
               <div style={{ width: "30%", height: "100%", overflow: "auto" }}>
@@ -1868,7 +1968,6 @@ let fetchAllsiteversionpageDatafromDB = async () =>{
                         ? { padding: "10px", backgroundColor: "grey" }
                         : { padding: "10px" }
                     }
-                    
                     onClick={() =>
                       handleClick({
                         type: "editsectioncolumnstyletype",
