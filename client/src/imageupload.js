@@ -106,7 +106,7 @@ if(files && files.length > 0){
 
         <input type="file" accept="image/*" onChange={(e)=>handleChange({e:e})} />
     
-        <form action="/uploadFile" 
+        <form action="/videoupload" 
       enctype="multipart/form-data" method="POST">
       
         <span>Upload Profile Picture:</span>  

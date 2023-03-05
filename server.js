@@ -123,6 +123,15 @@ app.post('/uploadFile', async (req, res) => {
   res.end( JSON.stringify(x));
 })
 
+app.post('/videoupload', async (req, res) => {
+  
+  var x = await fileuploadjs.videoupload(req,res) ; 
+  res.end( JSON.stringify(x));
+})
+
+
+
+
 
 app.post('/uploadImage', async (req, res) => {
   

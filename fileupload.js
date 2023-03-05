@@ -15,7 +15,7 @@ var storage = multer.diskStorage({
   }
 })
 
-const maxSize = 1 * 1000 * 1000;
+const maxSize = 100 * 1000 * 1000;
 
 
 const imageStorage = multer.diskStorage({
@@ -54,21 +54,34 @@ var upload = multer({
 }).single("mypic"); 
 
 
+const videoStorage = multer.diskStorage({
+  destination: 'videos', // Destination to store video 
+  filename: (req, file, cb) => {
+      cb(null, file.fieldname 
+       // + '_' + Date.now() 
+       + path.extname(file.originalname))
+  }
+});
 
 
 
-
+const videoUpload = multer({
+  storage: videoStorage,
+  limits: {
+  fileSize: 10000000 // 10000000 Bytes = 10 MB
+  },
+  fileFilter(req, file, cb) {
+    // upload only mp4 and mkv format
+    if (!file.originalname.match(/\.(mp4|MPEG-4|mkv)$/)) { 
+       return cb(new Error('Please upload a video'))
+    }
+    cb(undefined, true)
+ }
+})
 
 
 const fileupload = async function(req,res){
-  console.log(req);
-    console.log(req.file);
-    console.log(req.files);
-    console.log(req.body);
-    console.log(req.body.file);
-    console.log(req.body.files);
-    console.log(req.body.formData);
-    console.log(req.formData);
+  
     // let resp = {issuccess:"true", message:"cannot be deleted from frontend"};
     // var form = new formidable.IncomingForm();
     // form.parse(req, function (err, fields, files) {
@@ -87,6 +100,33 @@ const fileupload = async function(req,res){
 
   }
 
+  const videoupload = async function(req,res){
+    console.log(req);
+      console.log(req.file);
+      console.log(req.files);
+      console.log(req.body);
+      console.log(req.body.file);
+      console.log(req.body.files);
+      console.log(req.body.formData);
+      console.log(req.formData);
+      // let resp = {issuccess:"true", message:"cannot be deleted from frontend"};
+      // var form = new formidable.IncomingForm();
+      // form.parse(req, function (err, fields, files) {
+      //  console.log("infileparse");
+      // });
+     // return resp;
+  
+     upload(req,res,function(err) {
+        if(err) {
+         // res.send(err)
+        }
+        else {
+         //   res.send("Success, Image uploaded!")
+        }
+    })
+  
+    }
+
 
   const fileread = async function(req){
     console.log(req.files);
@@ -104,6 +144,7 @@ const fileupload = async function(req,res){
 
 
   module.exports ={
-    fileupload
+    fileupload,
+    videoupload
  }
  
