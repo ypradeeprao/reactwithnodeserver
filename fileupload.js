@@ -18,59 +18,46 @@ var storage = multer.diskStorage({
 const maxSize = 1 * 1000 * 1000;
 
 
-const imageStorage = multer.diskStorage({
-  // Destination to store image     
-  destination: 'images', 
-    filename: (req, file, cb) => {
-        cb(null, file.fieldname 
-          //+ '_' + Date.now() 
-           + path.extname(file.originalname))
-          // file.fieldname is name of the field (image)
-          // path.extname get the uploaded file extension
-  }
-});
+// const imageStorage = multer.diskStorage({
+//   // Destination to store image     
+//   destination: 'images', 
+//     filename: (req, file, cb) => {
+//         cb(null, file.fieldname 
+//           //+ '_' + Date.now() 
+//            + path.extname(file.originalname))
+//           // file.fieldname is name of the field (image)
+//           // path.extname get the uploaded file extension
+//   }
+// });
 
-var upload = multer({ 
-  storage: imageStorage,
-  limits: { fileSize: maxSize },
-  fileFilter: function (req, file, cb){
+// var upload = multer({ 
+//   storage: imageStorage,
+//   limits: { fileSize: maxSize },
+//   fileFilter: function (req, file, cb){
   
-      // Set the filetypes, it is optional
-      var filetypes = /jpeg|jpg|png/;
-      var mimetype = filetypes.test(file.mimetype);
+//       // Set the filetypes, it is optional
+//       var filetypes = /jpeg|jpg|png/;
+//       var mimetype = filetypes.test(file.mimetype);
 
-      var extname = filetypes.test(path.extname(
-                  file.originalname).toLowerCase());
+//       var extname = filetypes.test(path.extname(
+//                   file.originalname).toLowerCase());
       
-      if (mimetype && extname) {
-          return cb(null, true);
-      }
+//       if (mimetype && extname) {
+//           return cb(null, true);
+//       }
     
-      cb("Error: File upload only supports the "
-              + "following filetypes - " + filetypes);
-    } 
+//       cb("Error: File upload only supports the "
+//               + "following filetypes - " + filetypes);
+//     } 
 
-// mypic is the name of file attribute
-}).single("mypic"); 
-
-
+// // mypic is the name of file attribute
+// }).single("mypic"); 
 
 
 
 
-var imageUpload = multer({
-  storage: imageStorage,
-  limits: {
-    fileSize: 1000000 // 1000000 Bytes = 1 MB
-  },
-  fileFilter(req, file, cb) {
-    if (!file.originalname.match(/\.(png|jpg)$/)) { 
-       // upload only png and jpg format
-       return cb(new Error('Please upload a Image'))
-     }
-   cb(undefined, true)
-}
-}) 
+
+
 
 
 const fileupload = async function(req,res){
@@ -89,14 +76,14 @@ const fileupload = async function(req,res){
     // });
    // return resp;
 
-    upload(req,res,function(err) {
-      if(err) {
-       // res.send(err)
-      }
-      else {
-       //   res.send("Success, Image uploaded!")
-      }
-  })
+  //   upload(req,res,function(err) {
+  //     if(err) {
+  //      // res.send(err)
+  //     }
+  //     else {
+  //      //   res.send("Success, Image uploaded!")
+  //     }
+  // })
 
   }
 
