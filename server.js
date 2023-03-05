@@ -30,10 +30,10 @@ app.get('/react', (req, res) => {
 
 
 
-// app.get('/images/:id', (req, res) => {
-//   var id = req.params.id;
-//   res.sendFile(path.join(__dirname, 'images', id));
-// });
+app.get('/images/:id', (req, res) => {
+  var id = req.params.id;
+  res.sendFile(path.join(__dirname, 'images', id));
+});
 
 // create a GET route
 app.get('/express_backend', (req, res) => { //Line 9

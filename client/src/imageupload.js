@@ -8,20 +8,27 @@ export let Imageupload = (props) =>{
       }
       
 
-      const handleSubmit2 = file => {
-        console.log("Uploading file...");
-        const API_ENDPOINT = "http://localhost:5000/uploadFile";
-        const request = new XMLHttpRequest();
-        const formData = new FormData();
+      const handleSubmit2 = async (file) => {
+
+      const file2 = document.querySelector('#myfile').files[0];
+   console.log(await toBase64(file2));
+
+
+        // console.log("Uploading file...");
+        // const API_ENDPOINT = "http://localhost:5000/uploadFile";
+        // const request = new XMLHttpRequest();
+        // const formData = new FormData();
       
-        request.open("POST", API_ENDPOINT, true);
-        request.onreadystatechange = () => {
-          if (request.readyState === 4 && request.status === 200) {
-            console.log(request.responseText);
-          }
-        };
-        formData.append("file", file);
-        request.send(formData);
+        // request.open("POST", API_ENDPOINT, true);
+        // request.onreadystatechange = () => {
+        //   if (request.readyState === 4 && request.status === 200) {
+        //     console.log(request.responseText);
+        //   }
+        // };
+        // formData.append("file", file);
+        // request.send(formData);
+
+
       };
 
       function handleSubmit(event) {
@@ -41,6 +48,14 @@ export let Imageupload = (props) =>{
         });
     
       }
+
+
+      const toBase64 = file => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
 
 
 let handleChange = (methodprops)=>{
