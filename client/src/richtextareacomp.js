@@ -784,13 +784,12 @@ export function Richtextareacomp() {
   }, []);
 
   let fetchAllsiteversionpageDatafromDB = async (methodprops) => {
-   
-    let chaptertitle="";
-    if(methodprops && methodprops.chaptertitle){
+    let chaptertitle = "";
+    if (methodprops && methodprops.chaptertitle) {
       chaptertitle = methodprops.chaptertitle;
     }
-   console.log(methodprops);
-   
+    console.log(methodprops);
+
     let bookchapterdata = await fetchlistmetadatafromDB({
       tablename: "bookchapterdata",
       conditionexpression: {
@@ -803,11 +802,11 @@ export function Richtextareacomp() {
       tablename: "bookchapterdata",
       conditionexpression: {
         bookname: "testbook",
-        title:chaptertitle
+        title: chaptertitle,
       },
     });
-    let viewbookchapterdata={};
-    if(viewbookchapterdatajs && viewbookchapterdatajs.length > 0){
+    let viewbookchapterdata = {};
+    if (viewbookchapterdatajs && viewbookchapterdatajs.length > 0) {
       viewbookchapterdata = viewbookchapterdatajs[0];
     }
     console.log(viewbookchapterdata);
@@ -816,7 +815,7 @@ export function Richtextareacomp() {
       tablename: "bookchaptersectiondata",
       conditionexpression: {
         bookname: "testbook",
-        chaptertitle:chaptertitle
+        chaptertitle: chaptertitle,
       },
     });
     console.log(bookchaptersectiondata);
@@ -839,8 +838,8 @@ export function Richtextareacomp() {
     Showui({
       sectioncolumnsarray: sectioncolumnsarrayjs,
       bookchapterdata: bookchapterdata,
-      bookchaptersectiondata:bookchaptersectiondata,
-      viewbookchapterdata:viewbookchapterdata
+      bookchaptersectiondata: bookchaptersectiondata,
+      viewbookchapterdata: viewbookchapterdata,
     });
   };
 
@@ -880,7 +879,7 @@ export function Richtextareacomp() {
       uistate.editsectioncolumnstyleinputvalue = value;
     }
     if (type === "edituistate") {
-      if(uistate[objectname] == undefined){
+      if (uistate[objectname] == undefined) {
         uistate[objectname] = {};
       }
       uistate[objectname][paramname] = value;
@@ -888,7 +887,16 @@ export function Richtextareacomp() {
   };
 
   let handleClick = async (methodprops) => {
-    let { name, order, type, value, preposttext, objectname, paramname,paramvalue } = methodprops;
+    let {
+      name,
+      order,
+      type,
+      value,
+      preposttext,
+      objectname,
+      paramname,
+      paramvalue,
+    } = methodprops;
     let {
       sectioncolumnsarray,
       addsectioncolumnsobject,
@@ -897,7 +905,7 @@ export function Richtextareacomp() {
       editsectioncolumnstyletype,
       showaddsectioncolumnpanel,
       addsectioncolumnpaneltype,
-      viewbookchapterdata
+      viewbookchapterdata,
     } = compstate;
 
     console.log(methodprops);
@@ -905,13 +913,10 @@ export function Richtextareacomp() {
     console.log(compstate);
 
     if (type === "viewstatehandleclick") {
-     
-       if(objectname === "viewbookchapterdata" && paramname === "title"){
-        await fetchAllsiteversionpageDatafromDB({chaptertitle:paramvalue});
-       }
-     
-    }
-    else if (type == "sectioncolumnhandleclick") {
+      if (objectname === "viewbookchapterdata" && paramname === "title") {
+        await fetchAllsiteversionpageDatafromDB({ chaptertitle: paramvalue });
+      }
+    } else if (type == "sectioncolumnhandleclick") {
       let viewsectioncolumn = {};
       for (let i = 0; i < sectioncolumnsarray.length; i++) {
         let sectioncolumnarrayitem = sectioncolumnsarray[i];
@@ -942,8 +947,7 @@ export function Richtextareacomp() {
       console.log(createtableresp);
       if (createtableresp.issuccess === "true") {
       }
-    }
-    else if (type === "createbookchapterdatahandleclick") {
+    } else if (type === "createbookchapterdatahandleclick") {
       let createtableresp = await insertrecordNodejs({
         tablename: "bookchapterdata",
         tabledatalist: [
@@ -957,15 +961,14 @@ export function Richtextareacomp() {
       if (createtableresp.issuccess === "true") {
         await fetchAllsiteversionpageDatafromDB();
       }
-    }
-    else if (type === "createbookchaptersectiondatahandleclick") {
+    } else if (type === "createbookchaptersectiondatahandleclick") {
       let createtableresp = await insertrecordNodejs({
         tablename: "bookchaptersectiondata",
         tabledatalist: [
           {
             title: uistate.editbookchaptersectiondata.title,
             bookname: "testbook",
-            chaptertitle:viewbookchapterdata.title
+            chaptertitle: viewbookchapterdata.title,
           },
         ],
       });
@@ -973,8 +976,7 @@ export function Richtextareacomp() {
       if (createtableresp.issuccess === "true") {
         await fetchAllsiteversionpageDatafromDB();
       }
-    }
-     else if (type === "generatepdf") {
+    } else if (type === "generatepdf") {
       var doc = new window.jsPDF();
       var elementHandler = {
         "#ignorePDF": function (element, renderer) {
@@ -1016,7 +1018,7 @@ export function Richtextareacomp() {
           }
         }
       }
-
+  
       let sectioncolumnarrayjs = JSON.parse(
         JSON.stringify(sectioncolumnsarray)
       );
@@ -1239,30 +1241,6 @@ export function Richtextareacomp() {
     }
   };
 
-  // let Editpanel = (methodprops) => {
-  //   let { viewsectioncolumn } = compstate;
-
-  //   let mainpanelhtml = [];
-
-  //   if (viewsectioncolumn && Object.keys(viewsectioncolumn).length > 0) {
-  //     mainpanelhtml.push(
-  //       <textarea
-  //         style={{ width: "90%", height: "50px", padding: "10px" }}
-  //         defaultValue={viewsectioncolumn.innerhtml}
-  //         onChange={(e) =>
-  //           handleChange({
-  //             type: "editsectioncolumn",
-  //             subtype: "innerhtml",
-  //             value: e.target.value,
-  //           })
-  //         }
-  //       />
-  //     );
-  //   }
-
-  //   return <div style={{ padding: "0px", width: "100%" }}>{mainpanelhtml}</div>;
-  // };
-
   let Editcontentpanel = (methodprops) => {
     let { viewsectioncolumn } = compstate;
 
@@ -1441,7 +1419,7 @@ export function Richtextareacomp() {
           );
         }
       }
-      
+
       mainpanelhtml.push(
         <>
           <input
@@ -1554,22 +1532,21 @@ export function Richtextareacomp() {
     return <>{mainpanelhtml}</>;
   };
 
-  
+  // bookchapter
   let Createbookchapterhtml = (methodprops) => {
     let mainpanelhtml = [];
 
-    let editbookchapteroptionshtml=[];
-    editbookchapteroptionshtml.push(
-      <option value="Introduction" />
-    );
-    mainpanelhtml.push(<div style={{display:"flex"}}>
-     <input
+    let editbookchapteroptionshtml = [];
+    editbookchapteroptionshtml.push(<option value="Introduction" />);
+    mainpanelhtml.push(
+      <div style={{ display: "flex" }}>
+        <input
           style={{ width: "70%" }}
           onChange={(e) =>
             handleChange({
               type: "edituistate",
-              objectname:"editbookchapterdata",
-              paramname:"title",
+              objectname: "editbookchapterdata",
+              paramname: "title",
               value: e.target.value,
             })
           }
@@ -1578,29 +1555,26 @@ export function Richtextareacomp() {
         <datalist id="editbookchapteroptions">
           {editbookchapteroptionshtml}
         </datalist>
-    <div
-    style={{width:"30%"}}
-        onClick={() =>
-          handleClick({
-            type: "createbookchapterdatahandleclick",
-          })
-        }
-      >
-        Create
+        <div
+          style={{ width: "30%" }}
+          onClick={() =>
+            handleClick({
+              type: "createbookchapterdatahandleclick",
+            })
+          }
+        >
+          Create
+        </div>
       </div>
-    </div>
-     
     );
     return <>{mainpanelhtml}</>;
-  }
+  };
   let Bookchapterarrayhtml = (methodprops) => {
     let { bookchapterdata } = compstate;
 
     console.log(bookchapterdata);
     let mainpanelhtml = [];
-    if (
-      bookchapterdata === undefined
-    ) {
+    if (bookchapterdata === undefined) {
       return <></>;
     } else if (bookchapterdata) {
       for (let i = 0; i < bookchapterdata.length; i++) {
@@ -1611,8 +1585,8 @@ export function Richtextareacomp() {
               handleClick({
                 type: "viewstatehandleclick",
                 objectname: "viewbookchapterdata",
-                paramname:"title",
-                paramvalue:arrayitem.title
+                paramname: "title",
+                paramvalue: arrayitem.title,
               })
             }
           >
@@ -1620,16 +1594,17 @@ export function Richtextareacomp() {
           </div>
         );
       }
-     
-      return <div style={{ width: "20%" }}>
-        <Createbookchapterhtml />
-        {mainpanelhtml}
-        </div>;
+
+      return (
+        <div style={{ width: "20%" }}>
+          <Createbookchapterhtml />
+          {mainpanelhtml}
+        </div>
+      );
     }
-  
   };
 
-
+  //bookchapterdetail
   let Bookchaptersectiondetailarrayhtml = (methodprops) => {
     let { sectioncolumnsarray, modetype } = compstate;
 
@@ -1650,25 +1625,24 @@ export function Richtextareacomp() {
         />
       );
     }
-    return <div style={{width:"60%"}}>{mainpanelhtml}</div>;
+    return <div style={{ width: "60%" }}>{mainpanelhtml}</div>;
   };
 
- 
+  //bookchaptersection
   let Createbookchaptersectionhtml = (methodprops) => {
     let mainpanelhtml = [];
 
-    let editbookchaptersectionoptionshtml=[];
-    editbookchaptersectionoptionshtml.push(
-      <option value="Introduction" />
-    );
-    mainpanelhtml.push(<div style={{display:"flex"}}>
-     <input
+    let editbookchaptersectionoptionshtml = [];
+    editbookchaptersectionoptionshtml.push(<option value="Introduction" />);
+    mainpanelhtml.push(
+      <div style={{ display: "flex" }}>
+        <input
           style={{ width: "70%" }}
           onChange={(e) =>
             handleChange({
               type: "edituistate",
-              objectname:"editbookchaptersectiondata",
-              paramname:"title",
+              objectname: "editbookchaptersectiondata",
+              paramname: "title",
               value: e.target.value,
             })
           }
@@ -1677,30 +1651,27 @@ export function Richtextareacomp() {
         <datalist id="editbookchaptersectionoptions">
           {editbookchaptersectionoptionshtml}
         </datalist>
-    <div
-    style={{width:"30%"}}
-        onClick={() =>
-          handleClick({
-            type: "createbookchaptersectiondatahandleclick",
-          })
-        }
-      >
-        Create
+        <div
+          style={{ width: "30%" }}
+          onClick={() =>
+            handleClick({
+              type: "createbookchaptersectiondatahandleclick",
+            })
+          }
+        >
+          Create
+        </div>
       </div>
-    </div>
-     
     );
     return <>{mainpanelhtml}</>;
-  }
+  };
 
-   let Bookchaptersectionarrayhtml = (methodprops) => {
-    let { bookchaptersectiondata , viewstatedata } = compstate;
+  let Bookchaptersectionarrayhtml = (methodprops) => {
+    let { bookchaptersectiondata, viewstatedata } = compstate;
 
     console.log(bookchaptersectiondata);
     let mainpanelhtml = [];
-    if (
-      bookchaptersectiondata === undefined
-    ) {
+    if (bookchaptersectiondata === undefined) {
       return <></>;
     } else if (bookchaptersectiondata) {
       for (let i = 0; i < bookchaptersectiondata.length; i++) {
@@ -1711,8 +1682,8 @@ export function Richtextareacomp() {
               handleClick({
                 type: "viewstatehandleclick",
                 objectname: "viewbookchaptersectiondata",
-                paramname:"title",
-                paramvalue:arrayitem.title
+                paramname: "title",
+                paramvalue: arrayitem.title,
               })
             }
           >
@@ -1720,13 +1691,14 @@ export function Richtextareacomp() {
           </div>
         );
       }
-     
-      return <div style={{ width: "20%" }}>
-        <Createbookchaptersectionhtml />
-        {mainpanelhtml}
-        </div>;
+
+      return (
+        <div style={{ width: "20%" }}>
+          <Createbookchaptersectionhtml />
+          {mainpanelhtml}
+        </div>
+      );
     }
-  
   };
 
   let {
@@ -1745,7 +1717,7 @@ export function Richtextareacomp() {
         <div style={{ display: "flex", flexWrap: "wrap", width: "100%" }}>
           <Bookchapterarrayhtml />
 
-          <Bookchaptersectiondetailarrayhtml  />
+          <Bookchaptersectiondetailarrayhtml />
           <Bookchaptersectionarrayhtml />
         </div>
       </div>
@@ -1759,7 +1731,6 @@ export function Richtextareacomp() {
         }}
       >
         <div style={{ width: "50%", height: "100%", overflow: "auto" }}>
-          {/* <Editpanel/> */}
           <div onClick={() => handleClick({ type: "updatetoserver" })}>
             Updatetoserver
           </div>

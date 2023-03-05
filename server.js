@@ -7,12 +7,12 @@ const mongojs= require("./mongorest.js")
 const nodemailerjs= require("./nodemailernode.js")
 const twilionodejs= require("./twilionode.js")
 const imgbbrestjs= require("./imgbbrest.js")
-//const fileuploadjs = require("./fileupload.js")
+const fileuploadjs = require("./fileupload.js")
 const bodyParser = require('body-parser');
+var multer = require('multer');
 // Configuring body parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
 
 
 // This displays message that the server running and listening to specified port
@@ -21,8 +21,25 @@ app.listen(port, () => console.log(`Listening on port ${port}`)); //Line 6
 app.use(express.static(path.join(__dirname, 'build')));
 
 
+
+
 app.get('/react', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
+
+app.get('/uploads/:id', (req, res) => {
+  var id = req.params.id;
+
+  
+  res.sendFile(path.join(__dirname, 'uploads', id));
+});
+
+app.get('/images/:id', (req, res) => {
+  var id = req.params.id;
+
+  
+  res.sendFile(path.join(__dirname, 'images', id));
 });
 
 // create a GET route
@@ -103,6 +120,27 @@ app.post('/getuploadimagerequestjson', async (req, res) => {
 
 app.post('/fileupload', async (req, res) => {
   
-  var x = await fileuploadjs.fileupload(req) ; 
+  var x = await fileuploadjs.fileupload(req,res) ; 
   res.end( JSON.stringify(x));
+})
+
+app.post('/uploadFile', async (req, res) => {
+  
+  var x = await fileuploadjs.fileupload(req,res) ; 
+  res.end( JSON.stringify(x));
+})
+
+
+app.post('/uploadImage', async (req, res) => {
+  
+  imageUpload(req,res,function(err) {
+    if(err) {
+     // res.send(err)
+    }
+    else {
+     //   res.send("Success, Image uploaded!")
+    }
+  });
+
+
 })
