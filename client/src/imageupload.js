@@ -62,11 +62,32 @@ export let Imageupload = (props) => {
     let ctx3 = c3.getContext("2d");
     ctx3.drawImage(video, 0, 0, width, height);
 
+    
+    const frame = ctx3.getImageData(0, 0, width, height);
+    console.log(frame);
+    console.log(width);
+    console.log(height);
+    const l = frame.data.length / 4;
+
+    for (let i = 0; i < l; i++) {
+      const grey =
+        (frame.data[i * 4 + 0] +
+          frame.data[i * 4 + 1] +
+          frame.data[i * 4 + 2]) /
+        3;
+
+      frame.data[i * 4 + 0] = grey;
+      frame.data[i * 4 + 1] = grey;
+      frame.data[i * 4 + 2] = grey;
+    }
+  // ctx1.putImageData(frame, 0, 0);
+
     return;
   }
 
   function mycanvas3handleDataAvailable(event) {
     mycanvas3recordedChunks.push(event.data);
+    console.log(mycanvas3recordedChunks);
   }
 
   function mycanvas3download() {
@@ -98,7 +119,7 @@ const config = {
   headers: {
     "content-type": "multipart/form-data",
   },
-  onUploadProgress: progressEvent => console.log(progressEvent.loaded)
+  onUploadProgress: e => uploadprogressHandler({e:e})
 };
 axios.post(url, formData, config).then((response) => {
   console.log(response.data);
@@ -107,7 +128,16 @@ axios.post(url, formData, config).then((response) => {
 
   }
 
+  function uploadprogressHandler(methodprops) {
+    let {e} = methodprops;
+    let {loaded, total} = e;
+    let percent = (loaded / total) * 100;
+    let roundedpercent = Math.round(percent);
+    console.log(roundedpercent);
+  }
+ 
   function downloadvideo() {
+
     var mycanvas3blob = new Blob(mycanvas3recordedChunks, {
         type: "video/mp4",
       });
@@ -124,12 +154,82 @@ axios.post(url, formData, config).then((response) => {
       }, 100);  
   }
 
+  
+  function getimagefromvideoattime() {
+    let canvas = document.createElement('canvas');
+    let myvideo3 = document.getElementById('myvideo3');
+    let image = '';
+    
+    myvideo3.addEventListener('seeked', function(){
+        canvas.width = 1920;
+        canvas.height = 1080;
+    
+        let ctx = canvas.getContext('2d');
+        ctx.drawImage( myvideo3, 0, 0, canvas.width, canvas.height );
+    
+        image = canvas.toDataURL('image/jpeg');
+        document.getElementById("myImg").src = image;
+    });
+    
+    myvideo3.currentTime = 3;
+  }
 
+  function doubledownloadvideo() {
+    let mycanvas3recordedChunksdouble = [];
+    for(let i=0; i<mycanvas3recordedChunks.length; i++){
+      mycanvas3recordedChunksdouble.push(mycanvas3recordedChunks[i]);
+    }
+    for(let i=0; i<mycanvas3recordedChunks.length; i++){
+      mycanvas3recordedChunksdouble.push(mycanvas3recordedChunks[i]);
+    }
+    var mycanvas3blob = new Blob(mycanvas3recordedChunksdouble, {
+        type: "video/mp4",
+      });
+      var mycanvas3url = URL.createObjectURL(mycanvas3blob);
+      const a = document.createElement("a");
+      a.style.display = "none";
+      a.href = mycanvas3url;
+      a.download = "sample.mp4";
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(mycanvas3url);
+      }, 100);  
+  }
+
+  function handleChangefile(event) {
+   
+    let targetfile =  event.target.files[0];
+    console.log(targetfile);
+
+    var fr = new FileReader();
+    fr.onload = function() {
+      var data = fr.result;
+      var array = new Int8Array(data);
+      var uint8ClampedArray = new Uint8ClampedArray(data);
+      console.log(data);
+      console.log(array);
+      console.log(uint8ClampedArray);
+     // output.value = JSON.stringify(array, null, '  ');
+     // window.setTimeout(ReadFile, 1000);
+    };
+    fr.readAsArrayBuffer(targetfile);
+
+    const urlObj = URL.createObjectURL(targetfile);
+    console.log(urlObj);
+    let videoupload = document.getElementById("myvideo1");
+    videoupload.src = urlObj;
+  }
 
 
   let mainpanelhtml = [];
   mainpanelhtml.push(
     <div style={{ width: "100%" }}>
+
+
+<input id="videoupload" type="file" onChange={handleChangefile} />
+
       <video
         id="myvideo1"
         controls="true"
@@ -185,6 +285,27 @@ axios.post(url, formData, config).then((response) => {
        downloadvideo
       </div>
 
+      <div
+        onClick={() => {
+          doubledownloadvideo();
+        }}
+      >
+       doubledownloadvideo
+      </div>
+
+
+
+      <div
+        onClick={() => {
+          getimagefromvideoattime();
+        }}
+      >
+       getimagefromvideoattime
+      </div>
+
+      <img id="myImg" alt="test"   
+      width="300"
+        height="270"></img>
 
     </div>
   );
