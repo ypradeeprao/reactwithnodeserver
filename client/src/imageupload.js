@@ -50,7 +50,7 @@ export let Imageupload = (props) => {
   let timerCallback = () => {
     console.log(mycanvas1stream);
     console.log(mycanvas1mediaRecorderchunks);
-    console.log(video.currentTime);
+ 
     if (video.paused || video.ended) {
       return;
     }
@@ -73,6 +73,7 @@ export let Imageupload = (props) => {
   }
 
   function mycanvas3handleDataAvailable(event) {
+    console.log(video.currentTime);
     mycanvas3recordedChunks.push(event.data);
     console.log(mycanvas3recordedChunks);
   }
