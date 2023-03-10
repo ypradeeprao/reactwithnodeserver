@@ -15,6 +15,7 @@ let initframedata = {};
 let modifiedframedata = {};
 let uploadresponse={}
 let firstclick = true;
+let currentstatus="videoplayingbeforestart";
 export let Imageupload = (props) => {
   const [file, setFile] = useState();
 
@@ -51,8 +52,7 @@ export let Imageupload = (props) => {
   };
 
   let timerCallback = () => {
-    console.log(mycanvas1stream);
-    console.log(mycanvas1mediaRecorderchunks);
+ 
 
     if (video.paused || video.ended) {
       return;
@@ -269,7 +269,9 @@ export let Imageupload = (props) => {
     videoupload.src = urlObj;
   }
 
+
   function startrecording(){
+    console.log("startrecording");
     mycanvas3recordedChunks=[];
     mycanvas3mediaRecorder.start();
     video.play();
@@ -277,35 +279,79 @@ export let Imageupload = (props) => {
   }
 
   function stoprecording(){
+    console.log("stoprecording");
     video.pause();
     mycanvas3mediaRecorder.stop();
-   // mycanvas3recordedChunks = [];
     console.log(mycanvas3recordedChunks);
   }
 
  
   let startautoupload = () => {
-   
-
-    if (video.paused || video.ended) {
-      return;
+    console.log("startautoupload");
+    
+    if (video.ended) {
+      currentstatus = "videoplayingend";
     }
+    else if(video.paused){
+      currentstatus = "videoplayingpaused";
+    }
+    else{
+    //  currentstatus = "videoplaying";
+    }
+
+    if (currentstatus == "videoplayingbeforestart") {
+      startrecording();
+      currentstatus = "videoplaying";
+     }
+     else if (currentstatus == "videoplaying") {
+      stoprecording();
+     }
+     else if (currentstatus == "videoplayingpaused") {
+      uploadvideo();
+      currentstatus ="starteduploading";
+    }
+    else if (currentstatus == "videoplayingend") {
+      uploadvideo();
+      currentstatus ="starteduploading";
+    }
+    else if (currentstatus == "starteduploading") {
+    }
+    else if (currentstatus == "faileduploading") {
+     return ;
+    }
+    else if (currentstatus == "finisheduploading") {
+      currentstatus ="videoplayingbeforestart";
+    }
+
+  
    
     setTimeout(() => {
       startautoupload();
-    }, 300000); 
+    }, 10000); 
   };
 
   function autouploadvideo() {
+    console.log("autouploadvideo");
+
+    let currentime = video.currentTime;
+    console.log(video.playing);
+    if(video.playing){ 
+   
+    video.pause();
+    mycanvas3mediaRecorder.stop();
+    }
+
 
     let uploadresponse = {issuccess : "", isinitial :true};
     // upload if chunks not blank
+    console.log(mycanvas3recordedChunks);
     if(mycanvas3recordedChunks && mycanvas3recordedChunks.length > 0){
     var mycanvas3blob = new Blob(mycanvas3recordedChunks, {
       type: "video/mp4",
     });
     var mycanvas3url = URL.createObjectURL(mycanvas3blob);
-    var myblobfile = new File([mycanvas3blob], "sample.mp4", {
+    
+    var myblobfile = new File([mycanvas3blob], "sample"+currentime+".mp4", {
       type: "video/mp4",
     });
 
@@ -322,17 +368,20 @@ export let Imageupload = (props) => {
     axios.post(url, formData, config).then((response) => {
       console.log(response.data);
       uploadresponse = response.data;
-    });
-  }
 
-
-  // restart recording
+        // restart recording
   if(uploadresponse.isinitial === true ||
     uploadresponse.issuccess === true){
       mycanvas3recordedChunks=[];
       mycanvas3mediaRecorder.start();
       video.play();
   }
+
+    });
+  }
+
+
+
 
   }
 
