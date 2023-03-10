@@ -8,10 +8,12 @@ var mycanvas1mediaRecorderchunks = [];
 var mycanvas3mediaRecorder;
 var myctx3;
 var mycanvas3recordedChunks;
+var mycanvas3recordedChunksobjectbytime={};
 var width, height, videoStream;
 let videorecordedBlobs = [];
 let initframedata = {};
 let modifiedframedata = {};
+let uploadresponse={}
 let firstclick = true;
 export let Imageupload = (props) => {
   const [file, setFile] = useState();
@@ -38,19 +40,20 @@ export let Imageupload = (props) => {
 
     const mycanvas3stream = mycanvas3.captureStream(25);
     mycanvas3recordedChunks = [];
+    mycanvas3recordedChunksobjectbytime ={};
     var options = {};
     mycanvas3mediaRecorder = new MediaRecorder(mycanvas3stream, options);
 
-    mycanvas3mediaRecorder.ondataavailable = mycanvas3handleDataAvailable;
-    mycanvas3mediaRecorder.start();
+    mycanvas3mediaRecorder.ondataavailable = mycanvas3recorderhandleDataAvailable;
+    //mycanvas3mediaRecorder.start();
 
-    mycanvas3mediaRecorder.onstop = (evt) => mycanvas3download();
+    mycanvas3mediaRecorder.onstop = (evt) => mycanvas3recorderonstop();
   };
 
   let timerCallback = () => {
     console.log(mycanvas1stream);
     console.log(mycanvas1mediaRecorderchunks);
- 
+
     if (video.paused || video.ended) {
       return;
     }
@@ -60,22 +63,22 @@ export let Imageupload = (props) => {
     }, 16); // roughly 60 frames per second
   };
 
-
-
   function computeFrame() {
     let c3 = document.getElementById("mycanvas3");
     let ctx3 = c3.getContext("2d");
     ctx3.drawImage(video, 0, 0, width, height);
 
-   // ctx1.putImageData(frame, 0, 0);
+    // ctx1.putImageData(frame, 0, 0);
 
     return;
   }
 
-  function mycanvas3handleDataAvailable(event) {
+  function mycanvas3recorderhandleDataAvailable(event) {
     console.log(video.currentTime);
     mycanvas3recordedChunks.push(event.data);
+    mycanvas3recordedChunksobjectbytime[video.currentTime] = mycanvas3recordedChunks;
     console.log(mycanvas3recordedChunks);
+    console.log(mycanvas3recordedChunksobjectbytime);
   }
 
   function getCursorPosition(event) {
@@ -142,7 +145,7 @@ export let Imageupload = (props) => {
     //   }
   }
 
-  function mycanvas3download() {
+  function mycanvas3recorderonstop() {
     var mycanvas3blob = new Blob(mycanvas3recordedChunks, {
       type: "video/mp4",
     });
@@ -266,6 +269,73 @@ export let Imageupload = (props) => {
     videoupload.src = urlObj;
   }
 
+  function startrecording(){
+    mycanvas3recordedChunks=[];
+    mycanvas3mediaRecorder.start();
+    video.play();
+ 
+  }
+
+  function stoprecording(){
+    video.pause();
+    mycanvas3mediaRecorder.stop();
+   // mycanvas3recordedChunks = [];
+    console.log(mycanvas3recordedChunks);
+  }
+
+ 
+  let startautoupload = () => {
+   
+
+    if (video.paused || video.ended) {
+      return;
+    }
+   
+    setTimeout(() => {
+      startautoupload();
+    }, 300000); 
+  };
+
+  function autouploadvideo() {
+
+    let uploadresponse = {issuccess : "", isinitial :true};
+    // upload if chunks not blank
+    if(mycanvas3recordedChunks && mycanvas3recordedChunks.length > 0){
+    var mycanvas3blob = new Blob(mycanvas3recordedChunks, {
+      type: "video/mp4",
+    });
+    var mycanvas3url = URL.createObjectURL(mycanvas3blob);
+    var myblobfile = new File([mycanvas3blob], "sample.mp4", {
+      type: "video/mp4",
+    });
+
+    const url = "/videoupload";
+    var formData = new FormData();
+    formData.append("mypic", myblobfile);
+
+    const config = {
+      headers: {
+        "content-type": "multipart/form-data",
+      },
+      onUploadProgress: (e) => uploadprogressHandler({ e: e }),
+    };
+    axios.post(url, formData, config).then((response) => {
+      console.log(response.data);
+      uploadresponse = response.data;
+    });
+  }
+
+
+  // restart recording
+  if(uploadresponse.isinitial === true ||
+    uploadresponse.issuccess === true){
+      mycanvas3recordedChunks=[];
+      mycanvas3mediaRecorder.start();
+      video.play();
+  }
+
+  }
+
   let mainpanelhtml = [];
   mainpanelhtml.push(
     <div style={{ width: "100%" }}>
@@ -302,10 +372,26 @@ export let Imageupload = (props) => {
 
       <div
         onClick={() => {
+          startrecording();
+        }}
+      >
+        startrecording
+      </div>
+
+      <div
+        onClick={() => {
+          stoprecording();
+        }}
+      >
+        stoprecording
+      </div>
+
+      <div
+        onClick={() => {
           mycanvas3mediaRecorder.stop();
         }}
       >
-        showcanvasinvideo
+        stopmediarecorderandshowinvideo
       </div>
 
       <div
@@ -314,6 +400,14 @@ export let Imageupload = (props) => {
         }}
       >
         upload
+      </div>
+
+      <div
+        onClick={() => {
+          startautoupload();
+        }}
+      >
+        startautoupload
       </div>
 
       <div
