@@ -26,6 +26,10 @@ export let Imageupload = (props) => {
   let fetchRangecolumndatafromDB = async () => {
     video = document.getElementById("myvideo1");
 
+         width = video.width;
+        height = video.height;
+
+
     video.addEventListener(
       "play",
       () => {
@@ -155,6 +159,7 @@ export let Imageupload = (props) => {
   }
 
   async function uploadvideo() {
+    console.log(mycanvas3recordedChunks);
     var mycanvas3blob = new Blob(mycanvas3recordedChunks, {
       type: "video/mp4",
     });
@@ -166,7 +171,9 @@ export let Imageupload = (props) => {
 
     const url = "/videoupload";
     var formData = new FormData();
-    formData.append(video.currentTime+"mypic", myblobfile);
+    let filenametoupload ="mypic"+parseInt(video.currentTime);
+    console.log(filenametoupload);
+    formData.append("mypic", myblobfile);
 
     const config = {
       headers: {
@@ -179,10 +186,12 @@ export let Imageupload = (props) => {
     .catch((error) => {
       console.error(`failed: ${error.message}`);
       currentstatus = "faileduploading";
+      currentVideoStatus="isuploadingfailed";
     })
     .then((response) => {
       console.log(response);
       currentstatus = "finisheduploading";
+      currentVideoStatus="isuploadingended";
     })
   }
 
@@ -230,29 +239,7 @@ export let Imageupload = (props) => {
     myvideo3.currentTime = 3;
   }
 
-  function doubledownloadvideo() {
-    let mycanvas3recordedChunksdouble = [];
-    for (let i = 0; i < mycanvas3recordedChunks.length; i++) {
-      mycanvas3recordedChunksdouble.push(mycanvas3recordedChunks[i]);
-    }
-    for (let i = 0; i < mycanvas3recordedChunks.length; i++) {
-      mycanvas3recordedChunksdouble.push(mycanvas3recordedChunks[i]);
-    }
-    var mycanvas3blob = new Blob(mycanvas3recordedChunksdouble, {
-      type: "video/mp4",
-    });
-    var mycanvas3url = URL.createObjectURL(mycanvas3blob);
-    const a = document.createElement("a");
-    a.style.display = "none";
-    a.href = mycanvas3url;
-    a.download = "sample.mp4";
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => {
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(mycanvas3url);
-    }, 100);
-  }
+
 
   function handleChangefile(event) {
     let targetfile = event.target.files[0];
@@ -391,6 +378,82 @@ export let Imageupload = (props) => {
 
   }
 
+  function gototime(){
+    video.currentTime = 10;
+    console.log(video.duration);
+  }
+
+
+  let currenttimeWindowStart = 0;
+  let currenttimeWindowEnd = 0;
+  let totaltimeWindowEnd = "" //video.duration;
+  let currentVideoStatus = "initial";
+  let numberofframespersecond = 60;
+  // initial, playing, paused, end
+
+  async function autouploadvideo1(){
+
+    console.log(currentVideoStatus);
+    console.log(video.currentTime);
+    console.log(parseInt(video.currentTime));
+
+    if(video.playing){
+      currentVideoStatus = "playing";
+    }
+ 
+if(currentVideoStatus === "initial"){
+  mycanvas3recordedChunks=[];
+  mycanvas3mediaRecorder.start();
+  video.play();
+  currentVideoStatus = "playing";
+}
+else if(currentVideoStatus === "playing"){
+  let c3 = document.getElementById("mycanvas3");
+  let ctx3 = c3.getContext("2d");
+  ctx3.drawImage(video, 0, 0, width, height);
+   if(parseInt(video.currentTime) === 10){
+    video.pause();
+    mycanvas3mediaRecorder.stop();
+    currentVideoStatus = "paused";
+  }
+
+}
+else if(currentVideoStatus === "paused"){
+ // mycanvas3mediaRecorder.stop();
+ if(parseInt(video.currentTime) === 10){
+    currentVideoStatus = "startuploading";
+  }
+ 
+}
+else if(currentVideoStatus === "ended"){
+  mycanvas3mediaRecorder.stop();
+
+}
+else if(currentVideoStatus === "startuploading"){
+  await uploadvideo();
+  currentVideoStatus = "isuploadingstarted";
+}
+else if(currentVideoStatus === "isuploadingstarted"){
+
+}
+else if(currentVideoStatus === "isuploadingfailed"){
+
+}
+else if(currentVideoStatus === "isuploadingended"){
+
+}
+else{
+
+}
+
+  setTimeout(() => {
+    autouploadvideo1();
+  }, 16);
+  
+
+
+  }
+
   let mainpanelhtml = [];
   mainpanelhtml.push(
     <div style={{ width: "100%" }}>
@@ -467,19 +530,23 @@ export let Imageupload = (props) => {
 
       <div
         onClick={() => {
+          autouploadvideo1();
+        }}
+      >
+        autouploadvideo1
+      </div>
+
+      
+
+      <div
+        onClick={() => {
           downloadvideo();
         }}
       >
         downloadvideo
       </div>
 
-      <div
-        onClick={() => {
-          doubledownloadvideo();
-        }}
-      >
-        doubledownloadvideo
-      </div>
+    
 
       <div
         onClick={() => {
@@ -487,6 +554,14 @@ export let Imageupload = (props) => {
         }}
       >
         getimagefromvideoattime
+      </div>
+
+      <div
+        onClick={() => {
+          gototime();
+        }}
+      >
+        gototime
       </div>
 
       <img id="myImg" alt="test" width="300" height="270"></img>

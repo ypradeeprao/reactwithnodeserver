@@ -22,9 +22,10 @@ const imageStorage = multer.diskStorage({
   // Destination to store image     
   destination: 'images', 
     filename: (req, file, cb) => {
-        cb(null, file.fieldname 
+        cb(null, 
+          file.originalname)
           //+ '_' + Date.now() 
-           + path.extname(file.originalname))
+         //  + path.extname(file.originalname))
           // file.fieldname is name of the field (image)
           // path.extname get the uploaded file extension
   }
@@ -101,14 +102,14 @@ const fileupload = async function(req,res){
   }
 
   const videoupload = async function(req,res){
-    console.log(req);
-      console.log(req.file);
-      console.log(req.files);
-      console.log(req.body);
-      console.log(req.body.file);
-      console.log(req.body.files);
-      console.log(req.body.formData);
-      console.log(req.formData);
+    // console.log(req);
+    //   console.log(req.file);
+    //   console.log(req.files);
+    //   console.log(req.body);
+    //   console.log(req.body.file);
+    //   console.log(req.body.files);
+    //   console.log(req.body.formData);
+    //   console.log(req.formData);
       // let resp = {issuccess:"true", message:"cannot be deleted from frontend"};
       // var form = new formidable.IncomingForm();
       // form.parse(req, function (err, fields, files) {
@@ -129,11 +130,11 @@ const fileupload = async function(req,res){
 
 
   const fileread = async function(req){
-    console.log(req.files);
+    //console.log(req.files);
     let resp = {issuccess:"true", message:"cannot be deleted from frontend"};
     try {
       const data = fs.readFileSync('/test.txt', 'utf8');
-      console.log(data);
+    //  console.log(data);
     } catch (err) {
       console.error(err);
     }
