@@ -154,18 +154,19 @@ export let Imageupload = (props) => {
     myvideo3.src = mycanvas3url;
   }
 
-  function uploadvideo() {
+  async function uploadvideo() {
     var mycanvas3blob = new Blob(mycanvas3recordedChunks, {
       type: "video/mp4",
     });
     var mycanvas3url = URL.createObjectURL(mycanvas3blob);
-    var myblobfile = new File([mycanvas3blob], "sample.mp4", {
+    console.log(video.currentTime);
+    var myblobfile = new File([mycanvas3blob], video.currentTime+"sample.mp4", {
       type: "video/mp4",
     });
 
     const url = "/videoupload";
     var formData = new FormData();
-    formData.append("mypic", myblobfile);
+    formData.append(video.currentTime+"mypic", myblobfile);
 
     const config = {
       headers: {
@@ -173,9 +174,16 @@ export let Imageupload = (props) => {
       },
       onUploadProgress: (e) => uploadprogressHandler({ e: e }),
     };
-    axios.post(url, formData, config).then((response) => {
-      console.log(response.data);
-    });
+    
+    await axios.post(url, formData, config)
+    .catch((error) => {
+      console.error(`failed: ${error.message}`);
+      currentstatus = "faileduploading";
+    })
+    .then((response) => {
+      console.log(response);
+      currentstatus = "finisheduploading";
+    })
   }
 
   function uploadprogressHandler(methodprops) {
@@ -281,25 +289,23 @@ export let Imageupload = (props) => {
   function stoprecording(){
     console.log("stoprecording");
     video.pause();
+    currentstatus = "videoplayingpaused";
     mycanvas3mediaRecorder.stop();
     console.log(mycanvas3recordedChunks);
   }
 
  
-  let startautoupload = () => {
+  let startautoupload = async () => {
     console.log("startautoupload");
-    
+    console.log(currentstatus);
     if (video.ended) {
       currentstatus = "videoplayingend";
-    }
-    else if(video.paused){
-      currentstatus = "videoplayingpaused";
     }
     else{
     //  currentstatus = "videoplaying";
     }
 
-    if (currentstatus == "videoplayingbeforestart") {
+    if (currentstatus === "videoplayingbeforestart") {
       startrecording();
       currentstatus = "videoplaying";
      }
@@ -307,11 +313,11 @@ export let Imageupload = (props) => {
       stoprecording();
      }
      else if (currentstatus == "videoplayingpaused") {
-      uploadvideo();
+      await uploadvideo();
       currentstatus ="starteduploading";
     }
     else if (currentstatus == "videoplayingend") {
-      uploadvideo();
+      await uploadvideo();
       currentstatus ="starteduploading";
     }
     else if (currentstatus == "starteduploading") {
@@ -324,7 +330,7 @@ export let Imageupload = (props) => {
     }
 
   
-   
+    console.log(currentstatus);
     setTimeout(() => {
       startautoupload();
     }, 10000); 
