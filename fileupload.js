@@ -6,7 +6,7 @@ var multer = require('multer');
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-
+   
       // Uploads is the Upload_folder_name
       cb(null, "uploads")
   },
@@ -20,10 +20,51 @@ const maxSize = 100 * 1000 * 1000;
 
 const imageStorage = multer.diskStorage({
   // Destination to store image     
-  destination: 'images', 
+  destination: function (req, file, cb) {
+    console.log(file);
+    let originalname = file.originalname;
+    let mimetype = file.mimetype;
+    let foldername = "";
+    let filename="";
+
+    if(originalname && originalname !== ""){
+     let originalnamesplit = originalname.split(".");
+     if(originalnamesplit && originalnamesplit.length > 0){
+      foldername = originalnamesplit[0];
+      filename = originalnamesplit[1];
+     }
+    }
+    const path = `./videos/`+foldername;
+    fs.mkdirSync(path, { recursive: true });
+
+    cb(null, path)
+  },
     filename: (req, file, cb) => {
+     console.log(file);
+
+
+     console.log(file);
+     let originalname = file.originalname;
+     let mimetype = file.mimetype;
+     let foldername = "";
+     let filename="";
+ 
+     if(originalname && originalname !== ""){
+      let originalnamesplit = originalname.split(".");
+      if(originalnamesplit && originalnamesplit.length > 0){
+       foldername = originalnamesplit[0];
+       filename = originalnamesplit[1];
+
+         if(mimetype && mimetype.includes("mp4")){
+          filename = filename+".mp4";
+         }
+      }
+     }
+    
+
+
         cb(null, 
-          file.originalname)
+          filename)
           //+ '_' + Date.now() 
          //  + path.extname(file.originalname))
           // file.fieldname is name of the field (image)
@@ -31,28 +72,37 @@ const imageStorage = multer.diskStorage({
   }
 });
 
+
+
 var upload = multer({ 
   storage: imageStorage,
   limits: { fileSize: maxSize },
-  fileFilter: function (req, file, cb){
-  
-      // Set the filetypes, it is optional
-      var filetypes = /jpeg|jpg|png|mp4/;
-      var mimetype = filetypes.test(file.mimetype);
+  }).single("mypic"); 
 
-      var extname = filetypes.test(path.extname(
-                  file.originalname).toLowerCase());
+
+// var upload = multer({ 
+//   storage: imageStorage,
+//   limits: { fileSize: maxSize },
+//   fileFilter: function (req, file, cb){
+//     console.log(req.FormData);
+//     console.log(req.formData);
+//       // Set the filetypes, it is optional
+//       var filetypes = /jpeg|jpg|png|mp4/;
+//       var mimetype = filetypes.test(file.mimetype);
+
+//       var extname = filetypes.test(path.extname(
+//                   file.originalname).toLowerCase());
       
-      if (mimetype && extname) {
-          return cb(null, true);
-      }
+//       if (mimetype && extname) {
+//           return cb(null, true);
+//       }
     
-      cb("Error: File upload only supports the "
-              + "following filetypes - " + filetypes);
-    } 
+//       cb("Error: File upload only supports the "
+//               + "following filetypes - " + filetypes);
+//     } 
 
-// mypic is the name of file attribute
-}).single("mypic"); 
+// // mypic is the name of file attribute
+// }).single("mypic"); 
 
 
 const videoStorage = multer.diskStorage({
@@ -109,12 +159,15 @@ const fileupload = async function(req,res){
     //   console.log(req.body.file);
     //   console.log(req.body.files);
     //   console.log(req.body.formData);
-    //   console.log(req.formData);
+       console.log(req.body);
+       console.log(req.file);
+       console.log(req.mypic);
       // let resp = {issuccess:"true", message:"cannot be deleted from frontend"};
-      // var form = new formidable.IncomingForm();
-      // form.parse(req, function (err, fields, files) {
-      //  console.log("infileparse");
-      // });
+      var form = new formidable.IncomingForm();
+      form.parse(req, function (err, fields, files) {
+       console.log("infileparse");
+      // console.log(files);
+      });
      // return resp;
   
      upload(req,res,function(err) {
