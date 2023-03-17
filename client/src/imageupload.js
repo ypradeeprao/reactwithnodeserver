@@ -186,17 +186,17 @@ export let Imageupload = (props) => {
 
     await axios
       .post(url, formData, config)
-      .catch((error) => {
-        console.error(`failed: ${error.message}`);
-       
-        currentVideoStatus = "isuploadingfailed";
-      })
       .then((response) => {
         console.log(response);
-    
+
         currentVideoStatus = "isuploadingsuccess";
         console.log(currentVideoStatus);
-       // autouploadvideo();
+        autouploadvideo();
+      })
+      .catch((error) => {
+        console.log(`failed: ${error.message}`);
+
+        currentVideoStatus = "isuploadingfailed";
       });
   }
 
@@ -277,15 +277,38 @@ export let Imageupload = (props) => {
   function stoprecording() {
     console.log("stoprecording");
     video.pause();
-   
+
     mycanvas3mediaRecorder.stop();
     console.log(mycanvas3recordedChunks);
   }
 
   function gototime() {
-    video.currentTime =currentrecordingendtime;
+    video.currentTime = currentrecordingendtime;
     console.log(video.duration);
   }
+
+let Videoprogressbarhtml = () =>{
+let mainpanelhtml = [];
+for(let i=0; i<50; i++){
+  mainpanelhtml.push(
+    <div
+          style={{
+            width: "15px",
+            height: "5px",
+            backgroundColor: "grey",
+            textAlign: "center",
+            overflow:"hidden"
+          }}
+          onClick={()=>alert(i)}
+        >
+          .
+        </div>
+  );
+}
+return <div  style={{ display: "flex" }}>
+  {mainpanelhtml}
+</div>;
+}
 
   let currentrecordingstarttime = 0;
   let currentrecordingendtime = 10;
@@ -318,23 +341,41 @@ export let Imageupload = (props) => {
         mycanvas3mediaRecorder.stop();
         currentVideoStatus = "paused";
       }
+
+      if (video.ended) {
+        currentVideoStatus = "ended";
+      }
     } else if (currentVideoStatus === "paused") {
-      // mycanvas3mediaRecorder.stop();
       if (parseInt(video.currentTime) === currentrecordingendtime) {
         currentVideoStatus = "startuploading";
       }
+    } else if (video.ended && currentVideoStatus === "playing") {
+      if (mycanvas3mediaRecorder.state !== "inactive") {
+        mycanvas3mediaRecorder.stop();
+      }
+      currentVideoStatus = "startuploading";
     } else if (currentVideoStatus === "ended") {
-      mycanvas3mediaRecorder.stop();
+      if (mycanvas3mediaRecorder.state !== "inactive") {
+        mycanvas3mediaRecorder.stop();
+      }
+      currentVideoStatus = "startuploading";
     } else if (currentVideoStatus === "startuploading") {
-      clearTimeout(timer);
       await uploadvideo();
-      currentVideoStatus = "isuploadingstarted";
-     
+      return;
     } else if (currentVideoStatus === "isuploadingstarted") {
-    } else if (currentVideoStatus === "isuploadingfailed") {
+    } else if (
+      currentVideoStatus === "isuploadingfailed" ||
+      currentVideoStatus === "finisheduploading"
+    ) {
+      return;
     } else if (currentVideoStatus === "isuploadingsuccess") {
-      currentVideoStatus= "initial";
-      currentrecordingendtime = currentrecordingendtime + 10;
+      if (video.ended) {
+        currentVideoStatus = "finisheduploading";
+        currentrecordingendtime = 0;
+      } else {
+        currentVideoStatus = "initial";
+        currentrecordingendtime = currentrecordingendtime + 10;
+      }
     } else {
     }
 
@@ -395,14 +436,6 @@ export let Imageupload = (props) => {
 
       <div
         onClick={() => {
-          mycanvas3mediaRecorder.stop();
-        }}
-      >
-        stopmediarecorderandshowinvideo
-      </div>
-
-      <div
-        onClick={() => {
           uploadvideo();
         }}
       >
@@ -441,6 +474,18 @@ export let Imageupload = (props) => {
         gototime
       </div>
 
+      <div
+        style={{
+          width: "25px",
+          height: "25px",
+          backgroundColor: "grey",
+          borderRadius: "50%",
+          textAlign: "center",
+        }}
+      >
+        A
+      </div>
+    <Videoprogressbarhtml />
       <img id="myImg" alt="test" width="300" height="270"></img>
     </div>
   );
