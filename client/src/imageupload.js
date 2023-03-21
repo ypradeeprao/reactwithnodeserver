@@ -1,90 +1,671 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 
+import {
+  alltypecompconsolelog,
+  replacedynamictext,
+  gettabledatafromDatabase,
+  alltypecompClickHandler,
+  allowDrop,
+  dragstart,
+  dragEnter,
+  dragLeave,
+  inserttabledatainDatabase,
+  fetchlistmetadatafromDB,
+  createtabledataNodejs,
+  insertrecordNodejs,
+  updaterecordNodejs,
+  deleterecordNodejs,
+  currenttimeinseconds,
+} from "./logic";
+
 var video;
-var mycanvas1stream;
-var mycanvas1mediaRecorder;
-var mycanvas1mediaRecorderchunks = [];
-var mycanvas3mediaRecorder;
-var myctx3;
-var mycanvas3recordedChunks;
-var mycanvas3recordedChunksobjectbytime = {};
-var width, height, videoStream;
-let videorecordedBlobs = [];
+var mycanvasmediaRecorder;
+var mycanvasrecordedChunks;
+var width, height;
 let initframedata = {};
 let modifiedframedata = {};
-let uploadresponse = {};
-let firstclick = true;
 
-export let Imageupload = (props) => {
-  const [file, setFile] = useState();
-
+let Videogalleryhtml = (props) => {
+  const [mediagallery, setmediagallery] = useState([]);
+  const [mediasectiongallery, setmediasectiongallery] = useState([]);
   useEffect(() => {
-    fetchRangecolumndatafromDB({});
+    fetchData();
   }, []);
 
-  let fetchRangecolumndatafromDB = async () => {
-    video = document.getElementById("myvideo1");
+  async function fetchData() {
+    let mediagalleryjs = await fetchlistmetadatafromDB({
+      tablename: "media",
+      conditionexpression: {},
+    });
 
+    if (mediagalleryjs && mediagalleryjs.length > 0) {
+      setmediagallery(mediagalleryjs);
+    }
+
+    let mediasectiongalleryjs = await fetchlistmetadatafromDB({
+      tablename: "mediasection",
+      conditionexpression: {},
+    });
+
+    if (mediasectiongalleryjs && mediasectiongalleryjs.length > 0) {
+      setmediasectiongallery(mediasectiongalleryjs);
+    }
+
+    // var mycanvasblob = new Blob(mycanvasrecordedChunks, {
+    //   type: "video/mp4",
+    // });
+    // var mycanvasurl = URL.createObjectURL(mycanvasblob);
+   // var myvideo4 = document.getElementById("myvideo4");
+   // myvideo4.src = mycanvasurl;
+
+  }
+
+  let mainpanelhtml = [];
+  let mainvideogalleryhtml = [];
+  for (let i = 0; i < mediagallery.length; i++) {
+    mainvideogalleryhtml.push(<div>{mediagallery[i].label}</div>);
+  }
+
+  let mainsectionvideogalleryhtml = [];
+  for (let i = 0; i < mediasectiongallery.length; i++) {
+    mainsectionvideogalleryhtml.push(
+      <div>
+        {mediasectiongallery[i].label}-{mediasectiongallery[i].foldername}-
+        {mediasectiongallery[i].filename}
+      </div>
+    );
+  }
+let videosrc = "/videofour/samplemedianame1679239077/0to10.mp4";
+  return (
+    <div style={{ display: "flex", height: "300px", overflow: "auto" }}>
+      <div style={{ width: "30%", overflow: "auto" }}>
+      <b>media</b>
+        {mainvideogalleryhtml}
+        <b>mediasection</b>
+        {mainsectionvideogalleryhtml}
+      </div>
+      <div style={{ width: "70%", overflow: "auto" }}>
+      <video id="videoPlayer" width="650" controls muted="muted" autoplay>
+      <source src={videosrc} type="video/mp4" />
+    </video>
+      </div>
+    </div>
+  );
+};
+
+let Videoprogressbarhtml = (methodprops) => {
+  const [currentTime, setcurrentTime] = useState(0);
+
+  useEffect(() => {
+    updatetime();
+  }, []);
+
+  function updatetime() {
+    let myvideo1 = document.getElementById("myvideo1");
+    setcurrentTime(myvideo1.currentTime);
+    setTimeout(() => {
+      updatetime();
+    }, 1000);
+  }
+
+  let { totalwidth, numberofseconds, gototime } = methodprops;
+  let mainpanelhtml = [];
+  // console.log(currentTime);
+  let blockwidth = totalwidth / numberofseconds;
+  let normalblockprops = {
+    width: blockwidth,
+    height: "5px",
+    backgroundColor: "grey",
+    textAlign: "center",
+    overflow: "hidden",
+  };
+  let currenttimeblockprops = {
+    width: "25px",
+    height: "25px",
+    backgroundColor: "grey",
+    borderRadius: "50%",
+    textAlign: "center",
+  };
+  for (let i = 0; i < numberofseconds; i++) {
+    let blockprops = {};
+    if (i === parseInt(currentTime)) {
+      blockprops = currenttimeblockprops;
+    } else {
+      blockprops = normalblockprops;
+    }
+
+    mainpanelhtml.push(
+      <div
+        style={blockprops}
+        title={i}
+        onClick={() => gototime({ currentTime: i })}
+      >
+        .
+      </div>
+    );
+  }
+  return (
+    <div>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        {mainpanelhtml}
+      </div>
+      <div
+        style={{
+          display: "flex",
+          rowGap: "10px",
+          justifyContent: "flex-start",
+          alignItems: "center",
+        }}
+      >
+        <div
+          style={{ padding: "5px" }}
+          onClick={() => {
+            document.getElementById("myvideo1").play();
+          }}
+        >
+          <i class="fa fa-play"></i>
+        </div>
+        <div
+          style={{ padding: "5px" }}
+          onClick={() => {
+            document.getElementById("myvideo1").pause();
+          }}
+        >
+          <i class="fa fa-pause"></i>
+        </div>
+        <div
+          style={{ padding: "5px" }}
+          onClick={() => {
+            document.getElementById("myvideo1").currentTime = 0;
+            document.getElementById("myvideo1").play();
+          }}
+        >
+          <i class="fa fa-fast-backward"></i>
+        </div>
+        <div
+          style={{ padding: "5px" }}
+          onClick={() => {
+            document.getElementById("myvideo1").currentTime = currentTime - 10;
+          }}
+        >
+          <i class="fa fa-rotate-left"></i>
+        </div>
+        <div
+          style={{ padding: "5px" }}
+          onClick={() => {
+            document.getElementById("myvideo1").currentTime = currentTime + 10;
+          }}
+        >
+          <i class="fa fa-rotate-right"></i>
+        </div>
+        <div style={{ padding: "5px" }}>{currentTime}</div>
+      </div>
+    </div>
+  );
+};
+
+export let Imageupload = (props) => {
+  useEffect(() => {
+    doInit({});
+  }, []);
+
+  let doInit = async () => {
+    video = document.getElementById("myvideo1");
     width = video.width;
     height = video.height;
 
-    video.addEventListener(
-      "play",
-      () => {
-        width = video.width;
-        height = video.height;
-        timerCallback();
-      },
-      false
-    );
-
-    var mycanvas3 = document.getElementById("mycanvas3");
-    myctx3 = mycanvas3.getContext("2d");
-
-    const mycanvas3stream = mycanvas3.captureStream(25);
-    mycanvas3recordedChunks = [];
-    mycanvas3recordedChunksobjectbytime = {};
+    var mycanvas = document.getElementById("mycanvas");
+    const mycanvasstream = mycanvas.captureStream(25);
+    mycanvasrecordedChunks = [];
     var options = {};
-    mycanvas3mediaRecorder = new MediaRecorder(mycanvas3stream, options);
-
-    mycanvas3mediaRecorder.ondataavailable =
-      mycanvas3recorderhandleDataAvailable;
-    //mycanvas3mediaRecorder.start();
-
-    mycanvas3mediaRecorder.onstop = (evt) => mycanvas3recorderonstop();
+    mycanvasmediaRecorder = new MediaRecorder(mycanvasstream, options);
+    mycanvasmediaRecorder.ondataavailable = mycanvasrecorderhandleDataAvailable;
+    mycanvasmediaRecorder.onstop = (evt) => mycanvasrecorderonstop();
   };
 
-  let timerCallback = () => {
-    if (video.paused || video.ended) {
-      return;
-    }
-    computeFrame();
-    setTimeout(() => {
-      timerCallback();
-    }, 16); // roughly 60 frames per second
-  };
-
-  function computeFrame() {
-    let c3 = document.getElementById("mycanvas3");
-    let ctx3 = c3.getContext("2d");
-    ctx3.drawImage(video, 0, 0, width, height);
-
-    // ctx1.putImageData(frame, 0, 0);
-
-    return;
-  }
-
-  function mycanvas3recorderhandleDataAvailable(event) {
+  async function uploadvideo(methodprops) {
+    let {
+      medianame,
+      mediasectionname,
+      starttimeinseconds,
+      endtimeinseconds,
+      totaldurationinseconds,
+    } = methodprops;
+    console.log(mycanvasrecordedChunks);
+    var mycanvasblob = new Blob(mycanvasrecordedChunks, {
+      type: "video/mp4",
+    });
+    var mycanvasurl = URL.createObjectURL(mycanvasblob);
     console.log(video.currentTime);
-    mycanvas3recordedChunks.push(event.data);
-    mycanvas3recordedChunksobjectbytime[video.currentTime] =
-      mycanvas3recordedChunks;
-    console.log(mycanvas3recordedChunks);
-    console.log(mycanvas3recordedChunksobjectbytime);
+    let filenamenodejs =
+      medianame +
+      "foldername" +
+      starttimeinseconds +
+      "to" +
+      endtimeinseconds +
+      ".mp4";
+    let filename = starttimeinseconds + "to" + endtimeinseconds + ".mp4";
+
+    console.log(filenamenodejs);
+    var myblobfile = new File([mycanvasblob], filenamenodejs, {
+      type: "video/mp4",
+    });
+
+    const url = "/videoupload";
+    var formData = new FormData();
+    formData.append("mypic", myblobfile);
+
+    const config = {
+      headers: {
+        "content-type": "multipart/form-data",
+      },
+      onUploadProgress: (e) => uploadprogressHandler({ e: e }),
+    };
+
+    await axios
+      .post(url, formData, config)
+      .then((response) => {
+        console.log(response);
+
+        currentVideouploadingStatus = "isuploadingsuccess";
+        console.log(currentVideouploadingStatus);
+
+        updatevideolocationstatusindatabase({
+          status: currentVideouploadingStatus,
+          percentagecompleted: 100,
+          medianame: medianame,
+          mediasectionname: mediasectionname,
+          starttimeinseconds: starttimeinseconds,
+          endtimeinseconds: endtimeinseconds,
+          totaldurationinseconds: totaldurationinseconds,
+          filename: filename,
+          foldername: medianame,
+        });
+      })
+      .catch((error) => {
+        console.log(`failed: ${error.message}`);
+
+        currentVideouploadingStatus = "isuploadingfailed";
+
+        updatevideolocationstatusindatabase({
+          status: currentVideouploadingStatus,
+          percentagecompleted: 0,
+          medianame: medianame,
+          mediasectionname: mediasectionname,
+          starttimeinseconds: starttimeinseconds,
+          endtimeinseconds: endtimeinseconds,
+          totaldurationinseconds: totaldurationinseconds,
+          filename: filename,
+          foldername: medianame,
+        });
+      });
   }
 
-  function getCursorPosition(event) {
+  function downloadvideo() {
+    var mycanvasblob = new Blob(mycanvasrecordedChunks, {
+      type: "video/mp4",
+    });
+    var mycanvasurl = URL.createObjectURL(mycanvasblob);
+    const a = document.createElement("a");
+    a.style.display = "none";
+    a.href = mycanvasurl;
+    a.download = "sample.mp4";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(mycanvasurl);
+    }, 100);
+  }
+
+  function uploadprogressHandler(methodprops) {
+    let { e } = methodprops;
+    let { loaded, total } = e;
+    let percent = (loaded / total) * 100;
+    let roundedpercent = Math.round(percent);
+    console.log(roundedpercent);
+  }
+
+  function getimagefromvideoattime() {
+    let canvas = document.createElement("canvas");
+    let myvideo3 = document.getElementById("myvideo3");
+    let image = "";
+
+    myvideo3.addEventListener("seeked", function () {
+      canvas.width = 1920;
+      canvas.height = 1080;
+
+      let ctx = canvas.getContext("2d");
+      ctx.drawImage(myvideo3, 0, 0, canvas.width, canvas.height);
+
+      image = canvas.toDataURL("image/jpeg");
+      document.getElementById("myImg").src = image;
+    });
+
+    myvideo3.currentTime = 3;
+  }
+
+  function handleChangefile(event) {
+    let targetfile = event.target.files[0];
+    console.log(targetfile);
+
+    var fr = new FileReader();
+    fr.onload = function () {
+      var data = fr.result;
+      var array = new Int8Array(data);
+      var uint8ClampedArray = new Uint8ClampedArray(data);
+      console.log(data);
+      console.log(array);
+      console.log(uint8ClampedArray);
+      // output.value = JSON.stringify(array, null, '  ');
+      // window.setTimeout(ReadFile, 1000);
+    };
+    fr.readAsArrayBuffer(targetfile);
+
+    const urlObj = URL.createObjectURL(targetfile);
+    console.log(urlObj);
+    let videoupload = document.getElementById("myvideo1");
+    videoupload.src = urlObj;
+  }
+
+  function gototime(methodprops) {
+    let { currentTime } = methodprops;
+    video.currentTime = currentTime;
+    console.log(video.duration);
+  }
+
+  async function startautouploadvideo() {
+    let currenttimeinsecondsjs = currenttimeinseconds();
+    let medianame = "samplemedianame" + currenttimeinsecondsjs;
+    let medialabel = "samplemedialabel" + currenttimeinsecondsjs;
+    let mediaid = "samplemediaid" + currenttimeinsecondsjs;
+    let mediauploadname = "samplemediauploadname" + currenttimeinsecondsjs;
+    let mediasectionname = "samplemediasectionname" + currenttimeinsecondsjs;
+
+    let createmediaprops = {
+      id: mediaid,
+      label: medialabel,
+      name: medianame,
+      firstaudiovediomediasectionname: "",
+      firstvediomediasectionname: "",
+      firstaudiomediasectionname: "",
+      totaldurationinseconds: 0,
+    };
+    let createmediaresp = await insertrecordNodejs({
+      tablename: "media",
+      tabledatalist: [createmediaprops],
+    });
+    console.log(createmediaresp);
+
+    let createmediauploadprops = {
+      id: mediauploadname,
+      label: mediauploadname,
+      name: mediauploadname,
+      sourcelocationtype: "",
+      sourcelocationurl: "",
+      lastsuccesfulluploadingstarttimeinseconds: 0,
+      lastsuccesfulluploadingendtimeinseconds: 0,
+      percentagecompleted: 0,
+      eachvideosectiondurationinseconds: 10,
+      medianame: medianame,
+      status: "notstarted", ///failed/success/started/paused/resumed
+    };
+    let createmediauploadresp = {};
+
+    if (createmediaresp.issuccess === "true") {
+      createmediauploadresp = await insertrecordNodejs({
+        tablename: "mediaupload",
+        tabledatalist: [createmediauploadprops],
+      });
+    }
+    console.log(createmediauploadresp);
+
+    let createmediasectionprops = {
+      id: mediasectionname,
+      label: mediasectionname,
+      name: mediasectionname,
+      medianame: medianame,
+      type: "video", //audio/audiovedio,
+      mediastarttimeinsecondsinparent: 0,
+      mediaendtimeinsecondsinparent: 10,
+      totaldurationinseconds: 10,
+      status: "notstarted", ///failed/success/started/paused/resumed
+      percentagecompleted: 0,
+      foldername: "",
+      filename: "",
+    };
+    let createmediasectionresp = {};
+    if (createmediauploadresp.issuccess === "true") {
+      createmediasectionresp = await insertrecordNodejs({
+        tablename: "mediasection",
+        tabledatalist: [createmediasectionprops],
+      });
+    }
+
+    if (createmediasectionresp.issuccess === "true") {
+      currentVideouploadingStatus = "initial";
+      autouploadvideo({
+        medianame: medianame,
+        mediasectionname: mediasectionname,
+        starttimeinseconds: 0,
+        endtimeinseconds: 10,
+        totaldurationinseconds: 10,
+      });
+    }
+  }
+
+  async function updatevideolocationstatusindatabase(methodprops) {
+    let {
+      status,
+      percentagecompleted,
+      medianame,
+      mediasectionname,
+      starttimeinseconds,
+      endtimeinseconds,
+      totaldurationinseconds,
+      filename,
+      foldername,
+    } = methodprops;
+    console.log(methodprops);
+    let updatemediasectionresp = await updaterecordNodejs({
+      tablename: "mediasection",
+      conditionexpression: {
+        medianame: medianame,
+        name: mediasectionname,
+      },
+      updateexpression: {
+        status: status,
+        percentagecompleted: percentagecompleted,
+        foldername: foldername,
+        filename: filename,
+      },
+      upsertifnotfound: true,
+    });
+    console.log(updatemediasectionresp);
+    if (
+      updatemediasectionresp.issuccess === "true" &&
+      status === "isuploadingsuccess"
+    ) {
+      if (parseInt(video.duration) <= endtimeinseconds) {
+        currentVideouploadingStatus = "finisheduploading";
+        return;
+      }
+
+      let currenttimeinsecondsjs = currenttimeinseconds();
+      let mediasectionnamenew =
+        "samplemediasectionname" + currenttimeinsecondsjs;
+
+      let createmediasectionprops = {
+        id: mediasectionnamenew,
+        label: mediasectionnamenew,
+        name: mediasectionnamenew,
+        medianame: medianame,
+        type: "video", //audio/audiovedio,
+        mediastarttimeinsecondsinparent: endtimeinseconds,
+        mediaendtimeinsecondsinparent:
+          endtimeinseconds + totaldurationinseconds,
+        totaldurationinseconds: totaldurationinseconds,
+        status: "notstarted", ///failed/success/started/paused/resumed
+        percentagecompleted: 0,
+        foldername: "",
+        filename: "",
+      };
+      let createmediasectionresp = {};
+      createmediasectionresp = await insertrecordNodejs({
+        tablename: "mediasection",
+        tabledatalist: [createmediasectionprops],
+      });
+
+      if (createmediasectionresp.issuccess === "true") {
+        currentVideouploadingStatus = "initial";
+
+        autouploadvideo({
+          medianame: medianame,
+          mediasectionname: mediasectionnamenew,
+          starttimeinseconds: endtimeinseconds,
+          endtimeinseconds: endtimeinseconds + totaldurationinseconds,
+          totaldurationinseconds: totaldurationinseconds,
+        });
+      }
+    }
+  }
+
+  async function autouploadvideo(methodprops) {
+    console.log(methodprops);
+    let {
+      medianame,
+      mediasectionname,
+      starttimeinseconds,
+      endtimeinseconds,
+      totaldurationinseconds,
+    } = methodprops;
+
+    let videocurrenttimeinseconds = 0;
+    if (video && video.currentTime) {
+      videocurrenttimeinseconds = parseInt(video.currentTime);
+    }
+
+    console.log(currentVideouploadingStatus);
+    console.log(video.currentTime);
+    console.log(parseInt(video.currentTime));
+    console.log(videocurrenttimeinseconds);
+
+    console.log(starttimeinseconds);
+
+    // if (video.playing) {
+    //   currentVideouploadingStatus = "playing";
+    // }
+
+    if (
+      videocurrenttimeinseconds !== starttimeinseconds &&
+      currentVideouploadingStatus === "initial"
+    ) {
+      video.currentTime = starttimeinseconds;
+      console.log(currentVideouploadingStatus);
+      console.log(parseInt(video.duration));
+      console.log(parseInt(video.currentTime));
+      if (parseInt(video.duration) < starttimeinseconds) {
+        currentVideouploadingStatus = "finisheduploading";
+        return;
+      }
+    } else if (currentVideouploadingStatus === "initial") {
+      mycanvasrecordedChunks = [];
+      mycanvasmediaRecorder.start();
+      video.play();
+      currentVideouploadingStatus = "playing";
+      console.log(currentVideouploadingStatus);
+    } else if (currentVideouploadingStatus === "playing") {
+      let c3 = document.getElementById("mycanvas");
+      let ctx3 = c3.getContext("2d");
+      ctx3.drawImage(video, 0, 0, width, height);
+      if (parseInt(video.currentTime) === endtimeinseconds) {
+        video.pause();
+        mycanvasmediaRecorder.stop();
+        currentVideouploadingStatus = "paused";
+      }
+
+      if (video.ended) {
+        currentVideouploadingStatus = "ended";
+      }
+      console.log(currentVideouploadingStatus);
+    } else if (currentVideouploadingStatus === "paused") {
+      if (parseInt(video.currentTime) === endtimeinseconds) {
+        currentVideouploadingStatus = "startuploading";
+      }
+      console.log(currentVideouploadingStatus);
+    } else if (video.ended && currentVideouploadingStatus === "playing") {
+      if (mycanvasmediaRecorder.state !== "inactive") {
+        mycanvasmediaRecorder.stop();
+      }
+      currentVideouploadingStatus = "startuploading";
+      endtimeinseconds = parseInt(video.currentTime);
+      totaldurationinseconds = parseInt(video.currentTime) - starttimeinseconds;
+      console.log(currentVideouploadingStatus);
+    } else if (currentVideouploadingStatus === "ended") {
+      if (mycanvasmediaRecorder.state !== "inactive") {
+        mycanvasmediaRecorder.stop();
+      }
+      currentVideouploadingStatus = "startuploading";
+      endtimeinseconds = parseInt(video.currentTime);
+      totaldurationinseconds = parseInt(video.currentTime) - starttimeinseconds;
+
+      console.log(currentVideouploadingStatus);
+    } else if (currentVideouploadingStatus === "startuploading") {
+      await uploadvideo({
+        medianame: medianame,
+        mediasectionname: mediasectionname,
+        starttimeinseconds: starttimeinseconds,
+        endtimeinseconds: endtimeinseconds,
+        totaldurationinseconds: totaldurationinseconds,
+      });
+      console.log(currentVideouploadingStatus);
+      return;
+    } else if (
+      currentVideouploadingStatus === "isuploadingfailed" ||
+      currentVideouploadingStatus === "finisheduploading"
+    ) {
+      console.log(currentVideouploadingStatus);
+      return;
+    } else if (currentVideouploadingStatus === "isuploadingsuccess") {
+      console.log(currentVideouploadingStatus);
+      return;
+      // if (video.ended) {
+      //   currentVideouploadingStatus = "finisheduploading";
+      //   currentrecordingendtime = 0;
+      // } else {
+      //   currentVideouploadingStatus = "initial";
+      //   currentrecordingendtime = currentrecordingendtime + 10;
+      // }
+    } else {
+      console.log(currentVideouploadingStatus);
+    }
+
+    setTimeout(() => {
+      autouploadvideo({
+        medianame: medianame,
+        mediasectionname: mediasectionname,
+        starttimeinseconds: starttimeinseconds,
+        endtimeinseconds: endtimeinseconds,
+        totaldurationinseconds: totaldurationinseconds,
+      });
+    }, 16);
+  }
+
+  function mycanvasrecorderhandleDataAvailable(event) {
+    mycanvasrecordedChunks.push(event.data);
+  }
+
+  function mycanvasrecorderonstop() {
+    var mycanvasblob = new Blob(mycanvasrecordedChunks, {
+      type: "video/mp4",
+    });
+    var mycanvasurl = URL.createObjectURL(mycanvasblob);
+    var myvideo3 = document.getElementById("myvideo3");
+    myvideo3.src = mycanvasurl;
+  }
+
+  function greoutSimilarPixels(event) {
     const canvas = document.querySelector("canvas");
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -137,256 +718,17 @@ export let Imageupload = (props) => {
         modifiedframedata.data[i * 4 + 2] = 255;
       }
     }
-    //   if(firstclick == true){
+
     myctx.putImageData(modifiedframedata, 0, 0);
-    firstclick = false;
-    //   }
-    //  else{
-    //   firstclick = true;
-    //  myctx.putImageData(initframedata, 0, 0);
-    //   modifiedframedata = initframedata;
-    //   }
   }
 
-  function mycanvas3recorderonstop() {
-    var mycanvas3blob = new Blob(mycanvas3recordedChunks, {
-      type: "video/mp4",
-    });
-    var mycanvas3url = URL.createObjectURL(mycanvas3blob);
-    var myvideo3 = document.getElementById("myvideo3");
-    myvideo3.src = mycanvas3url;
-  }
-
-  async function uploadvideo() {
-    console.log(mycanvas3recordedChunks);
-    var mycanvas3blob = new Blob(mycanvas3recordedChunks, {
-      type: "video/mp4",
-    });
-    var mycanvas3url = URL.createObjectURL(mycanvas3blob);
-    console.log(video.currentTime);
-    let filename = "samplevideoname." + parseInt(video.currentTime);
-    console.log(filename);
-    var myblobfile = new File([mycanvas3blob], filename, {
-      type: "video/mp4",
-    });
-
-    const url = "/videoupload";
-    var formData = new FormData();
-    let filenametoupload = "mypic" + parseInt(video.currentTime);
-    console.log(filenametoupload);
-    formData.append("mypic", myblobfile);
-    formData.append("foldername", "testfoldername");
-
-    const config = {
-      headers: {
-        "content-type": "multipart/form-data",
-      },
-      onUploadProgress: (e) => uploadprogressHandler({ e: e }),
-    };
-
-    await axios
-      .post(url, formData, config)
-      .then((response) => {
-        console.log(response);
-
-        currentVideoStatus = "isuploadingsuccess";
-        console.log(currentVideoStatus);
-        autouploadvideo();
-      })
-      .catch((error) => {
-        console.log(`failed: ${error.message}`);
-
-        currentVideoStatus = "isuploadingfailed";
-      });
-  }
-
-  function uploadprogressHandler(methodprops) {
-    let { e } = methodprops;
-    let { loaded, total } = e;
-    let percent = (loaded / total) * 100;
-    let roundedpercent = Math.round(percent);
-    console.log(roundedpercent);
-  }
-
-  function downloadvideo() {
-    var mycanvas3blob = new Blob(mycanvas3recordedChunks, {
-      type: "video/mp4",
-    });
-    var mycanvas3url = URL.createObjectURL(mycanvas3blob);
-    const a = document.createElement("a");
-    a.style.display = "none";
-    a.href = mycanvas3url;
-    a.download = "sample.mp4";
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => {
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(mycanvas3url);
-    }, 100);
-  }
-
-  function getimagefromvideoattime() {
-    let canvas = document.createElement("canvas");
-    let myvideo3 = document.getElementById("myvideo3");
-    let image = "";
-
-    myvideo3.addEventListener("seeked", function () {
-      canvas.width = 1920;
-      canvas.height = 1080;
-
-      let ctx = canvas.getContext("2d");
-      ctx.drawImage(myvideo3, 0, 0, canvas.width, canvas.height);
-
-      image = canvas.toDataURL("image/jpeg");
-      document.getElementById("myImg").src = image;
-    });
-
-    myvideo3.currentTime = 3;
-  }
-
-  function handleChangefile(event) {
-    let targetfile = event.target.files[0];
-    console.log(targetfile);
-
-    var fr = new FileReader();
-    fr.onload = function () {
-      var data = fr.result;
-      var array = new Int8Array(data);
-      var uint8ClampedArray = new Uint8ClampedArray(data);
-      console.log(data);
-      console.log(array);
-      console.log(uint8ClampedArray);
-      // output.value = JSON.stringify(array, null, '  ');
-      // window.setTimeout(ReadFile, 1000);
-    };
-    fr.readAsArrayBuffer(targetfile);
-
-    const urlObj = URL.createObjectURL(targetfile);
-    console.log(urlObj);
-    let videoupload = document.getElementById("myvideo1");
-    videoupload.src = urlObj;
-  }
-
-  function startrecording() {
-    console.log("startrecording");
-    mycanvas3recordedChunks = [];
-    mycanvas3mediaRecorder.start();
-    video.play();
-  }
-
-  function stoprecording() {
-    console.log("stoprecording");
-    video.pause();
-
-    mycanvas3mediaRecorder.stop();
-    console.log(mycanvas3recordedChunks);
-  }
-
-  function gototime() {
-    video.currentTime = currentrecordingendtime;
-    console.log(video.duration);
-  }
-
-let Videoprogressbarhtml = () =>{
-let mainpanelhtml = [];
-for(let i=0; i<50; i++){
-  mainpanelhtml.push(
-    <div
-          style={{
-            width: "15px",
-            height: "5px",
-            backgroundColor: "grey",
-            textAlign: "center",
-            overflow:"hidden"
-          }}
-          onClick={()=>alert(i)}
-        >
-          .
-        </div>
-  );
-}
-return <div  style={{ display: "flex" }}>
-  {mainpanelhtml}
-</div>;
-}
-
-  let currentrecordingstarttime = 0;
   let currentrecordingendtime = 10;
-  let totaltimeWindowEnd = ""; //video.duration;
-  let currentVideoStatus = "initial";
-  let numberofframespersecond = 60;
-  let timer;
-  // initial, playing, paused, end
-
-  async function autouploadvideo() {
-    console.log(currentVideoStatus);
-    console.log(video.currentTime);
-    console.log(parseInt(video.currentTime));
-
-    if (video.playing) {
-      currentVideoStatus = "playing";
-    }
-
-    if (currentVideoStatus === "initial") {
-      mycanvas3recordedChunks = [];
-      mycanvas3mediaRecorder.start();
-      video.play();
-      currentVideoStatus = "playing";
-    } else if (currentVideoStatus === "playing") {
-      let c3 = document.getElementById("mycanvas3");
-      let ctx3 = c3.getContext("2d");
-      ctx3.drawImage(video, 0, 0, width, height);
-      if (parseInt(video.currentTime) === currentrecordingendtime) {
-        video.pause();
-        mycanvas3mediaRecorder.stop();
-        currentVideoStatus = "paused";
-      }
-
-      if (video.ended) {
-        currentVideoStatus = "ended";
-      }
-    } else if (currentVideoStatus === "paused") {
-      if (parseInt(video.currentTime) === currentrecordingendtime) {
-        currentVideoStatus = "startuploading";
-      }
-    } else if (video.ended && currentVideoStatus === "playing") {
-      if (mycanvas3mediaRecorder.state !== "inactive") {
-        mycanvas3mediaRecorder.stop();
-      }
-      currentVideoStatus = "startuploading";
-    } else if (currentVideoStatus === "ended") {
-      if (mycanvas3mediaRecorder.state !== "inactive") {
-        mycanvas3mediaRecorder.stop();
-      }
-      currentVideoStatus = "startuploading";
-    } else if (currentVideoStatus === "startuploading") {
-      await uploadvideo();
-      return;
-    } else if (currentVideoStatus === "isuploadingstarted") {
-    } else if (
-      currentVideoStatus === "isuploadingfailed" ||
-      currentVideoStatus === "finisheduploading"
-    ) {
-      return;
-    } else if (currentVideoStatus === "isuploadingsuccess") {
-      if (video.ended) {
-        currentVideoStatus = "finisheduploading";
-        currentrecordingendtime = 0;
-      } else {
-        currentVideoStatus = "initial";
-        currentrecordingendtime = currentrecordingendtime + 10;
-      }
-    } else {
-    }
-
-    timer = setTimeout(() => {
-      autouploadvideo();
-    }, 16);
-  }
+  let currentVideouploadingStatus = "initial";
 
   let mainpanelhtml = [];
   mainpanelhtml.push(
     <div style={{ width: "100%" }}>
+      <Videogalleryhtml />
       <input id="videoupload" type="file" onChange={handleChangefile} />
 
       <video
@@ -407,10 +749,10 @@ return <div  style={{ display: "flex" }}>
       </video>
 
       <canvas
-        id="mycanvas3"
+        id="mycanvas"
         width="300"
         height="270"
-        onMouseDown={(e) => getCursorPosition(e)}
+        onMouseDown={(e) => greoutSimilarPixels(e)}
         style={{ border: "1px solid #d3d3d3" }}
       >
         Your browser does not support the HTML canvas tag.
@@ -420,34 +762,10 @@ return <div  style={{ display: "flex" }}>
 
       <div
         onClick={() => {
-          startrecording();
+          startautouploadvideo();
         }}
       >
-        startrecording
-      </div>
-
-      <div
-        onClick={() => {
-          stoprecording();
-        }}
-      >
-        stoprecording
-      </div>
-
-      <div
-        onClick={() => {
-          uploadvideo();
-        }}
-      >
-        upload
-      </div>
-
-      <div
-        onClick={() => {
-          autouploadvideo();
-        }}
-      >
-        autouploadvideo
+        startautouploadvideo
       </div>
 
       <div
@@ -474,18 +792,11 @@ return <div  style={{ display: "flex" }}>
         gototime
       </div>
 
-      <div
-        style={{
-          width: "25px",
-          height: "25px",
-          backgroundColor: "grey",
-          borderRadius: "50%",
-          textAlign: "center",
-        }}
-      >
-        A
-      </div>
-    <Videoprogressbarhtml />
+      <Videoprogressbarhtml
+        totalwidth={1000}
+        numberofseconds={33}
+        gototime={gototime}
+      />
       <img id="myImg" alt="test" width="300" height="270"></img>
     </div>
   );

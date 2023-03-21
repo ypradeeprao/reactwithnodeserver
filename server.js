@@ -10,6 +10,7 @@ const imgbbrestjs = require("./imgbbrest.js");
 const fileuploadjs = require("./fileupload.js");
 const bodyParser = require("body-parser");
 var multer = require("multer");
+const fs = require('fs');
 
 // Configuring body parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -122,4 +123,49 @@ app.post("/uploadImage", async (req, res) => {
       //   res.send("Success, Image uploaded!")
     }
   });
+});
+
+
+app.get("/videofour/:foldername/:filename", function (req, res) {
+  // Ensure there is a range given for the video
+  var foldername = req.params.foldername;
+  var filename = req.params.filename;
+
+  const range = req.headers.range;
+  console.log(range);
+  if (!range) {
+    res.status(400).send("Requires Range header");
+  }
+
+  // get video stats (about 61MB)
+  const videoPath = path.join(__dirname, "videos",
+  foldername, filename)
+  const videoSize = fs.statSync("bigbuck.mp4").size;
+  console.log(videoSize);
+  // Parse Range
+  // Example: "bytes=32324-"
+  const CHUNK_SIZE = 10 ** 6; // 1MB
+  const start = Number(range.replace(/\D/g, ""));
+  const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
+  console.log(start);
+  console.log(end);
+
+  // Create headers
+  const contentLength = end - start + 1;
+  console.log(contentLength);
+  const headers = {
+    "Content-Range": `bytes ${start}-${end}/${videoSize}`,
+    "Accept-Ranges": "bytes",
+    "Content-Length": contentLength,
+    "Content-Type": "video/mp4",
+  };
+  console.log(headers);
+  // HTTP Status 206 for Partial Content
+  res.writeHead(206, headers);
+
+  // create video read stream for this particular chunk
+  const videoStream = fs.createReadStream(videoPath, { start, end });
+
+  // Stream the video chunk to the client
+  videoStream.pipe(res);
 });

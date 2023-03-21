@@ -28,12 +28,14 @@ const imageStorage = multer.diskStorage({
     let filename="";
 
     if(originalname && originalname !== ""){
-     let originalnamesplit = originalname.split(".");
+     let originalnamesplit = originalname.split("foldername");
      if(originalnamesplit && originalnamesplit.length > 0){
       foldername = originalnamesplit[0];
       filename = originalnamesplit[1];
      }
     }
+    console.log(foldername);
+    console.log(filename);
     const path = `./videos/`+foldername;
     fs.mkdirSync(path, { recursive: true });
 
@@ -50,14 +52,14 @@ const imageStorage = multer.diskStorage({
      let filename="";
  
      if(originalname && originalname !== ""){
-      let originalnamesplit = originalname.split(".");
+      let originalnamesplit = originalname.split("foldername");
       if(originalnamesplit && originalnamesplit.length > 0){
        foldername = originalnamesplit[0];
        filename = originalnamesplit[1];
 
-         if(mimetype && mimetype.includes("mp4")){
-          filename = filename+".mp4";
-         }
+        // if(mimetype && mimetype.includes("mp4")){
+          filename = filename;
+        // }
       }
      }
     

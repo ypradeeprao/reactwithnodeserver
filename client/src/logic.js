@@ -1657,8 +1657,14 @@ export let haspageaccessmetadata = async (methodprops) => {
 
 export let currenttimeiniso = () => {
   let todaydatetime = new Date();
-  let currenttimeiniso = todaydatetime.toISOString();
-  return currenttimeiniso;
+  let currenttimeinisojs = todaydatetime.toISOString();
+  return currenttimeinisojs;
+};
+
+export let currenttimeinseconds = () => {
+  let todaydatetime = new Date();
+  let currenttimeinsecondsjs = parseInt(todaydatetime.getTime()/1000);
+  return currenttimeinsecondsjs;
 };
 
 
