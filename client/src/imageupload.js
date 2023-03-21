@@ -27,8 +27,11 @@ let initframedata = {};
 let modifiedframedata = {};
 
 let Videogalleryhtml = (props) => {
+  const [videolocationsrc, setvideolocationsrc] = useState("");
   const [mediagallery, setmediagallery] = useState([]);
   const [mediasectiongallery, setmediasectiongallery] = useState([]);
+  const [selectedmediasection, setselectedmediasection] = useState({});
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -56,11 +59,52 @@ let Videogalleryhtml = (props) => {
     //   type: "video/mp4",
     // });
     // var mycanvasurl = URL.createObjectURL(mycanvasblob);
-   // var myvideo4 = document.getElementById("myvideo4");
-   // myvideo4.src = mycanvasurl;
+    var myvideo4 = document.getElementById("videoPlayer");
+    myvideo4.src = "/videofour/samplemedianame1679426052/0to10.mp4";
+  }
+
+  async function updatevideosrclocal(methodprops) {
+    let { mediactionsectionname } = methodprops;
+    for (let i = 0; i < mediasectiongallery.length; i++) {
+      if (mediactionsectionname === mediasectiongallery[i].name) {
+        await setselectedmediasection(mediasectiongallery[i]);
+        let myvideo1 = document.getElementById("videoPlayer");
+        myvideo1.src =
+          "/videofour/" +
+          mediasectiongallery[i].foldername +
+          "/" +
+          mediasectiongallery[i].filename;
+        myvideo1.play();
+      }
+    }
+  }
+
+  async function gototimelocal(methodprops) {
+    let { gototimeinseconds } = methodprops;
+    let gototimeinsecondsjs = parseInt(gototimeinseconds);
+    console.log(gototimeinsecondsjs);
+
+    for (let i = 0; i < mediasectiongallery.length; i++) {
+      if (gototimeinsecondsjs > mediasectiongallery[i].mediastarttimeinsecondsinparent
+        && gototimeinsecondsjs < mediasectiongallery[i].mediaendtimeinsecondsinparent) {
+          console.log( mediasectiongallery[i]);
+          let durationfrommediasectionstarttimeinsecons = gototimeinsecondsjs-mediasectiongallery[i].mediastarttimeinsecondsinparent;
+          console.log( durationfrommediasectionstarttimeinsecons);
+        await setselectedmediasection(mediasectiongallery[i]);
+        let myvideo1 = document.getElementById("videoPlayer");
+        myvideo1.currentTime = durationfrommediasectionstarttimeinsecons;
+        myvideo1.src =
+          "/videofour/" +
+          mediasectiongallery[i].foldername +
+          "/" +
+          mediasectiongallery[i].filename;
+      //  myvideo1.play();
+      }
+    }
 
   }
 
+  console.log(selectedmediasection);
   let mainpanelhtml = [];
   let mainvideogalleryhtml = [];
   for (let i = 0; i < mediagallery.length; i++) {
@@ -70,25 +114,46 @@ let Videogalleryhtml = (props) => {
   let mainsectionvideogalleryhtml = [];
   for (let i = 0; i < mediasectiongallery.length; i++) {
     mainsectionvideogalleryhtml.push(
-      <div>
+      <div
+        onClick={() =>
+          updatevideosrclocal({
+            mediactionsectionname: mediasectiongallery[i].name,
+          })
+        }
+      >
         {mediasectiongallery[i].label}-{mediasectiongallery[i].foldername}-
         {mediasectiongallery[i].filename}
       </div>
     );
   }
-let videosrc = "/videofour/samplemedianame1679239077/0to10.mp4";
+
   return (
-    <div style={{ display: "flex", height: "300px", overflow: "auto" }}>
+    <div style={{ display: "flex", height: "700px", overflow: "auto" }}>
       <div style={{ width: "30%", overflow: "auto" }}>
-      <b>media</b>
+        <b>media</b>
         {mainvideogalleryhtml}
         <b>mediasection</b>
         {mainsectionvideogalleryhtml}
       </div>
       <div style={{ width: "70%", overflow: "auto" }}>
-      <video id="videoPlayer" width="650" controls muted="muted" autoplay>
-      <source src={videosrc} type="video/mp4" />
-    </video>
+        <video
+          id="videoPlayer"
+          width="650"
+          controls
+          muted="muted"
+          autoplay
+        ></video>
+        <div>
+          <Videoprogressbarhtml
+            totalwidth={1000}
+            mediatotaldurationinseconds={33}
+            mediastarttimeinsecondsinparent={
+              selectedmediasection.mediastarttimeinsecondsinparent
+            }
+            videohtmlid={"videoPlayer"}
+            gototimelocal={gototimelocal}
+          />
+        </div>
       </div>
     </div>
   );
@@ -102,19 +167,45 @@ let Videoprogressbarhtml = (methodprops) => {
   }, []);
 
   function updatetime() {
-    let myvideo1 = document.getElementById("myvideo1");
-    setcurrentTime(myvideo1.currentTime);
+    let { videohtmlid } = methodprops;
+    let myvideo1 = document.getElementById(videohtmlid);
+    if (myvideo1 && myvideo1.currentTime) {
+      setcurrentTime(myvideo1.currentTime);
+    }
     setTimeout(() => {
       updatetime();
     }, 1000);
   }
 
-  let { totalwidth, numberofseconds, gototime } = methodprops;
+  let {
+    totalwidth,
+    mediatotaldurationinseconds,
+    videohtmlid,
+    mediastarttimeinsecondsinparent,
+    gototimelocal
+  } = methodprops;
   let mainpanelhtml = [];
-  // console.log(currentTime);
-  let blockwidth = totalwidth / numberofseconds;
+  let myvideo1 = document.getElementById(videohtmlid);
+
+  let currentTimeDisplayinSeconds = "";
+  let totalTimeDisplayinSeconds = "";
+
+  if (
+    myvideo1 &&
+    myvideo1.currentTime &&
+    mediastarttimeinsecondsinparent !== undefined
+  ) {
+    currentTimeDisplayinSeconds =
+      mediastarttimeinsecondsinparent + parseInt(myvideo1.currentTime);
+  }
+  if (mediatotaldurationinseconds) {
+    totalTimeDisplayinSeconds = parseInt(mediatotaldurationinseconds);
+  }
+
+  let blockwidth = totalwidth / mediatotaldurationinseconds;
+  console.log(parseInt(blockwidth));
   let normalblockprops = {
-    width: blockwidth,
+    width: parseInt(blockwidth),
     height: "5px",
     backgroundColor: "grey",
     textAlign: "center",
@@ -127,9 +218,10 @@ let Videoprogressbarhtml = (methodprops) => {
     borderRadius: "50%",
     textAlign: "center",
   };
-  for (let i = 0; i < numberofseconds; i++) {
+
+  for (let i = 0; i < mediatotaldurationinseconds; i++) {
     let blockprops = {};
-    if (i === parseInt(currentTime)) {
+    if (i === currentTimeDisplayinSeconds) {
       blockprops = currenttimeblockprops;
     } else {
       blockprops = normalblockprops;
@@ -139,12 +231,17 @@ let Videoprogressbarhtml = (methodprops) => {
       <div
         style={blockprops}
         title={i}
-        onClick={() => gototime({ currentTime: i })}
+        onClick={() =>
+          gototimelocal({
+            gototimeinseconds: i,
+          })
+        }
       >
         .
       </div>
     );
   }
+
   return (
     <div>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -161,7 +258,7 @@ let Videoprogressbarhtml = (methodprops) => {
         <div
           style={{ padding: "5px" }}
           onClick={() => {
-            document.getElementById("myvideo1").play();
+            document.getElementById(videohtmlid).play();
           }}
         >
           <i class="fa fa-play"></i>
@@ -169,7 +266,7 @@ let Videoprogressbarhtml = (methodprops) => {
         <div
           style={{ padding: "5px" }}
           onClick={() => {
-            document.getElementById("myvideo1").pause();
+            document.getElementById(videohtmlid).pause();
           }}
         >
           <i class="fa fa-pause"></i>
@@ -177,8 +274,8 @@ let Videoprogressbarhtml = (methodprops) => {
         <div
           style={{ padding: "5px" }}
           onClick={() => {
-            document.getElementById("myvideo1").currentTime = 0;
-            document.getElementById("myvideo1").play();
+            document.getElementById(videohtmlid).currentTime = 0;
+            document.getElementById(videohtmlid).play();
           }}
         >
           <i class="fa fa-fast-backward"></i>
@@ -186,7 +283,7 @@ let Videoprogressbarhtml = (methodprops) => {
         <div
           style={{ padding: "5px" }}
           onClick={() => {
-            document.getElementById("myvideo1").currentTime = currentTime - 10;
+            document.getElementById(videohtmlid).currentTime = currentTime - 10;
           }}
         >
           <i class="fa fa-rotate-left"></i>
@@ -194,16 +291,32 @@ let Videoprogressbarhtml = (methodprops) => {
         <div
           style={{ padding: "5px" }}
           onClick={() => {
-            document.getElementById("myvideo1").currentTime = currentTime + 10;
+            document.getElementById(videohtmlid).currentTime = currentTime + 10;
           }}
         >
           <i class="fa fa-rotate-right"></i>
         </div>
-        <div style={{ padding: "5px" }}>{currentTime}</div>
+        <div style={{ padding: "5px" }}>
+          {currentTimeDisplayinSeconds}/{totalTimeDisplayinSeconds}
+        </div>
       </div>
     </div>
   );
 };
+
+function gototime(methodprops) {
+  let { currentTime, videohtmlid } = methodprops;
+  let myvideo1 = document.getElementById(videohtmlid);
+  myvideo1.currentTime = currentTime;
+  console.log(myvideo1.duration);
+}
+
+function updatevideosrc(methodprops) {
+  let { src, videohtmlid } = methodprops;
+  let myvideo1 = document.getElementById(videohtmlid);
+  myvideo1.src = src;
+  myvideo1.play();
+}
 
 export let Imageupload = (props) => {
   useEffect(() => {
@@ -369,12 +482,6 @@ export let Imageupload = (props) => {
     videoupload.src = urlObj;
   }
 
-  function gototime(methodprops) {
-    let { currentTime } = methodprops;
-    video.currentTime = currentTime;
-    console.log(video.duration);
-  }
-
   async function startautouploadvideo() {
     let currenttimeinsecondsjs = currenttimeinseconds();
     let medianame = "samplemedianame" + currenttimeinsecondsjs;
@@ -387,9 +494,6 @@ export let Imageupload = (props) => {
       id: mediaid,
       label: medialabel,
       name: medianame,
-      firstaudiovediomediasectionname: "",
-      firstvediomediasectionname: "",
-      firstaudiomediasectionname: "",
       totaldurationinseconds: 0,
     };
     let createmediaresp = await insertrecordNodejs({
@@ -468,6 +572,32 @@ export let Imageupload = (props) => {
       foldername,
     } = methodprops;
     console.log(methodprops);
+
+    let updatemediaexpression = {};
+    let updatemediasectionexpression = {};
+
+    let mediajs = await fetchlistmetadatafromDB({
+      tablename: "media",
+      conditionexpression: {
+        name: medianame,
+      },
+    });
+
+    if (mediajs && mediajs.length > 0) {
+      updatemediaexpression.totaldurationinseconds =
+        mediajs[0].totaldurationinseconds + totaldurationinseconds;
+    }
+
+    let updatemediaresp = await updaterecordNodejs({
+      tablename: "media",
+      conditionexpression: {
+        name: medianame,
+      },
+      updateexpression: updatemediaexpression,
+      upsertifnotfound: false,
+    });
+    console.log(updatemediaresp);
+
     let updatemediasectionresp = await updaterecordNodejs({
       tablename: "mediasection",
       conditionexpression: {
@@ -479,8 +609,10 @@ export let Imageupload = (props) => {
         percentagecompleted: percentagecompleted,
         foldername: foldername,
         filename: filename,
+        mediaendtimeinsecondsinparent: endtimeinseconds,
+        totaldurationinseconds: totaldurationinseconds,
       },
-      upsertifnotfound: true,
+      upsertifnotfound: false,
     });
     console.log(updatemediasectionresp);
     if (
@@ -784,19 +916,6 @@ export let Imageupload = (props) => {
         getimagefromvideoattime
       </div>
 
-      <div
-        onClick={() => {
-          gototime();
-        }}
-      >
-        gototime
-      </div>
-
-      <Videoprogressbarhtml
-        totalwidth={1000}
-        numberofseconds={33}
-        gototime={gototime}
-      />
       <img id="myImg" alt="test" width="300" height="270"></img>
     </div>
   );

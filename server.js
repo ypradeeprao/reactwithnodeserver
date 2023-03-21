@@ -1,6 +1,6 @@
 const express = require("express"); //Line 1
 const app = express(); //Line 2
-const port = process.env.PORT || 5001; //Line 3
+const port = process.env.PORT || 5000; //Line 3
 const path = require("path");
 var axios = require("axios");
 const mongojs = require("./mongorest.js");
@@ -140,7 +140,7 @@ app.get("/videofour/:foldername/:filename", function (req, res) {
   // get video stats (about 61MB)
   const videoPath = path.join(__dirname, "videos",
   foldername, filename)
-  const videoSize = fs.statSync("bigbuck.mp4").size;
+  const videoSize = fs.statSync(videoPath).size;
   console.log(videoSize);
   // Parse Range
   // Example: "bytes=32324-"
