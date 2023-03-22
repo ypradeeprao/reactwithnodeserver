@@ -27,24 +27,32 @@ let initframedata = {};
 let modifiedframedata = {};
 
 let Videogalleryhtml = (props) => {
-  const [videolocationsrc, setvideolocationsrc] = useState("");
-  const [mediagallery, setmediagallery] = useState([]);
-  const [mediasectiongallery, setmediasectiongallery] = useState([]);
-  const [selectedmediasection, setselectedmediasection] = useState({});
-  const [selectedmedia, setselectedmedia] = useState({totaldurationinseconds:33});
+  const [count, setCount] = useState(0);
+  const [compstate, setCompstate] = useState({
+    showui: "false",
+    mediagallery: [],
+    mediasectiongallery: [],
+    selectedmediasection: {},
+    mediastarttimeinsecondsinparent: "",
+    mediaendtimeinsecondsinparent: "",
+    selectedmedia: {
+      totaldurationinseconds: 33,
+    },
+    currentTimeDisplayinSeconds:0
+  });
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  async function fetchData() {
+  let fetchData = async (methodprops) => {
     let mediagalleryjs = await fetchlistmetadatafromDB({
       tablename: "media",
       conditionexpression: {},
     });
 
     if (mediagalleryjs && mediagalleryjs.length > 0) {
-      setmediagallery(mediagalleryjs);
+      await Showui({ mediagallery: mediagalleryjs });
     }
 
     // let mediasectiongalleryjs = await fetchlistmetadatafromDB({
@@ -56,67 +64,140 @@ let Videogalleryhtml = (props) => {
     //   setmediasectiongallery(mediasectiongalleryjs);
     // }
 
-   
-    //var myvideo4 = document.getElementById("videoPlayer");
-   // myvideo4.src = "/videofour/samplemedianame1679426052/0to10.mp4";
+    updatetime();
+  };
+
+  function updatetime() {
+  
+
+    setTimeout(() => {
+      setCount((count) => count + 100);
+
+
+      setCompstate((oldstate) => {
+        console.log(oldstate.currentTimeDisplayinSeconds);
+        let {mediasectiongallery, selectedmediasection, currentTimeDisplayinSeconds} = oldstate;
+        let myvideo1 = document.getElementById("videoPlayer");
+        
+        if (myvideo1 && myvideo1.ended) {
+        //  playnextmediasection({});
+
+          for (let i = 0; i < mediasectiongallery.length; i++) {
+      if (selectedmediasection.mediaendtimeinsecondsinparent ===
+         mediasectiongallery[i].mediastarttimeinsecondsinparent) {
+          myvideo1.dataset.mediaendtimeinsecondsinparent = mediasectiongallery[i].mediaendtimeinsecondsinparent;
+          myvideo1.src =
+            "/videofour/" +
+            mediasectiongallery[i].foldername +
+            "/" +
+            mediasectiongallery[i].filename;
+          myvideo1.play();
+          selectedmediasection = compstate.mediasectiongallery[i];
+         
+      }
+    }
+
+        }
+
+        if (
+          myvideo1 &&
+          myvideo1.currentTime
+        ) {
+          oldstate.currentTimeDisplayinSeconds =
+          currentTimeDisplayinSeconds + parseInt(myvideo1.currentTime);
+        }
+
+
+        return oldstate;
+      });
+      updatetime();
+    }, 1000);
   }
 
+  let Showui = async (methodprops) => {
+    console.log(methodprops);
+    let compstatejs = JSON.parse(JSON.stringify(compstate));
+    let methodpropsjs = JSON.parse(JSON.stringify(methodprops));
+
+    await setCompstate({ ...compstatejs, ...methodpropsjs, showui: "true" });
+  };
+  let Hideui = async (methodprops) => {
+    let compstatejs = JSON.parse(JSON.stringify(compstate));
+    let methodpropsjs = JSON.parse(JSON.stringify(methodprops));
+
+    await setCompstate({ ...compstatejs, ...methodpropsjs, showui: "false" });
+  };
+
   async function showMediasectionshtml(methodprops) {
-    let {medianame} = methodprops;
-    
-    for (let i = 0; i < mediagallery.length; i++) {
-      if (medianame === mediagallery[i].name) {
-        await setselectedmedia(mediagallery[i]);
-       
+    let { medianame } = methodprops;
+    let selectedmedia = {};
+    for (let i = 0; i < compstate.mediagallery.length; i++) {
+      if (medianame === compstate.mediagallery[i].name) {
+        selectedmedia = compstate.mediagallery[i];
       }
     }
 
     let mediasectiongalleryjs = await fetchlistmetadatafromDB({
       tablename: "mediasection",
       conditionexpression: {
-        medianame:medianame
+        medianame: medianame,
       },
     });
-   
-    if (mediasectiongalleryjs && mediasectiongalleryjs.length > 0) {
-      setmediasectiongallery(mediasectiongalleryjs);
-    }
 
+    if (mediasectiongalleryjs && mediasectiongalleryjs.length > 0) {
+      await Showui({
+        mediasectiongallery: mediasectiongalleryjs,
+        selectedmedia: selectedmedia,
+      });
+    }
   }
 
-  
-
   async function playnextmediasection(methodprops) {
-    let {mediaendtimeinsecondsinparent} = methodprops;
-    console.log(mediaendtimeinsecondsinparent);
-    for (let i = 0; i < mediasectiongallery.length; i++) {
-      if (mediaendtimeinsecondsinparent === 
-        mediasectiongallery[i].mediastarttimeinsecondsinparent) {
-        await setselectedmediasection(mediasectiongallery[i]);
-        let myvideo1 = document.getElementById("videoPlayer");
-        myvideo1.src =
-          "/videofour/" +
-          mediasectiongallery[i].foldername +
-          "/" +
-          mediasectiongallery[i].filename;
-        myvideo1.play();
-        return ;
-      }
-    }
+    console.log(compstate);
+    let myvideo1 = document.getElementById("videoPlayer");
+    let mediaendtimeinsecondsinparent =
+      myvideo1.dataset.mediaendtimeinsecondsinparent;
+
+    // for (let i = 0; i < compstate.mediasectiongallery.length; i++) {
+    //   if (mediaendtimeinsecondsinparent ===
+    //      compstate.mediasectiongallery[i].mediastarttimeinsecondsinparent) {
+    //       myvideo1.dataset.mediaendtimeinsecondsinparent = compstate.mediasectiongallery[i].mediaendtimeinsecondsinparent;
+    //       myvideo1.src =
+    //         "/videofour/" +
+    //         compstate.mediasectiongallery[i].foldername +
+    //         "/" +
+    //         compstate.mediasectiongallery[i].filename;
+    //       myvideo1.play();
+
+    //       await Showui({
+    //         selectedmediasection:compstate.mediasectiongallery[i],
+    //         });
+    //   }
+    // }
   }
 
   async function updatevideosrclocal(methodprops) {
     let { mediactionsectionname } = methodprops;
-    for (let i = 0; i < mediasectiongallery.length; i++) {
-      if (mediactionsectionname === mediasectiongallery[i].name) {
-        await setselectedmediasection(mediasectiongallery[i]);
+    for (let i = 0; i < compstate.mediasectiongallery.length; i++) {
+      if (mediactionsectionname === compstate.mediasectiongallery[i].name) {
         let myvideo1 = document.getElementById("videoPlayer");
+        myvideo1.dataset.mediaendtimeinsecondsinparent =
+          compstate.mediasectiongallery[i].mediaendtimeinsecondsinparent;
         myvideo1.src =
           "/videofour/" +
-          mediasectiongallery[i].foldername +
+          compstate.mediasectiongallery[i].foldername +
           "/" +
-          mediasectiongallery[i].filename;
+          compstate.mediasectiongallery[i].filename;
         myvideo1.play();
+
+        await Showui({
+          selectedmediasection: compstate.mediasectiongallery[i],
+          mediastarttimeinsecondsinparent: 1,
+          mediaendtimeinsecondsinparent: 2,
+
+          // mediastarttimeinsecondsinparent:compstate.mediasectiongallery[i].mediastarttimeinsecondsinparent,
+          //   mediaendtimeinsecondsinparent:compstate.mediasectiongallery[i].mediaendtimeinsecondsinparent
+        });
       }
     }
   }
@@ -127,159 +208,196 @@ let Videogalleryhtml = (props) => {
     //console.log(gototimeinsecondsjs);
     let myvideo1 = document.getElementById("videoPlayer");
     myvideo1.src = "";
-    setTimeout(() => {
-      for (let i = 0; i < mediasectiongallery.length; i++) {
-        if (gototimeinsecondsjs > mediasectiongallery[i].mediastarttimeinsecondsinparent
-          && gototimeinsecondsjs < mediasectiongallery[i].mediaendtimeinsecondsinparent) {
-            console.log( mediasectiongallery[i]);
-            let durationfrommediasectionstarttimeinsecons = gototimeinsecondsjs-mediasectiongallery[i].mediastarttimeinsecondsinparent;
-            //console.log( durationfrommediasectionstarttimeinsecons);
-            setselectedmediasection(mediasectiongallery[i]);
+    setTimeout(async () => {
+      for (let i = 0; i < compstate.mediasectiongallery.length; i++) {
+        if (
+          gototimeinsecondsjs >
+            compstate.mediasectiongallery[i].mediastarttimeinsecondsinparent &&
+          gototimeinsecondsjs <
+            compstate.mediasectiongallery[i].mediaendtimeinsecondsinparent
+        ) {
+          console.log(compstate.mediasectiongallery[i]);
+          let durationfrommediasectionstarttimeinsecons =
+            gototimeinsecondsjs -
+            compstate.mediasectiongallery[i].mediastarttimeinsecondsinparent;
+          await Showui({
+            selectedmediasection: compstate.mediasectiongallery[i],
+          });
           let myvideo1 = document.getElementById("videoPlayer");
           myvideo1.src =
             "/videofour/" +
-            mediasectiongallery[i].foldername +
+            compstate.mediasectiongallery[i].foldername +
             "/" +
-            mediasectiongallery[i].filename;
-            myvideo1.currentTime = durationfrommediasectionstarttimeinsecons;
-        //if(myvideo1.playing){
+            compstate.mediasectiongallery[i].filename;
+          myvideo1.currentTime = durationfrommediasectionstarttimeinsecons;
+          //if(myvideo1.playing){
           myvideo1.play();
-       // }
-       
+          // }
         }
       }
     }, 1000);
-
-   
-
   }
 
-  console.log(selectedmediasection);
+  console.log(count);
   let mainpanelhtml = [];
   let mainvideogalleryhtml = [];
-  
-  for (let i = 0; i < mediagallery.length; i++) {
-    mainvideogalleryhtml.push(
-      <div
-      onClick={() =>
-        showMediasectionshtml({
-          medianame: mediagallery[i].name,
-        })
-      }
-    >
-      {mediagallery[i].label}
-      </div>);
-  }
 
-  let mainsectionvideogalleryhtml = [];
-  for (let i = 0; i < mediasectiongallery.length; i++) {
-    mainsectionvideogalleryhtml.push(
-      <div
-        onClick={() =>
-          updatevideosrclocal({
-            mediactionsectionname: mediasectiongallery[i].name,
-          })
-        }
-      >
-        {mediasectiongallery[i].label}-{mediasectiongallery[i].foldername}-
-        {mediasectiongallery[i].filename}
-      </div>
-    );
-  }
-
-  return (
-    <div style={{ display: "flex", height: "700px", overflow: "auto", flexWrap:"wrap" }}>
-     
-      <div style={{ width: "100%", overflow: "auto" }}>
-      <video
-          id="videoPlayer"
-          width="500"
-          height="500"
-          controls={false}
-          muted="muted"
-          autoplay
-        ></video>
-        
+  if (compstate.showui != "true") {
+    return <></>;
+  } else {
+    for (let i = 0; i < compstate.mediagallery.length; i++) {
+      mainvideogalleryhtml.push(
+        <div
+          onClick={() =>
+            showMediasectionshtml({
+              medianame: compstate.mediagallery[i].name,
+            })
+          }
+        >
+          {compstate.mediagallery[i].label}
         </div>
-      <div style={{ width: "100%", overflow: "auto" }}>
+      );
+    }
+
+    let mainsectionvideogalleryhtml = [];
+    for (let i = 0; i < compstate.mediasectiongallery.length; i++) {
+      mainsectionvideogalleryhtml.push(
+        <div
+          onClick={() =>
+            updatevideosrclocal({
+              mediactionsectionname: compstate.mediasectiongallery[i].name,
+            })
+          }
+        >
+          {compstate.mediasectiongallery[i].label}-
+          {compstate.mediasectiongallery[i].foldername}-
+          {compstate.mediasectiongallery[i].filename}
+        </div>
+      );
+    }
+
+    return (
+      <div
+        style={{
+          display: "flex",
+          height: "700px",
+          overflow: "auto",
+          flexWrap: "wrap",
+        }}
+      >
+        {/* <Timer /> */}
+        <div style={{ width: "100%", overflow: "auto" }}>
+          <video
+            id="videoPlayer"
+            width="500"
+            height="500"
+            controls={false}
+            muted="muted"
+            autoplay
+          ></video>
+        </div>
+        <div style={{ width: "100%", overflow: "auto" }}>
           <Videoprogressbarhtml
             totalwidth={500}
-            mediatotaldurationinseconds={selectedmedia.totaldurationinseconds}
+            mediatotaldurationinseconds={compstate.selectedmedia.totaldurationinseconds}
             mediastarttimeinsecondsinparent={
-              selectedmediasection.mediastarttimeinsecondsinparent
+              compstate.selectedmediasection.mediastarttimeinsecondsinparent
             }
             mediaendtimeinsecondsinparent={
-              selectedmediasection.mediaendtimeinsecondsinparent
+              compstate.selectedmediasection.mediaendtimeinsecondsinparent
             }
             videohtmlid={"videoPlayer"}
             gototimelocal={gototimelocal}
-            playnextmediasection={(methodprops)=>playnextmediasection(methodprops)}
+            currentTimeDisplayinSeconds={compstate.currentTimeDisplayinSeconds}
+            playnextmediasection={(methodprops) =>
+              playnextmediasection(methodprops)
+            }
           />
         </div>
         <div style={{ width: "30%", overflow: "auto" }}>
-        <b>media</b>
-        {mainvideogalleryhtml}
-      
+          <b>media</b>
+          {mainvideogalleryhtml}
+        </div>
+        <div style={{ width: "70%", overflow: "auto" }}>
+          <b>mediasection</b>
+          {mainsectionvideogalleryhtml}
+        </div>
       </div>
-      <div style={{ width: "70%", overflow: "auto" }}>
-      <b>mediasection</b>
-        {mainsectionvideogalleryhtml}
-      </div>
-    </div>
-  );
+    );
+  }
 };
 
+export function Timer() {
+  const [count, setCount] = useState(0);
+  const [count1, setCount1] = useState(1);
+  useEffect(() => {
+    settime();
+  }, []); // <- add empty brackets here
+
+  let settime = () => {
+    setTimeout(() => {
+      console.log(count);
+      setCount((count) => count + 100);
+      settime();
+    }, 1000);
+  };
+
+  let handleClick = () => {
+    setCount((count) => 100);
+  };
+
+  return <div onClick={handleClick}>I've renderedd {count} times!</div>;
+}
 let Videoprogressbarhtml = (methodprops) => {
   const [currentTime, setcurrentTime] = useState(0);
 
   useEffect(() => {
-    updatetime();
+   // updatetime();
   }, []);
 
-  function updatetime(thismethodprops) {
-
-    if(thismethodprops === undefined){
-      thismethodprops = methodprops;
+  function updatetime() {
+    let { videohtmlid, playnextmediasection, mediaendtimeinsecondsinparent } =
+      methodprops;
+    if (mediaendtimeinsecondsinparent) {
+      console.log(mediaendtimeinsecondsinparent);
     }
-
-    let { videohtmlid, playnextmediasection, mediaendtimeinsecondsinparent } = thismethodprops;
     let myvideo1 = document.getElementById(videohtmlid);
-    console.log(thismethodprops);
-    if(myvideo1 && myvideo1.ended){
-    
-      playnextmediasection({mediaendtimeinsecondsinparent:mediaendtimeinsecondsinparent});
-      return ;
-    }
-    else if (myvideo1 && myvideo1.currentTime) {
+    console.log(methodprops);
+    if (myvideo1 && myvideo1.ended) {
+      playnextmediasection({
+        mediaendtimeinsecondsinparent: mediaendtimeinsecondsinparent,
+      });
+      return;
+    } else if (myvideo1 && myvideo1.currentTime) {
       setcurrentTime(myvideo1.currentTime);
     }
     setTimeout(() => {
-      updatetime(thismethodprops);
+      updatetime();
     }, 200);
   }
-
 
   let {
     totalwidth,
     mediatotaldurationinseconds,
     videohtmlid,
     mediastarttimeinsecondsinparent,
-    gototimelocal
+    gototimelocal,
+    currentTimeDisplayinSeconds
   } = methodprops;
   let mainpanelhtml = [];
   let myvideo1 = document.getElementById(videohtmlid);
 
-  let currentTimeDisplayinSeconds = "";
+  //let currentTimeDisplayinSeconds = "";
   let totalTimeDisplayinSeconds = "";
-  
-  if (
-    myvideo1 &&
-    myvideo1.currentTime &&
-    mediastarttimeinsecondsinparent !== undefined
-  ) {
-    currentTimeDisplayinSeconds =
-      mediastarttimeinsecondsinparent + parseInt(myvideo1.currentTime);
-  }
+
+  // if (
+  //   myvideo1 &&
+  //   myvideo1.currentTime &&
+  //   mediastarttimeinsecondsinparent !== undefined
+  // ) {
+  //   currentTimeDisplayinSeconds =
+  //     mediastarttimeinsecondsinparent + parseInt(myvideo1.currentTime);
+  // }
   console.log(currentTimeDisplayinSeconds);
   console.log(mediastarttimeinsecondsinparent);
   if (mediatotaldurationinseconds) {
@@ -294,7 +412,7 @@ let Videoprogressbarhtml = (methodprops) => {
     backgroundColor: "grey",
     textAlign: "center",
     overflow: "hidden",
-    cursor: "pointer"
+    cursor: "pointer",
   };
   let currenttimeblockprops = {
     width: "25px",
@@ -302,7 +420,7 @@ let Videoprogressbarhtml = (methodprops) => {
     backgroundColor: "grey",
     borderRadius: "50%",
     textAlign: "center",
-    cursor: "pointer"
+    cursor: "pointer",
   };
 
   for (let i = 0; i < mediatotaldurationinseconds; i++) {
@@ -470,7 +588,7 @@ export let Imageupload = (props) => {
       .then((response) => {
         //console.log(response);
 
-       currentVideouploadingStatus = "isuploadingsuccess";
+        currentVideouploadingStatus = "isuploadingsuccess";
         console.log(currentVideouploadingStatus);
 
         updatevideolocationstatusindatabase({
@@ -488,7 +606,7 @@ export let Imageupload = (props) => {
       .catch((error) => {
         //console.log(`failed: ${error.message}`);
 
-       currentVideouploadingStatus = "isuploadingfailed";
+        currentVideouploadingStatus = "isuploadingfailed";
 
         updatevideolocationstatusindatabase({
           status: currentVideouploadingStatus,
@@ -874,7 +992,7 @@ export let Imageupload = (props) => {
   }
 
   function mycanvasrecorderhandleDataAvailable(event) {
-    console.log(mycanvasrecordedChunks)
+    console.log(mycanvasrecordedChunks);
     mycanvasrecordedChunks.push(event.data);
   }
 
@@ -945,20 +1063,11 @@ export let Imageupload = (props) => {
     myctx.putImageData(modifiedframedata, 0, 0);
   }
 
-  
   let currentVideouploadingStatus = "initial";
 
   let mainpanelhtml = [];
   mainpanelhtml.push(
     <div style={{ width: "100%" }}>
-
-
-
-
-
-
-
-
       <Videogalleryhtml />
       <input id="videoupload" type="file" onChange={handleChangefile} />
 
