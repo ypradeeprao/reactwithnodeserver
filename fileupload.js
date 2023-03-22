@@ -22,6 +22,7 @@ const imageStorage = multer.diskStorage({
   // Destination to store image     
   destination: function (req, file, cb) {
     console.log(file);
+    console.log(file.size);
     let originalname = file.originalname;
     let mimetype = file.mimetype;
     let foldername = "";
@@ -82,55 +83,10 @@ var upload = multer({
   }).single("mypic"); 
 
 
-// var upload = multer({ 
-//   storage: imageStorage,
-//   limits: { fileSize: maxSize },
-//   fileFilter: function (req, file, cb){
-//     console.log(req.FormData);
-//     console.log(req.formData);
-//       // Set the filetypes, it is optional
-//       var filetypes = /jpeg|jpg|png|mp4/;
-//       var mimetype = filetypes.test(file.mimetype);
-
-//       var extname = filetypes.test(path.extname(
-//                   file.originalname).toLowerCase());
-      
-//       if (mimetype && extname) {
-//           return cb(null, true);
-//       }
-    
-//       cb("Error: File upload only supports the "
-//               + "following filetypes - " + filetypes);
-//     } 
-
-// // mypic is the name of file attribute
-// }).single("mypic"); 
-
-
-const videoStorage = multer.diskStorage({
-  destination: 'videos', // Destination to store video 
-  filename: (req, file, cb) => {
-      cb(null, file.fieldname 
-       // + '_' + Date.now() 
-       + path.extname(file.originalname))
-  }
-});
 
 
 
-const videoUpload = multer({
-  storage: videoStorage,
-  limits: {
-  fileSize: 10000000 // 10000000 Bytes = 10 MB
-  },
-  fileFilter(req, file, cb) {
-    // upload only mp4 and mkv format
-    if (!file.originalname.match(/\.(mp4|MPEG-4|mkv)$/)) { 
-       return cb(new Error('Please upload a video'))
-    }
-    cb(undefined, true)
- }
-})
+
 
 
 const fileupload = async function(req,res){

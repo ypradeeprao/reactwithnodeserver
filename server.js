@@ -11,6 +11,15 @@ const fileuploadjs = require("./fileupload.js");
 const bodyParser = require("body-parser");
 var multer = require("multer");
 const fs = require('fs');
+const busboy = require('connect-busboy');   
+//const fs2 = require('fs-extra');  
+
+app.use(busboy({
+  highWaterMark: 2 * 1024 * 1024, // Set 2MiB buffer
+})); // Insert the busboy middle-ware
+//const uploadPath = path.join(__dirname, 'fu/uploads/'); // Register the upload path
+//fs2.ensureDir(uploadPath); // Make sure that he upload path exits
+
 
 // Configuring body parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -24,6 +33,38 @@ app.use(express.static(path.join(__dirname, "build")));
 app.get("/react", (req, res) => {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
+
+
+// const upload = multer({ dest: './uploads/' })
+// app.post('/stats', upload.single('uploaded_file'), function (req, res) {
+//    // req.file is the name of your file in the form above, here 'uploaded_file'
+//    // req.body will hold the text fields, if there were any 
+//    console.log(req.file, req.body)
+// })
+
+
+
+// app.route('/upload').post((req, res, next) => {
+
+//   req.pipe(req.busboy); // Pipe it trough busboy
+
+//   req.busboy.on('file', (fieldname, file, filename) => {
+//       console.log(`Upload of '${filename}' started`);
+//       console.log(filename);
+//       // Create a write stream of the new file
+//       const fstream = fs2.createWriteStream(path.join(uploadPath, filename.filename));
+//       // Pipe it trough
+//       file.pipe(fstream);
+
+//       // On finish of the upload
+//       fstream.on('close', () => {
+//           console.log(`Upload of '${filename}' finished`);
+//           res.redirect('back');
+//       });
+//   });
+// });
+
+
 
 app.get("/images/:id", (req, res) => {
   var id = req.params.id;
