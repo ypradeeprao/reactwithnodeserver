@@ -38,7 +38,7 @@ let Videogalleryhtml = (props) => {
     selectedmedia: {
       totaldurationinseconds: 33,
     },
-    currentTimeDisplayinSeconds:0
+   // currentTimeDisplayinSeconds: 0,
   });
 
   useEffect(() => {
@@ -68,45 +68,54 @@ let Videogalleryhtml = (props) => {
   };
 
   function updatetime() {
-  
-
     setTimeout(() => {
-      setCount((count) => count + 100);
+      setCount((oldstate) => {
+        let myvideo1 = document.getElementById("videoPlayer");
 
+        if (myvideo1 && myvideo1.currentTime) {
+          oldstate = parseInt(myvideo1.currentTime);
+        }
+
+        return oldstate;
+      });
 
       setCompstate((oldstate) => {
-        console.log(oldstate.currentTimeDisplayinSeconds);
-        let {mediasectiongallery, selectedmediasection, currentTimeDisplayinSeconds} = oldstate;
+        console.log(oldstate);
+        let {
+          mediasectiongallery,
+          selectedmediasection,
+       //   currentTimeDisplayinSeconds,
+        } = oldstate;
         let myvideo1 = document.getElementById("videoPlayer");
-        
-        if (myvideo1 && myvideo1.ended) {
-        //  playnextmediasection({});
 
-          for (let i = 0; i < mediasectiongallery.length; i++) {
-      if (selectedmediasection.mediaendtimeinsecondsinparent ===
-         mediasectiongallery[i].mediastarttimeinsecondsinparent) {
-          myvideo1.dataset.mediaendtimeinsecondsinparent = mediasectiongallery[i].mediaendtimeinsecondsinparent;
-          myvideo1.src =
-            "/videofour/" +
-            mediasectiongallery[i].foldername +
-            "/" +
-            mediasectiongallery[i].filename;
-          myvideo1.play();
-          selectedmediasection = compstate.mediasectiongallery[i];
-         
-      }
-    }
+        // if (myvideo1 && myvideo1.ended) {
+        //   //  playnextmediasection({});
 
-        }
+        //   let newselectedmediasection = {};
+        //   for (let i = 0; i < mediasectiongallery.length; i++) {
+        //     if (
+        //       selectedmediasection.mediaendtimeinsecondsinparent ===
+        //       mediasectiongallery[i].mediastarttimeinsecondsinparent
+        //     ) {
+        //       newselectedmediasection = mediasectiongallery[i];
+        //     }
+        //   }
 
-        if (
-          myvideo1 &&
-          myvideo1.currentTime
-        ) {
-          oldstate.currentTimeDisplayinSeconds =
-          currentTimeDisplayinSeconds + parseInt(myvideo1.currentTime);
-        }
+        //   myvideo1.dataset.mediaendtimeinsecondsinparent =
+        //     newselectedmediasection.mediaendtimeinsecondsinparent;
+        //   myvideo1.src =
+        //     "/videofour/" +
+        //     newselectedmediasection.foldername +
+        //     "/" +
+        //     newselectedmediasection.filename;
+        //   myvideo1.play();
+        //   selectedmediasection = newselectedmediasection;
+        // }
 
+        // if (myvideo1 && myvideo1.currentTime) {
+        //   oldstate.currentTimeDisplayinSeconds =
+        //     currentTimeDisplayinSeconds + parseInt(myvideo1.currentTime);
+        // }
 
         return oldstate;
       });
@@ -297,9 +306,14 @@ let Videogalleryhtml = (props) => {
           ></video>
         </div>
         <div style={{ width: "100%", overflow: "auto" }}>
-          <Videoprogressbarhtml
+          {compstate.selectedmediasection.label}-
+          {compstate.selectedmediasection.foldername}-
+          {compstate.selectedmediasection.filename}
+          {/* <Videoprogressbarhtml
             totalwidth={500}
-            mediatotaldurationinseconds={compstate.selectedmedia.totaldurationinseconds}
+            mediatotaldurationinseconds={
+              compstate.selectedmedia.totaldurationinseconds
+            }
             mediastarttimeinsecondsinparent={
               compstate.selectedmediasection.mediastarttimeinsecondsinparent
             }
@@ -308,11 +322,11 @@ let Videogalleryhtml = (props) => {
             }
             videohtmlid={"videoPlayer"}
             gototimelocal={gototimelocal}
-            currentTimeDisplayinSeconds={compstate.currentTimeDisplayinSeconds}
+            currentTimeDisplayinSeconds={count}
             playnextmediasection={(methodprops) =>
               playnextmediasection(methodprops)
             }
-          />
+          /> */}
         </div>
         <div style={{ width: "30%", overflow: "auto" }}>
           <b>media</b>
@@ -348,165 +362,165 @@ export function Timer() {
 
   return <div onClick={handleClick}>I've renderedd {count} times!</div>;
 }
-let Videoprogressbarhtml = (methodprops) => {
-  const [currentTime, setcurrentTime] = useState(0);
+// let Videoprogressbarhtml = (methodprops) => {
+//   const [currentTime, setcurrentTime] = useState(0);
 
-  useEffect(() => {
-   // updatetime();
-  }, []);
+//   useEffect(() => {
+//     // updatetime();
+//   }, []);
 
-  function updatetime() {
-    let { videohtmlid, playnextmediasection, mediaendtimeinsecondsinparent } =
-      methodprops;
-    if (mediaendtimeinsecondsinparent) {
-      console.log(mediaendtimeinsecondsinparent);
-    }
-    let myvideo1 = document.getElementById(videohtmlid);
-    console.log(methodprops);
-    if (myvideo1 && myvideo1.ended) {
-      playnextmediasection({
-        mediaendtimeinsecondsinparent: mediaendtimeinsecondsinparent,
-      });
-      return;
-    } else if (myvideo1 && myvideo1.currentTime) {
-      setcurrentTime(myvideo1.currentTime);
-    }
-    setTimeout(() => {
-      updatetime();
-    }, 200);
-  }
+//   function updatetime() {
+//     let { videohtmlid, playnextmediasection, mediaendtimeinsecondsinparent } =
+//       methodprops;
+//     if (mediaendtimeinsecondsinparent) {
+//       console.log(mediaendtimeinsecondsinparent);
+//     }
+//     let myvideo1 = document.getElementById(videohtmlid);
+//     console.log(methodprops);
+//     if (myvideo1 && myvideo1.ended) {
+//       playnextmediasection({
+//         mediaendtimeinsecondsinparent: mediaendtimeinsecondsinparent,
+//       });
+//       return;
+//     } else if (myvideo1 && myvideo1.currentTime) {
+//       setcurrentTime(myvideo1.currentTime);
+//     }
+//     setTimeout(() => {
+//       updatetime();
+//     }, 200);
+//   }
 
-  let {
-    totalwidth,
-    mediatotaldurationinseconds,
-    videohtmlid,
-    mediastarttimeinsecondsinparent,
-    gototimelocal,
-    currentTimeDisplayinSeconds
-  } = methodprops;
-  let mainpanelhtml = [];
-  let myvideo1 = document.getElementById(videohtmlid);
+//   let {
+//     totalwidth,
+//     mediatotaldurationinseconds,
+//     videohtmlid,
+//     mediastarttimeinsecondsinparent,
+//     gototimelocal,
+//     currentTimeDisplayinSeconds,
+//   } = methodprops;
+//   let mainpanelhtml = [];
+//   let myvideo1 = document.getElementById(videohtmlid);
 
-  //let currentTimeDisplayinSeconds = "";
-  let totalTimeDisplayinSeconds = "";
+//   //let currentTimeDisplayinSeconds = "";
+//   let totalTimeDisplayinSeconds = "";
 
-  // if (
-  //   myvideo1 &&
-  //   myvideo1.currentTime &&
-  //   mediastarttimeinsecondsinparent !== undefined
-  // ) {
-  //   currentTimeDisplayinSeconds =
-  //     mediastarttimeinsecondsinparent + parseInt(myvideo1.currentTime);
-  // }
-  console.log(currentTimeDisplayinSeconds);
-  console.log(mediastarttimeinsecondsinparent);
-  if (mediatotaldurationinseconds) {
-    totalTimeDisplayinSeconds = parseInt(mediatotaldurationinseconds);
-  }
+//   // if (
+//   //   myvideo1 &&
+//   //   myvideo1.currentTime &&
+//   //   mediastarttimeinsecondsinparent !== undefined
+//   // ) {
+//   //   currentTimeDisplayinSeconds =
+//   //     mediastarttimeinsecondsinparent + parseInt(myvideo1.currentTime);
+//   // }
+//   console.log(currentTimeDisplayinSeconds);
+//   console.log(mediastarttimeinsecondsinparent);
+//   if (mediatotaldurationinseconds) {
+//     totalTimeDisplayinSeconds = parseInt(mediatotaldurationinseconds);
+//   }
 
-  let blockwidth = totalwidth / mediatotaldurationinseconds;
-  //console.log(parseInt(blockwidth));
-  let normalblockprops = {
-    width: parseInt(blockwidth),
-    height: "10px",
-    backgroundColor: "grey",
-    textAlign: "center",
-    overflow: "hidden",
-    cursor: "pointer",
-  };
-  let currenttimeblockprops = {
-    width: "25px",
-    height: "25px",
-    backgroundColor: "grey",
-    borderRadius: "50%",
-    textAlign: "center",
-    cursor: "pointer",
-  };
+//   let blockwidth = totalwidth / mediatotaldurationinseconds;
+//   //console.log(parseInt(blockwidth));
+//   let normalblockprops = {
+//     width: parseInt(blockwidth),
+//     height: "10px",
+//     backgroundColor: "grey",
+//     textAlign: "center",
+//     overflow: "hidden",
+//     cursor: "pointer",
+//   };
+//   let currenttimeblockprops = {
+//     width: "25px",
+//     height: "25px",
+//     backgroundColor: "grey",
+//     borderRadius: "50%",
+//     textAlign: "center",
+//     cursor: "pointer",
+//   };
 
-  for (let i = 0; i < mediatotaldurationinseconds; i++) {
-    let blockprops = {};
-    if (i === currentTimeDisplayinSeconds) {
-      blockprops = currenttimeblockprops;
-    } else {
-      blockprops = normalblockprops;
-    }
+//   for (let i = 0; i < mediatotaldurationinseconds; i++) {
+//     let blockprops = {};
+//     if (i === currentTimeDisplayinSeconds) {
+//       blockprops = currenttimeblockprops;
+//     } else {
+//       blockprops = normalblockprops;
+//     }
 
-    mainpanelhtml.push(
-      <div
-        style={blockprops}
-        title={i}
-        onClick={() =>
-          gototimelocal({
-            gototimeinseconds: i,
-          })
-        }
-      >
-        .
-      </div>
-    );
-  }
+//     mainpanelhtml.push(
+//       <div
+//         style={blockprops}
+//         title={i}
+//         onClick={() =>
+//           gototimelocal({
+//             gototimeinseconds: i,
+//           })
+//         }
+//       >
+//         .
+//       </div>
+//     );
+//   }
 
-  return (
-    <div>
-      <div style={{ display: "flex", alignItems: "center" }}>
-        {mainpanelhtml}
-      </div>
-      <div
-        style={{
-          display: "flex",
-          rowGap: "10px",
-          justifyContent: "flex-start",
-          alignItems: "center",
-        }}
-      >
-        <div
-          style={{ padding: "5px" }}
-          onClick={() => {
-            document.getElementById(videohtmlid).play();
-          }}
-        >
-          <i class="fa fa-play"></i>
-        </div>
-        <div
-          style={{ padding: "5px" }}
-          onClick={() => {
-            document.getElementById(videohtmlid).pause();
-          }}
-        >
-          <i class="fa fa-pause"></i>
-        </div>
-        <div
-          style={{ padding: "5px" }}
-          onClick={() => {
-            document.getElementById(videohtmlid).currentTime = 0;
-            document.getElementById(videohtmlid).play();
-          }}
-        >
-          <i class="fa fa-fast-backward"></i>
-        </div>
-        <div
-          style={{ padding: "5px" }}
-          onClick={() => {
-            document.getElementById(videohtmlid).currentTime = currentTime - 10;
-          }}
-        >
-          <i class="fa fa-rotate-left"></i>
-        </div>
-        <div
-          style={{ padding: "5px" }}
-          onClick={() => {
-            document.getElementById(videohtmlid).currentTime = currentTime + 10;
-          }}
-        >
-          <i class="fa fa-rotate-right"></i>
-        </div>
-        <div style={{ padding: "5px" }}>
-          {currentTimeDisplayinSeconds}/{totalTimeDisplayinSeconds}
-        </div>
-      </div>
-    </div>
-  );
-};
+//   return (
+//     <div>
+//       <div style={{ display: "flex", alignItems: "center" }}>
+//         {mainpanelhtml}
+//       </div>
+//       <div
+//         style={{
+//           display: "flex",
+//           rowGap: "10px",
+//           justifyContent: "flex-start",
+//           alignItems: "center",
+//         }}
+//       >
+//         <div
+//           style={{ padding: "5px" }}
+//           onClick={() => {
+//             document.getElementById(videohtmlid).play();
+//           }}
+//         >
+//           <i class="fa fa-play"></i>
+//         </div>
+//         <div
+//           style={{ padding: "5px" }}
+//           onClick={() => {
+//             document.getElementById(videohtmlid).pause();
+//           }}
+//         >
+//           <i class="fa fa-pause"></i>
+//         </div>
+//         <div
+//           style={{ padding: "5px" }}
+//           onClick={() => {
+//             document.getElementById(videohtmlid).currentTime = 0;
+//             document.getElementById(videohtmlid).play();
+//           }}
+//         >
+//           <i class="fa fa-fast-backward"></i>
+//         </div>
+//         <div
+//           style={{ padding: "5px" }}
+//           onClick={() => {
+//             document.getElementById(videohtmlid).currentTime = currentTime - 10;
+//           }}
+//         >
+//           <i class="fa fa-rotate-left"></i>
+//         </div>
+//         <div
+//           style={{ padding: "5px" }}
+//           onClick={() => {
+//             document.getElementById(videohtmlid).currentTime = currentTime + 10;
+//           }}
+//         >
+//           <i class="fa fa-rotate-right"></i>
+//         </div>
+//         <div style={{ padding: "5px" }}>
+//           {currentTimeDisplayinSeconds}/{totalTimeDisplayinSeconds}
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
 
 function gototime(methodprops) {
   let { currentTime, videohtmlid } = methodprops;
