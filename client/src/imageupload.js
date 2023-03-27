@@ -282,12 +282,6 @@ let Videogalleryhtml = (props) => {
             mediatotaldurationinseconds={
               compstate.selectedmedia.totaldurationinseconds
             }
-            mediastarttimeinsecondsinparent={
-              compstate.selectedmediasection.mediastarttimeinsecondsinparent
-            }
-            mediaendtimeinsecondsinparent={
-              compstate.selectedmediasection.mediaendtimeinsecondsinparent
-            }
             videohtmlid={"videoPlayer"}
             gototimelocal={gototimelocal}
             currentTimeDisplayinSeconds={currentTimeDisplayinSeconds}
@@ -315,19 +309,14 @@ let Videoprogressbarhtml = (methodprops) => {
     totalwidth,
     mediatotaldurationinseconds,
     videohtmlid,
-    mediastarttimeinsecondsinparent,
+
     gototimelocal,
     currentTimeDisplayinSeconds,
-    totalTimeDisplayinSeconds,
+   
   } = methodprops;
-  console.log(currentTimeDisplayinSeconds);
+
   let mainpanelhtml = [];
 
-  console.log(currentTimeDisplayinSeconds);
-  console.log(mediastarttimeinsecondsinparent);
-  if (mediatotaldurationinseconds) {
-    totalTimeDisplayinSeconds = parseInt(mediatotaldurationinseconds);
-  }
 
   let blockwidth = totalwidth / mediatotaldurationinseconds;
   //console.log(parseInt(blockwidth));
@@ -426,7 +415,129 @@ let Videoprogressbarhtml = (methodprops) => {
           <i class="fa fa-rotate-right"></i>
         </div>
         <div style={{ padding: "5px" }}>
-          {currentTimeDisplayinSeconds}/{totalTimeDisplayinSeconds}
+          {currentTimeDisplayinSeconds}/{mediatotaldurationinseconds}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+let Videoimageprogressbarhtml = (methodprops) => {
+  const [currentTime, setcurrentTime] = useState(0);
+
+  useEffect(() => {}, []);
+
+  let {
+    totalwidth,
+    mediatotaldurationinseconds,
+    videohtmlid,
+
+    gototimelocal,
+    currentTimeDisplayinSeconds,
+  
+  } = methodprops;
+
+  let mainpanelhtml = [];
+
+
+  let blockwidth = totalwidth / mediatotaldurationinseconds;
+  //console.log(parseInt(blockwidth));
+  let normalblockprops = {
+    width: parseInt(blockwidth),
+    height: "10px",
+    backgroundColor: "grey",
+    textAlign: "center",
+    overflow: "hidden",
+    cursor: "pointer",
+  };
+  let currenttimeblockprops = {
+    width: "25px",
+    height: "25px",
+    backgroundColor: "grey",
+    borderRadius: "50%",
+    textAlign: "center",
+    cursor: "pointer",
+  };
+
+  for (let i = 0; i < mediatotaldurationinseconds; i++) {
+    let blockprops = {};
+    if (i === currentTimeDisplayinSeconds) {
+      blockprops = currenttimeblockprops;
+    } else {
+      blockprops = normalblockprops;
+    }
+
+    mainpanelhtml.push(
+      <div
+        style={blockprops}
+        title={i}
+        onClick={() =>
+          gototimelocal({
+            gototimeinseconds: i,
+          })
+        }
+      >
+        .
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        {mainpanelhtml}
+      </div>
+      <div
+        style={{
+          display: "flex",
+          rowGap: "10px",
+          justifyContent: "flex-start",
+          alignItems: "center",
+        }}
+      >
+        <div
+          style={{ padding: "5px" }}
+          onClick={() => {
+            document.getElementById(videohtmlid).play();
+          }}
+        >
+          <i class="fa fa-play"></i>
+        </div>
+        <div
+          style={{ padding: "5px" }}
+          onClick={() => {
+            document.getElementById(videohtmlid).pause();
+          }}
+        >
+          <i class="fa fa-pause"></i>
+        </div>
+        <div
+          style={{ padding: "5px" }}
+          onClick={() => {
+            document.getElementById(videohtmlid).currentTime = 0;
+            document.getElementById(videohtmlid).play();
+          }}
+        >
+          <i class="fa fa-fast-backward"></i>
+        </div>
+        <div
+          style={{ padding: "5px" }}
+          onClick={() => {
+            document.getElementById(videohtmlid).currentTime = currentTime - 10;
+          }}
+        >
+          <i class="fa fa-rotate-left"></i>
+        </div>
+        <div
+          style={{ padding: "5px" }}
+          onClick={() => {
+            document.getElementById(videohtmlid).currentTime = currentTime + 10;
+          }}
+        >
+          <i class="fa fa-rotate-right"></i>
+        </div>
+        <div style={{ padding: "5px" }}>
+          {currentTimeDisplayinSeconds}/{mediatotaldurationinseconds}
         </div>
       </div>
     </div>
@@ -576,9 +687,9 @@ export let Imageupload = (props) => {
 
     // myvideo3.currentTime = 3;
     let c3 = document.getElementById("mycanvas");
-         let image = "";
-            image = c3.toDataURL("image/jpeg");
-     document.getElementById("myImg").src = image;
+    let image = "";
+    image = c3.toDataURL("image/jpeg");
+    document.getElementById("myImg").src = image;
   }
 
   function handleChangefile(event) {
@@ -785,9 +896,6 @@ export let Imageupload = (props) => {
     }
   }
 
-
-
-
   async function autouploadvideo(methodprops) {
     //console.log(methodprops);
     let {
@@ -802,8 +910,6 @@ export let Imageupload = (props) => {
     if (video && video.currentTime) {
       videocurrenttimeinseconds = parseInt(video.currentTime);
     }
-
-  
 
     if (
       videocurrenttimeinseconds !== starttimeinseconds &&
@@ -824,7 +930,7 @@ export let Imageupload = (props) => {
       currentVideouploadingStatus = "playing";
       //console.log(currentVideouploadingStatus);
     } else if (currentVideouploadingStatus === "playing") {
-    drawVideoonCanvas();
+      drawVideoonCanvas();
       if (parseInt(video.currentTime) === endtimeinseconds) {
         video.pause();
         mycanvasmediaRecorder.stop();
@@ -970,69 +1076,107 @@ export let Imageupload = (props) => {
     myctx.putImageData(modifiedframedata, 0, 0);
   }
 
-  async function drawVideoonCanvas(){
+  async function drawVideoonCanvas() {
     let c3 = document.getElementById("mycanvas");
     let ctx3 = c3.getContext("2d");
     ctx3.drawImage(video, 0, 0, width, height);
 
     var isgreyoutpixels = document.getElementById("isgreyoutpixels").checked;
     var isdefaultpixels = document.getElementById("isdefaultpixels").checked;
-    var istransparentpixels = document.getElementById("istransparentpixels").checked;
+    var istransparentpixels = document.getElementById(
+      "istransparentpixels"
+    ).checked;
     var iswatermarkimage = document.getElementById("iswatermarkimage").checked;
     var iswatermarktext = document.getElementById("iswatermarktext").checked;
 
-    
-
-    
     let initframe = ctx3.getImageData(0, 0, width, height);
     const l = initframe.data.length / 4;
-
+    // console.log(width);300
+    //  console.log(height);270
+    // console.log(l);81000
+    let rownumber = 0;
+    let columnnumber = 0;
     for (let i = 0; i < l; i++) {
-      if (istransparentpixels == true ){
-         initframe.data[i * 4 + 3] = 0;
-       }
-     
-      if (isgreyoutpixels == true && isdefaultpixels !== true){
+      if (istransparentpixels == true) {
+        initframe.data[i * 4 + 3] = 0;
+      }
+
+      if (isgreyoutpixels == true && isdefaultpixels !== true) {
         const grey =
-        (initframe.data[i * 4 + 0] +
-          initframe.data[i * 4 + 1] +
-          initframe.data[i * 4 + 2]) /
-        3;
+          (initframe.data[i * 4 + 0] +
+            initframe.data[i * 4 + 1] +
+            initframe.data[i * 4 + 2]) /
+          3;
 
-     
-
-    
         initframe.data[i * 4 + 0] = grey;
         initframe.data[i * 4 + 1] = grey;
         initframe.data[i * 4 + 2] = grey;
+        // console.log(i);
+        if (rownumber > 200 && columnnumber > 200) {
+          initframe.data[i * 4 + 3] = 0;
+        }
       }
-     
-      
+
+      columnnumber = columnnumber + 1;
+      if (columnnumber === width) {
+        columnnumber = 0;
+        rownumber = rownumber + 1;
+      }
     }
-  
+
     ctx3.putImageData(initframe, 0, 0);
-    if(iswatermarktext == true){
-    ctx3.fillText("Testtest", width - 50, height - 20);
+    if (iswatermarktext == true) {
+      ctx3.fillText("Testtest", width - 50, height - 20);
     }
 
-    if(iswatermarkimage == true){
-
- 
-     
-    //  ctx3.putImageData(img.src, 0, 0);
-      }
-
+    if (iswatermarkimage == true) {
+      // ctx3.putImageData(img.src, 0, 0);
+    }
   }
 
-  function drawImageonCanvas(event){
+  function drawImageonCanvas(event) {
     let c3 = document.getElementById("mycanvas");
     let ctx3 = c3.getContext("2d");
     let img = new Image(); //.src
-    img.onload = function() {
-      ctx3.drawImage(img, 50, 50);
+    img.onload = function () {
+      ctx3.drawImage(img, width - 100, height - 100, 100, 100);
     };
-    img.src = 'https://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png';
-    
+    img.src = "https://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png";
+  }
+
+  async function gototimelocal(methodprops) {
+    let { gototimeinseconds } = methodprops;
+    let gototimeinsecondsjs = parseInt(gototimeinseconds);
+    let myvideo1 = document.getElementById("myvideo3");
+    myvideo1.src = "";
+    // setTimeout(async () => {
+    //   for (let i = 0; i < compstate.mediasectiongallery.length; i++) {
+    //     if (
+    //       gototimeinsecondsjs >
+    //         compstate.mediasectiongallery[i].mediastarttimeinsecondsinparent &&
+    //       gototimeinsecondsjs <
+    //         compstate.mediasectiongallery[i].mediaendtimeinsecondsinparent
+    //     ) {
+    //       console.log(compstate.mediasectiongallery[i]);
+    //       let durationfrommediasectionstarttimeinsecons =
+    //         gototimeinsecondsjs -
+    //         compstate.mediasectiongallery[i].mediastarttimeinsecondsinparent;
+    //       await Showui({
+    //         selectedmediasection: compstate.mediasectiongallery[i],
+    //       });
+    //       let myvideo1 = document.getElementById("videoPlayer");
+    //       myvideo1.src =
+    //         "/videofour/" +
+    //         compstate.mediasectiongallery[i].foldername +
+    //         "/" +
+    //         compstate.mediasectiongallery[i].filename;
+    //       myvideo1.currentTime = durationfrommediasectionstarttimeinsecons;
+    //       //if(myvideo1.playing){
+    //       myvideo1.play();
+    //       // }
+    //     }
+    //   }
+    // }, 1000);
   }
 
   let currentVideouploadingStatus = "initial";
@@ -1074,84 +1218,55 @@ export let Imageupload = (props) => {
 
       <div style={{ display: "flex", flexWrap: "wrap" }}>
         <div
-          style={{ padding:"5px" }}
+          style={{ padding: "5px" }}
           onClick={() => {
             startautouploadvideo();
           }}
         >
           startautouploadvideo
         </div>
-        
 
-        
         <div
-          style={{ padding:"5px" }}
+          style={{ padding: "5px" }}
           onClick={() => {
-              drawImageonCanvas();
+            drawImageonCanvas();
           }}
         >
           drawImageonCanvas
-       
         </div>
 
-
         <div
-          style={{ padding:"5px" }}
+          style={{ padding: "5px" }}
           onClick={() => {
             //  colorpixels();
           }}
         >
           defaultpixels
-          <input type="checkbox" id="isdefaultpixels" 
-           />
+          <input type="checkbox" id="isdefaultpixels" />
         </div>
 
-        <div
-          style={{ padding:"5px" }}
-         
-        >
+        <div style={{ padding: "5px" }}>
           greyoutPixels
-          <input type="checkbox" id="isgreyoutpixels" 
-          >
-
-          </input>
+          <input type="checkbox" id="isgreyoutpixels"></input>
         </div>
 
-        <div
-          style={{ padding:"5px" }}
-         
-        >
+        <div style={{ padding: "5px" }}>
           istransparentpixels
-          <input type="checkbox" id="istransparentpixels" 
-          >
-
-          </input>
+          <input type="checkbox" id="istransparentpixels"></input>
         </div>
 
-        <div
-          style={{ padding:"5px" }}
-         
-        >
+        <div style={{ padding: "5px" }}>
           iswatermarktext
-          <input type="checkbox" id="iswatermarktext" 
-          >
-
-          </input>
+          <input type="checkbox" id="iswatermarktext"></input>
         </div>
 
-        <div
-          style={{ padding:"5px" }}
-         
-        >
+        <div style={{ padding: "5px" }}>
           iswatermarkimage
-          <input type="checkbox" id="iswatermarkimage" 
-          >
-
-          </input>
+          <input type="checkbox" id="iswatermarkimage"></input>
         </div>
 
         <div
-          style={{ padding:"5px" }}
+          style={{ padding: "5px" }}
           onClick={() => {
             //  colorpixels();
           }}
@@ -1160,7 +1275,7 @@ export let Imageupload = (props) => {
         </div>
 
         <div
-          style={{ padding:"5px" }}
+          style={{ padding: "5px" }}
           onClick={() => {
             //  colorpixels();
           }}
@@ -1169,7 +1284,7 @@ export let Imageupload = (props) => {
         </div>
 
         <div
-          style={{ padding:"5px" }}
+          style={{ padding: "5px" }}
           onClick={() => {
             //  colorpixels();
           }}
@@ -1178,7 +1293,7 @@ export let Imageupload = (props) => {
         </div>
 
         <div
-          style={{ padding:"5px" }}
+          style={{ padding: "5px" }}
           onClick={() => {
             //  colorpixels();
           }}
@@ -1187,7 +1302,7 @@ export let Imageupload = (props) => {
         </div>
 
         <div
-          style={{ padding:"5px" }}
+          style={{ padding: "5px" }}
           onClick={() => {
             //  colorpixels();
           }}
@@ -1196,7 +1311,7 @@ export let Imageupload = (props) => {
         </div>
 
         <div
-          style={{ padding:"5px" }}
+          style={{ padding: "5px" }}
           onClick={() => {
             //  colorpixels();
           }}
@@ -1205,7 +1320,7 @@ export let Imageupload = (props) => {
         </div>
 
         <div
-          style={{ padding:"5px" }}
+          style={{ padding: "5px" }}
           onClick={() => {
             downloadvideo();
           }}
@@ -1214,13 +1329,26 @@ export let Imageupload = (props) => {
         </div>
 
         <div
-          style={{ padding:"5px" }}
+          style={{ padding: "5px" }}
           onClick={() => {
             getimagefromvideoattime();
           }}
         >
           getimagefromvideoattime
         </div>
+      </div>
+
+      <div style={{ display: "flex", flexWrap: "wrap", width: "100%" }}>
+        <Videoimageprogressbarhtml
+          totalwidth={500}
+          mediatotaldurationinseconds={
+           100
+          }
+          currentTimeDisplayinSeconds={10}
+          videohtmlid={"myvideo3"}
+          gototimelocal={gototimelocal}
+      
+        />
       </div>
 
       <img id="myImg" alt="test" width="300" height="270"></img>
