@@ -43,6 +43,43 @@ export let dragLeave = (ev) => {
   ev.target.style.backgroundColor = "";
   // ev.preventDefault();
 };
+export const timedisplayfromSecondsfromstart = (methodprops) => {
+  //console.log(methodprops);
+  let{type, value} = methodprops;
+  let hh="", mm="", ss="", secondsfromstart;
+ //1hr 60*60*100
+ //1min 60*100
+//1sec 100
+  if(type === "centiseconds"){
+    methodprops.hh = parseInt(value/(60*60*100));
+    let remcentiSeconds = value%(60*60*100);
+    console.log(remcentiSeconds);
+    console.log(remcentiSeconds/(60*100));
+
+    methodprops.mm = parseInt(remcentiSeconds/(60*100));
+    remcentiSeconds = remcentiSeconds%(60*100);
+
+    methodprops.ss = parseInt(remcentiSeconds/(100));
+    remcentiSeconds = remcentiSeconds%(100);
+
+
+    methodprops.cs = parseInt(remcentiSeconds);
+  
+
+
+  }
+  else if(type === "milliseconds"){
+    secondsfromstart = value/1000; 
+  }
+  else{
+    secondsfromstart= value;
+  }
+
+
+ 
+  //console.log(methodprops);
+   return methodprops;
+}
 
 const sortArray = (items, orderby, typeofsortby) => {
   // sort by value

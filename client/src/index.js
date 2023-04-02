@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import {Imageupload} from './imageupload';
+import {Videoeditor} from './imageupload';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -11,7 +12,8 @@ root.render(
   <React.StrictMode>
     {/* <Sitecomp /> */}
     {/* <App /> */}
-    <Imageupload maxfilesize="300000" />
+    {/* <Imageupload maxfilesize="300000" /> */}
+    <Videoeditor />
   </React.StrictMode>
 );
 
