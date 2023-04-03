@@ -1616,22 +1616,69 @@ function Mediatrackhtml(props) {
 
   let handleClick = async (methodprops) => {
     let { type, value } = methodprops;
+    let { fromHours, trackviewtype,fromHoursscrollintoview } = compstate;
     if (type === "settrackviewtype") {
       await Hideui({});
-      if(value === "seconds"){
-        await Showui({ trackviewtype: value,
+      if (value === "seconds") {
+        // limit for loop iterations
+        await Showui({
+          trackviewtype: value,
           fromHours: 0,
           toHours: 1,
           fromMinutes: 0,
           toMinutes: 1,
           maximumnoofcentisecondspersec: 100,
-         });
-      }
-      else{
+        });
+      } else {
         await Showui({ trackviewtype: value });
       }
-    
+    } else if (type === "gotohours") {
+      if (trackviewtype == "seconds") {
+        await Hideui({});
+
+        await Showui({
+          fromHours: value,
+          toHours: value + 1,
+          fromMinutes: 0,
+          toMinutes: 1,
+        });
+      } else {
+        await Showui({
+          fromHoursscrollintoview: value,
+           });
+        let elem = document.getElementById(
+          value.toString().padStart(2, "0") + ":00:00:00"
+        );
+        elem.scrollIntoView();
+      }
+    } 
+    else if (type === "gotominutes") {
+      if (trackviewtype == "seconds") {
+        await Hideui({});
+
+      await Showui({
+        fromHours: fromHours,
+        toHours: fromHours + 1,
+        fromMinutes: value,
+        toMinutes: value + 1,
+      });
+      }
+      else{
+      
+       let elem = document.getElementById(fromHoursscrollintoview.toString().padStart(2, "0")+":"+value.toString().padStart(2, "0")+":00:00");
+       elem.scrollIntoView();
+
+     }
     }
+    else if (type === "gotoseconds") {
+     
+      
+       let elem = document.getElementById(fromHours.toString().padStart(2, "0")+":"+fromMinutes.toString().padStart(2, "0")+":"+value.toString().padStart(2, "0")+":00");
+       elem.scrollIntoView();
+
+     
+    }
+    
   };
 
   let mainpanelhtml = [];
@@ -1671,8 +1718,9 @@ function Mediatrackhtml(props) {
     toMinutes,
     maximumnoofcentisecondspersec,
   } = compstate;
-  let hoursHtml = [];
-  let minutesHtml = [];
+  let gotohoursHtml = [];
+  let gotominutesHtml = [];
+  let gotosecondsHtml = [];
   let title = "";
   let titledisplay = ".";
   if (trackviewtype !== "seconds") {
@@ -1680,7 +1728,6 @@ function Mediatrackhtml(props) {
   }
 
   let trackviewtypeHtml = [];
-  
 
   trackviewtypeHtml.push(
     <div
@@ -1724,14 +1771,54 @@ function Mediatrackhtml(props) {
     </div>
   );
 
-  for (let min = 0; min < 60; min++) {
-    minutesHtml.push(<div>{min}minutes</div>);
-  }
-
   for (let hr = 0; hr < totalduarationoftrackinhours; hr++) {
-    hoursHtml.push(<div>{hr}hrs</div>);
+    gotohoursHtml.push(
+      <div
+        style={{ padding: "10px" }}
+        onClick={() =>
+          handleClick({
+            type: "gotohours",
+            value: hr,
+          })
+        }
+      >
+        {hr}hrs
+      </div>
+    );
   }
 
+  for (let min = 0; min < 60; min++) {
+    gotominutesHtml.push(
+      <div
+        style={{ padding: "10px" }}
+        onClick={() =>
+          handleClick({
+            type: "gotominutes",
+            value: min,
+          })
+        }
+      >
+        {min}minutes
+      </div>
+    );
+  }
+  for (let secn = 0; secn < 60; secn++) {
+    gotominutesHtml.push(
+      <div
+        style={{ padding: "10px" }}
+        onClick={() =>
+          handleClick({
+            type: "gotoseconds",
+            value: secn,
+          })
+        }
+      >
+        {secn}seconds
+      </div>
+    );
+  }
+
+  
   for (let hr = fromHours; hr < toHours; hr++) {
     let hrdisplay = hr.toString().padStart(2, "0");
 
@@ -1743,39 +1830,50 @@ function Mediatrackhtml(props) {
         if (min === 0) {
           itemstyle = hourStyle;
           titledisplay = hrdisplay + ":" + mindisplay + ":00:00";
-        }
-        else{
-          titledisplay=".";
+        } else {
+          titledisplay = ".";
         }
 
         title = hrdisplay + ":" + mindisplay + ":00:00";
+        let scrollIntoViewid = hr + "hrs" + min + "mins";
         trackHtml.push(
           <div
             style={{
-              ...itemstyle,
-              padding: "1px",
-              borderRight: "1px solid black",
+             
+             // padding: "1px",
+            
             }}
             title={title}
+            id={title}
           >
-            {titledisplay} 
+              <div style={{ ...itemstyle,height:"30px",   borderRight: "1px solid black",}}>
+              {titledisplay}
+              </div>
+            <div style={{height:"30px", backgroundColor:"lightblue", marginTop:"5px",marginBottom:"5px"}}>
+              
+              </div>
+              <div style={{height:"30px", backgroundColor:"lightskyblue",marginTop:"5px",marginBottom:"5px"}}>
+              
+              </div>
+             
           </div>
         );
       } else {
         for (let secn = 0; secn < 60; secn++) {
           let secdisplay = secn.toString().padStart(2, "0");
           if (trackviewtype === "minutes") {
+            let scrollIntoViewid = hr + "hrs" + min + "mins";
             itemstyle = centiSecondStyle;
 
             if (secn === 0) {
               itemstyle = minuteStyle;
-              titledisplay = hrdisplay + ":" + mindisplay + ":" + secdisplay + ":00";
+              titledisplay =
+                hrdisplay + ":" + mindisplay + ":" + secdisplay + ":00";
               if (min === 0) {
                 itemstyle = hourStyle;
               }
-            }
-            else{
-              titledisplay=".";
+            } else {
+              titledisplay = ".";
             }
 
             title = hrdisplay + ":" + mindisplay + ":" + secdisplay + ":00";
@@ -1787,8 +1885,9 @@ function Mediatrackhtml(props) {
                   borderRight: "1px solid black",
                 }}
                 title={title}
+                id={title}
               >
-                {titledisplay} 
+                {titledisplay}
               </div>
             );
           } else {
@@ -1800,6 +1899,14 @@ function Mediatrackhtml(props) {
               let centisecndisplay = centisecn.toString().padStart(2, "0");
               itemstyle = centiSecondStyle;
               if (centisecn === 0) {
+                titledisplay =
+                  hrdisplay +
+                  ":" +
+                  mindisplay +
+                  ":" +
+                  secdisplay +
+                  ":" +
+                  centisecndisplay;
                 itemstyle = secondStyle;
                 if (secn === 0) {
                   itemstyle = minuteStyle;
@@ -1807,9 +1914,8 @@ function Mediatrackhtml(props) {
                     itemstyle = hourStyle;
                   }
                 }
-              }
-              else{
-                titledisplay=".";
+              } else {
+                titledisplay = ".";
               }
 
               title =
@@ -1828,8 +1934,9 @@ function Mediatrackhtml(props) {
                     borderRight: "1px solid black",
                   }}
                   title={title}
+                  id={title}
                 >
-                  {titledisplay} 
+                  {titledisplay}
                 </div>
               );
             }
@@ -1855,7 +1962,7 @@ function Mediatrackhtml(props) {
         style={{
           display: "flex",
           flexWrap: "nowrap",
-          height: "100px",
+          height: "200px",
           overflow: "auto",
         }}
       >
@@ -1868,7 +1975,7 @@ function Mediatrackhtml(props) {
           overflow: "auto",
         }}
       >
-        {hoursHtml}
+        {gotohoursHtml}
       </div>
       <div
         style={{
@@ -1877,7 +1984,7 @@ function Mediatrackhtml(props) {
           overflow: "auto",
         }}
       >
-        {minutesHtml}
+        {gotominutesHtml}
       </div>
     </div>
   );
