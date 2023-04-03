@@ -18,6 +18,7 @@ import {
   deleterecordNodejs,
   currenttimeinseconds,
   timedisplayfromSecondsfromstart,
+  dragdropHandler2
 } from "./logic";
 
 var video;
@@ -1680,7 +1681,7 @@ function Mediatrackhtml(props) {
     }
     
   };
-
+  console.log(props);
   let mainpanelhtml = [];
   let trackHtml = [];
 
@@ -1702,14 +1703,14 @@ function Mediatrackhtml(props) {
   };
   let itemstyle = {};
 
-  let totalduarationoftrackinseconds = 100;
-  let totalduarationoftrackinhours = 1;
+  let maximumduarationoftrackinseconds = 100;
+  let maxiumumduarationoftrackinhours = 1;
 
-  totalduarationoftrackinseconds =
-    props.mediatrack.totalduarationoftrackinseconds;
-  totalduarationoftrackinhours =
-    parseInt(totalduarationoftrackinseconds / 60) + 1;
-  let { parenthandleClick } = props;
+  maximumduarationoftrackinseconds =
+    props.compstate.maximumduarationoftrackinseconds;
+  maxiumumduarationoftrackinhours =
+    parseInt(maximumduarationoftrackinseconds / (60*60)) + 1;
+  let { mediatrackitemgallery } = props.compstate;
   let {
     trackviewtype,
     fromHours,
@@ -1717,6 +1718,7 @@ function Mediatrackhtml(props) {
     fromMinutes,
     toMinutes,
     maximumnoofcentisecondspersec,
+    
   } = compstate;
   let gotohoursHtml = [];
   let gotominutesHtml = [];
@@ -1724,7 +1726,7 @@ function Mediatrackhtml(props) {
   let title = "";
   let titledisplay = ".";
   if (trackviewtype !== "seconds") {
-    toHours = totalduarationoftrackinhours;
+    toHours = maxiumumduarationoftrackinhours;
   }
 
   let trackviewtypeHtml = [];
@@ -1771,7 +1773,7 @@ function Mediatrackhtml(props) {
     </div>
   );
 
-  for (let hr = 0; hr < totalduarationoftrackinhours; hr++) {
+  for (let hr = 0; hr < maxiumumduarationoftrackinhours; hr++) {
     gotohoursHtml.push(
       <div
         style={{ padding: "10px" }}
@@ -1818,13 +1820,26 @@ function Mediatrackhtml(props) {
     );
   }
 
-  
+ 
+  let totalsecondsfrombegining = 0;
+   let totalcentisecondsfrombegining = 0;
+   let mediatrackduration = 0;
+   let istrackexists = false;
+   let trackstyle = {};
+   let istracknotexistsevenstyle = {height:"30px", backgroundColor:"yellow", marginTop:"20px",marginBottom:"20px"};
+   let istrackexistsevenstyle = {height:"30px", backgroundColor:"lightblue", marginTop:"20px",marginBottom:"20px"};
+   let istrackexistsoddstyle={height:"30px", backgroundColor:"green", marginTop:"20px",marginBottom:"20px"};
+
+
+   
   for (let hr = fromHours; hr < toHours; hr++) {
     let hrdisplay = hr.toString().padStart(2, "0");
 
     for (let min = fromMinutes; min < toMinutes; min++) {
+      trackstyle = istracknotexistsevenstyle;
       let mindisplay = min.toString().padStart(2, "0");
       if (trackviewtype === "hours") {
+       
         itemstyle = centiSecondStyle;
 
         if (min === 0) {
@@ -1836,6 +1851,29 @@ function Mediatrackhtml(props) {
 
         title = hrdisplay + ":" + mindisplay + ":00:00";
         let scrollIntoViewid = hr + "hrs" + min + "mins";
+       
+         if(mediatrackitemgallery && mediatrackitemgallery.length > 0){
+           for (let mti = 0; mti < mediatrackitemgallery.length; mti++) {
+            
+            if(mediatrackitemgallery[mti].starttimeinsecondsinmediatrack !== undefined
+              && mediatrackitemgallery[mti].starttimeinsecondsinmediatrack <= totalsecondsfrombegining
+              &&mediatrackitemgallery[mti].endtimeinsecondsinmediatrack !== undefined
+              && mediatrackitemgallery[mti].endtimeinsecondsinmediatrack > totalsecondsfrombegining
+              ){
+                istrackexists = true;
+                mediatrackduration = mediatrackitemgallery[mti].endtimeinsecondsinmediatrack-
+                mediatrackitemgallery[mti].starttimeinsecondsinmediatrack;
+                if(mti%2 === 0){
+                  trackstyle = istrackexistsevenstyle;
+                }
+                else{
+                  trackstyle = istrackexistsoddstyle;
+                }
+            }
+          }
+        }
+       
+
         trackHtml.push(
           <div
             style={{
@@ -1849,21 +1887,46 @@ function Mediatrackhtml(props) {
               <div style={{ ...itemstyle,height:"30px",   borderRight: "1px solid black",}}>
               {titledisplay}
               </div>
-            <div style={{height:"30px", backgroundColor:"lightblue", marginTop:"5px",marginBottom:"5px"}}>
-              
+              <div style={trackstyle}>
+             
               </div>
-              <div style={{height:"30px", backgroundColor:"lightskyblue",marginTop:"5px",marginBottom:"5px"}}>
-              
-              </div>
+            
              
           </div>
         );
+        totalsecondsfrombegining = totalsecondsfrombegining+60;
       } else {
         for (let secn = 0; secn < 60; secn++) {
+          trackstyle = istracknotexistsevenstyle;
           let secdisplay = secn.toString().padStart(2, "0");
           if (trackviewtype === "minutes") {
             let scrollIntoViewid = hr + "hrs" + min + "mins";
             itemstyle = centiSecondStyle;
+
+             istrackexists = false;
+   
+            if(mediatrackitemgallery && mediatrackitemgallery.length > 0){
+               for (let mti = 0; mti < mediatrackitemgallery.length; mti++) {
+                
+                if(mediatrackitemgallery[mti].starttimeinsecondsinmediatrack !== undefined
+                  && mediatrackitemgallery[mti].starttimeinsecondsinmediatrack <= totalsecondsfrombegining
+                  &&mediatrackitemgallery[mti].endtimeinsecondsinmediatrack !== undefined
+                  && mediatrackitemgallery[mti].endtimeinsecondsinmediatrack > totalsecondsfrombegining
+                  ){
+                    istrackexists = true;
+                    mediatrackduration = mediatrackitemgallery[mti].endtimeinsecondsinmediatrack-
+                    mediatrackitemgallery[mti].starttimeinsecondsinmediatrack;
+                
+                    if(mti%2 === 0){
+                      trackstyle = istrackexistsevenstyle;
+                    }
+                    else{
+                      trackstyle = istrackexistsoddstyle;
+                    }
+                }
+              }
+            }
+
 
             if (secn === 0) {
               itemstyle = minuteStyle;
@@ -1880,24 +1943,59 @@ function Mediatrackhtml(props) {
             trackHtml.push(
               <div
                 style={{
-                  ...itemstyle,
-                  padding: "1px",
-                  borderRight: "1px solid black",
+                
                 }}
                 title={title}
                 id={title}
               >
-                {titledisplay}
+              <div style={{ ...itemstyle,height:"30px",   borderRight: "1px solid black",}}>
+              {titledisplay}
+              </div>
+
+
+              <div style={trackstyle}>
+           
+              </div>
+
               </div>
             );
+            totalsecondsfrombegining = totalsecondsfrombegining+1;
           } else {
             for (
               let centisecn = 0;
               centisecn < maximumnoofcentisecondspersec;
               centisecn++
             ) {
+              trackstyle = istracknotexistsevenstyle;
               let centisecndisplay = centisecn.toString().padStart(2, "0");
               itemstyle = centiSecondStyle;
+
+
+               istrackexists = false;
+   
+              if(mediatrackitemgallery && mediatrackitemgallery.length > 0){
+                 for (let mti = 0; mti < mediatrackitemgallery.length; mti++) {
+                  
+                  if(mediatrackitemgallery[mti].starttimeinsecondsinmediatrack !== undefined
+                    && mediatrackitemgallery[mti].starttimeinsecondsinmediatrack <= (totalsecondsfrombegining)
+                    &&mediatrackitemgallery[mti].endtimeinsecondsinmediatrack !== undefined
+                    && mediatrackitemgallery[mti].endtimeinsecondsinmediatrack > (totalsecondsfrombegining)
+                    ){
+                      istrackexists = true; 
+                      mediatrackduration = mediatrackitemgallery[mti].endtimeinsecondsinmediatrack-
+                      mediatrackitemgallery[mti].starttimeinsecondsinmediatrack;
+                  
+                       if(mti%2 === 0){
+                        trackstyle = istrackexistsevenstyle;
+                      }
+                      else{
+                        trackstyle = istrackexistsoddstyle;
+                      }
+                  }
+                }
+              }
+
+
               if (centisecn === 0) {
                 titledisplay =
                   hrdisplay +
@@ -1929,20 +2027,33 @@ function Mediatrackhtml(props) {
               trackHtml.push(
                 <div
                   style={{
-                    ...itemstyle,
-                    padding: "1px",
-                    borderRight: "1px solid black",
+                  
                   }}
                   title={title}
                   id={title}
                 >
+                
+
+                  <div style={{ ...itemstyle,height:"30px",   borderRight: "1px solid black",}}>
                   {titledisplay}
+                  </div>
+    
+    
+                  <div style={trackstyle}>
+           
+                  </div>
+
+                  
+
                 </div>
               );
+
+              totalsecondsfrombegining = totalsecondsfrombegining+0.01;
             }
           }
         }
       }
+
     }
   }
 
@@ -2008,6 +2119,7 @@ export function Videoeditor() {
     selectedmediatrackitem: {},
     cutstarttimeinseconds: undefined,
     cutendtimeinseconds: undefined,
+    maximumduarationoftrackinseconds:3600
   });
 
   useEffect(() => {
@@ -2161,7 +2273,7 @@ export function Videoeditor() {
       let cutstarttimeinseconds = myvideo1.currentTime;
       await Hideui({});
       await Showui({
-        cutstarttimeinseconds: parseInt(cutstarttimeinseconds),
+        cutstarttimeinseconds: cutstarttimeinseconds,
         currentTimeDisplayinSeconds: cutstarttimeinseconds,
       });
       // setTimeout(async () => {
@@ -2175,7 +2287,7 @@ export function Videoeditor() {
       let cutendtimeinseconds = myvideo1.currentTime;
       await Hideui({});
       await Showui({
-        cutendtimeinseconds: parseInt(cutendtimeinseconds),
+        cutendtimeinseconds: cutendtimeinseconds,
         currentTimeDisplayinSeconds: cutendtimeinseconds,
       });
 
@@ -2197,13 +2309,44 @@ export function Videoeditor() {
 
       mediatrackitem.cutstarttimeinsecondsinmediaupload = cutstarttimeinseconds;
       mediatrackitem.cutendtimeinsecondsinmediaupload = cutendtimeinseconds;
-      mediatrackitemgallery.push(mediatrackitem);
+    //  mediatrackitemgallery.push(mediatrackitem);
+  let maximumduarationoftrackinseconds = 0;
+      let sectioncolumnarrayjs = JSON.parse(
+        JSON.stringify(mediatrackitemgallery)
+      );
+      console.log(sectioncolumnarrayjs);
+      sectioncolumnarrayjs = dragdropHandler2({
+        changingobjectarray: sectioncolumnarrayjs,
+        subobject: mediatrackitem,
+        operationtype: "add",
+        preposttext: "",
+        draggedcomporder: "",
+        neworder: "",
+      });
+
+ for(let i=0; i<sectioncolumnarrayjs.length; i++){
+  let durationmediatrackitem = sectioncolumnarrayjs[i].cutendtimeinsecondsinmediaupload-sectioncolumnarrayjs[i].cutstarttimeinsecondsinmediaupload;
+  if(i == 0){
+    sectioncolumnarrayjs[i].starttimeinsecondsinmediatrack = 0;
+    sectioncolumnarrayjs[i].endtimeinsecondsinmediatrack = durationmediatrackitem;
+  }
+if(sectioncolumnarrayjs[i-1] && 
+  sectioncolumnarrayjs[i]&&
+  sectioncolumnarrayjs[i-1].endtimeinsecondsinmediatrack 
+   ){
+    sectioncolumnarrayjs[i].starttimeinsecondsinmediatrack = sectioncolumnarrayjs[i-1].endtimeinsecondsinmediatrack;
+    sectioncolumnarrayjs[i].endtimeinsecondsinmediatrack = sectioncolumnarrayjs[i].starttimeinsecondsinmediatrack+durationmediatrackitem;
+  }
+  maximumduarationoftrackinseconds =  sectioncolumnarrayjs[i].endtimeinsecondsinmediatrack;
+ }
+
 
       await Hideui({});
       await Showui({
-        mediatrackitemgallery: mediatrackitemgallery,
+        mediatrackitemgallery: sectioncolumnarrayjs,
         cutstarttimeinseconds: undefined,
         cutendtimeinseconds: undefined,
+        maximumduarationoftrackinseconds:maximumduarationoftrackinseconds
       });
 
       playVideo({
@@ -2324,12 +2467,10 @@ export function Videoeditor() {
             crossorigin="anonymous"
           ></video>
         </div>
-        <div style={{ width: "100%", height: "300px" }}>
+        <div style={{ width: "800px", height: "300px", overflow:"auto" }}>
           <Mediatrackhtml
             compstate={compstate}
-            mediatrack={{
-              totalduarationoftrackinseconds: 180,
-            }}
+           
             parenthandleClick={childhandleClick}
           />
         </div>
