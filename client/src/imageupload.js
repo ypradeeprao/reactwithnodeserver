@@ -18,7 +18,7 @@ import {
   deleterecordNodejs,
   currenttimeinseconds,
   timedisplayfromSecondsfromstart,
-  dragdropHandler2
+  dragdropHandler2,
 } from "./logic";
 
 var video;
@@ -619,6 +619,12 @@ let Videoimageprogressbarhtml = (methodprops) => {
           onClick={() => handleClick({ type: "addtoselectedtrack" })}
         >
           Add to Selected Track
+        </div>
+        <div
+          style={{ padding: "5px" }}
+          onClick={() => handleClick({ type: "addanothertrack" })}
+        >
+          Add Another Track
         </div>
       </div>
     </div>
@@ -1617,7 +1623,7 @@ function Mediatrackhtml(props) {
 
   let handleClick = async (methodprops) => {
     let { type, value } = methodprops;
-    let { fromHours, trackviewtype,fromHoursscrollintoview } = compstate;
+    let { fromHours, trackviewtype, fromHoursscrollintoview } = compstate;
     if (type === "settrackviewtype") {
       await Hideui({});
       if (value === "seconds") {
@@ -1646,40 +1652,42 @@ function Mediatrackhtml(props) {
       } else {
         await Showui({
           fromHoursscrollintoview: value,
-           });
+        });
         let elem = document.getElementById(
           value.toString().padStart(2, "0") + ":00:00:00"
         );
         elem.scrollIntoView();
       }
-    } 
-    else if (type === "gotominutes") {
+    } else if (type === "gotominutes") {
       if (trackviewtype == "seconds") {
         await Hideui({});
 
-      await Showui({
-        fromHours: fromHours,
-        toHours: fromHours + 1,
-        fromMinutes: value,
-        toMinutes: value + 1,
-      });
+        await Showui({
+          fromHours: fromHours,
+          toHours: fromHours + 1,
+          fromMinutes: value,
+          toMinutes: value + 1,
+        });
+      } else {
+        let elem = document.getElementById(
+          fromHoursscrollintoview.toString().padStart(2, "0") +
+            ":" +
+            value.toString().padStart(2, "0") +
+            ":00:00"
+        );
+        elem.scrollIntoView();
       }
-      else{
-      
-       let elem = document.getElementById(fromHoursscrollintoview.toString().padStart(2, "0")+":"+value.toString().padStart(2, "0")+":00:00");
-       elem.scrollIntoView();
-
-     }
+    } else if (type === "gotoseconds") {
+      let elem = document.getElementById(
+        fromHours.toString().padStart(2, "0") +
+          ":" +
+          fromMinutes.toString().padStart(2, "0") +
+          ":" +
+          value.toString().padStart(2, "0") +
+          ":00"
+      );
+      elem.scrollIntoView();
     }
-    else if (type === "gotoseconds") {
-     
-      
-       let elem = document.getElementById(fromHours.toString().padStart(2, "0")+":"+fromMinutes.toString().padStart(2, "0")+":"+value.toString().padStart(2, "0")+":00");
-       elem.scrollIntoView();
-
-     
-    }
-    
   };
   console.log(props);
   let mainpanelhtml = [];
@@ -1709,7 +1717,7 @@ function Mediatrackhtml(props) {
   maximumduarationoftrackinseconds =
     props.compstate.maximumduarationoftrackinseconds;
   maxiumumduarationoftrackinhours =
-    parseInt(maximumduarationoftrackinseconds / (60*60)) + 1;
+    parseInt(maximumduarationoftrackinseconds / (60 * 60)) + 1;
   let { mediatrackitemgallery } = props.compstate;
   let {
     trackviewtype,
@@ -1718,7 +1726,6 @@ function Mediatrackhtml(props) {
     fromMinutes,
     toMinutes,
     maximumnoofcentisecondspersec,
-    
   } = compstate;
   let gotohoursHtml = [];
   let gotominutesHtml = [];
@@ -1820,18 +1827,30 @@ function Mediatrackhtml(props) {
     );
   }
 
- 
   let totalsecondsfrombegining = 0;
-   let totalcentisecondsfrombegining = 0;
-   let mediatrackduration = 0;
-   let istrackexists = false;
-   let trackstyle = {};
-   let istracknotexistsevenstyle = {height:"30px", backgroundColor:"yellow", marginTop:"20px",marginBottom:"20px"};
-   let istrackexistsevenstyle = {height:"30px", backgroundColor:"lightblue", marginTop:"20px",marginBottom:"20px"};
-   let istrackexistsoddstyle={height:"30px", backgroundColor:"green", marginTop:"20px",marginBottom:"20px"};
+  let totalcentisecondsfrombegining = 0;
+  let mediatrackduration = 0;
+  let istrackexists = false;
+  let trackstyle = {};
+  let istracknotexistsevenstyle = {
+    height: "50px",
+    backgroundColor: "yellow",
+    marginTop: "20px",
+    marginBottom: "20px",
+  };
+  let istrackexistsevenstyle = {
+    height: "50px",
+    backgroundColor: "lightblue",
+    marginTop: "20px",
+    marginBottom: "20px",
+  };
+  let istrackexistsoddstyle = {
+    height: "50px",
+    backgroundColor: "green",
+    marginTop: "20px",
+    marginBottom: "20px",
+  };
 
-
-   
   for (let hr = fromHours; hr < toHours; hr++) {
     let hrdisplay = hr.toString().padStart(2, "0");
 
@@ -1839,7 +1858,6 @@ function Mediatrackhtml(props) {
       trackstyle = istracknotexistsevenstyle;
       let mindisplay = min.toString().padStart(2, "0");
       if (trackviewtype === "hours") {
-       
         itemstyle = centiSecondStyle;
 
         if (min === 0) {
@@ -1851,50 +1869,58 @@ function Mediatrackhtml(props) {
 
         title = hrdisplay + ":" + mindisplay + ":00:00";
         let scrollIntoViewid = hr + "hrs" + min + "mins";
-       
-         if(mediatrackitemgallery && mediatrackitemgallery.length > 0){
-           for (let mti = 0; mti < mediatrackitemgallery.length; mti++) {
-            
-            if(mediatrackitemgallery[mti].starttimeinsecondsinmediatrack !== undefined
-              && mediatrackitemgallery[mti].starttimeinsecondsinmediatrack <= totalsecondsfrombegining
-              &&mediatrackitemgallery[mti].endtimeinsecondsinmediatrack !== undefined
-              && mediatrackitemgallery[mti].endtimeinsecondsinmediatrack > totalsecondsfrombegining
-              ){
-                istrackexists = true;
-                mediatrackduration = mediatrackitemgallery[mti].endtimeinsecondsinmediatrack-
+
+        if (mediatrackitemgallery && mediatrackitemgallery.length > 0) {
+          for (let mti = 0; mti < mediatrackitemgallery.length; mti++) {
+            if (
+              mediatrackitemgallery[mti].starttimeinsecondsinmediatrack !==
+                undefined &&
+              mediatrackitemgallery[mti].starttimeinsecondsinmediatrack <=
+                totalsecondsfrombegining &&
+              mediatrackitemgallery[mti].endtimeinsecondsinmediatrack !==
+                undefined &&
+              mediatrackitemgallery[mti].endtimeinsecondsinmediatrack >
+                totalsecondsfrombegining
+            ) {
+              istrackexists = true;
+              mediatrackduration =
+                mediatrackitemgallery[mti].endtimeinsecondsinmediatrack -
                 mediatrackitemgallery[mti].starttimeinsecondsinmediatrack;
-                if(mti%2 === 0){
-                  trackstyle = istrackexistsevenstyle;
-                }
-                else{
-                  trackstyle = istrackexistsoddstyle;
-                }
+              if (mti % 2 === 0) {
+                trackstyle = istrackexistsevenstyle;
+              } else {
+                trackstyle = istrackexistsoddstyle;
+              }
             }
           }
         }
-       
 
         trackHtml.push(
           <div
-            style={{
-             
-             // padding: "1px",
-            
-            }}
+            style={
+              {
+                // padding: "1px",
+              }
+            }
             title={title}
             id={title}
           >
-              <div style={{ ...itemstyle,height:"30px",   borderRight: "1px solid black",}}>
+            <div
+              style={{
+                ...itemstyle,
+                height: "30px",
+                borderRight: "1px solid black",
+              }}
+            >
               {titledisplay}
-              </div>
-              <div style={trackstyle}>
-             
-              </div>
-            
-             
+            </div>
+            <div style={trackstyle}>
+
+           
+            </div>
           </div>
         );
-        totalsecondsfrombegining = totalsecondsfrombegining+60;
+        totalsecondsfrombegining = totalsecondsfrombegining + 60;
       } else {
         for (let secn = 0; secn < 60; secn++) {
           trackstyle = istracknotexistsevenstyle;
@@ -1903,30 +1929,33 @@ function Mediatrackhtml(props) {
             let scrollIntoViewid = hr + "hrs" + min + "mins";
             itemstyle = centiSecondStyle;
 
-             istrackexists = false;
-   
-            if(mediatrackitemgallery && mediatrackitemgallery.length > 0){
-               for (let mti = 0; mti < mediatrackitemgallery.length; mti++) {
-                
-                if(mediatrackitemgallery[mti].starttimeinsecondsinmediatrack !== undefined
-                  && mediatrackitemgallery[mti].starttimeinsecondsinmediatrack <= totalsecondsfrombegining
-                  &&mediatrackitemgallery[mti].endtimeinsecondsinmediatrack !== undefined
-                  && mediatrackitemgallery[mti].endtimeinsecondsinmediatrack > totalsecondsfrombegining
-                  ){
-                    istrackexists = true;
-                    mediatrackduration = mediatrackitemgallery[mti].endtimeinsecondsinmediatrack-
+            istrackexists = false;
+
+            if (mediatrackitemgallery && mediatrackitemgallery.length > 0) {
+              for (let mti = 0; mti < mediatrackitemgallery.length; mti++) {
+                if (
+                  mediatrackitemgallery[mti].starttimeinsecondsinmediatrack !==
+                    undefined &&
+                  mediatrackitemgallery[mti].starttimeinsecondsinmediatrack <=
+                    totalsecondsfrombegining &&
+                  mediatrackitemgallery[mti].endtimeinsecondsinmediatrack !==
+                    undefined &&
+                  mediatrackitemgallery[mti].endtimeinsecondsinmediatrack >
+                    totalsecondsfrombegining
+                ) {
+                  istrackexists = true;
+                  mediatrackduration =
+                    mediatrackitemgallery[mti].endtimeinsecondsinmediatrack -
                     mediatrackitemgallery[mti].starttimeinsecondsinmediatrack;
-                
-                    if(mti%2 === 0){
-                      trackstyle = istrackexistsevenstyle;
-                    }
-                    else{
-                      trackstyle = istrackexistsoddstyle;
-                    }
+
+                  if (mti % 2 === 0) {
+                    trackstyle = istrackexistsevenstyle;
+                  } else {
+                    trackstyle = istrackexistsoddstyle;
+                  }
                 }
               }
             }
-
 
             if (secn === 0) {
               itemstyle = minuteStyle;
@@ -1941,25 +1970,21 @@ function Mediatrackhtml(props) {
 
             title = hrdisplay + ":" + mindisplay + ":" + secdisplay + ":00";
             trackHtml.push(
-              <div
-                style={{
-                
-                }}
-                title={title}
-                id={title}
-              >
-              <div style={{ ...itemstyle,height:"30px",   borderRight: "1px solid black",}}>
-              {titledisplay}
-              </div>
+              <div style={{}} title={title} id={title}>
+                <div
+                  style={{
+                    ...itemstyle,
+                    height: "30px",
+                    borderRight: "1px solid black",
+                  }}
+                >
+                  {titledisplay}
+                </div>
 
-
-              <div style={trackstyle}>
-           
-              </div>
-
+                <div style={trackstyle}></div>
               </div>
             );
-            totalsecondsfrombegining = totalsecondsfrombegining+1;
+            totalsecondsfrombegining = totalsecondsfrombegining + 1;
           } else {
             for (
               let centisecn = 0;
@@ -1970,31 +1995,33 @@ function Mediatrackhtml(props) {
               let centisecndisplay = centisecn.toString().padStart(2, "0");
               itemstyle = centiSecondStyle;
 
+              istrackexists = false;
 
-               istrackexists = false;
-   
-              if(mediatrackitemgallery && mediatrackitemgallery.length > 0){
-                 for (let mti = 0; mti < mediatrackitemgallery.length; mti++) {
-                  
-                  if(mediatrackitemgallery[mti].starttimeinsecondsinmediatrack !== undefined
-                    && mediatrackitemgallery[mti].starttimeinsecondsinmediatrack <= (totalsecondsfrombegining)
-                    &&mediatrackitemgallery[mti].endtimeinsecondsinmediatrack !== undefined
-                    && mediatrackitemgallery[mti].endtimeinsecondsinmediatrack > (totalsecondsfrombegining)
-                    ){
-                      istrackexists = true; 
-                      mediatrackduration = mediatrackitemgallery[mti].endtimeinsecondsinmediatrack-
+              if (mediatrackitemgallery && mediatrackitemgallery.length > 0) {
+                for (let mti = 0; mti < mediatrackitemgallery.length; mti++) {
+                  if (
+                    mediatrackitemgallery[mti]
+                      .starttimeinsecondsinmediatrack !== undefined &&
+                    mediatrackitemgallery[mti].starttimeinsecondsinmediatrack <=
+                      totalsecondsfrombegining &&
+                    mediatrackitemgallery[mti].endtimeinsecondsinmediatrack !==
+                      undefined &&
+                    mediatrackitemgallery[mti].endtimeinsecondsinmediatrack >
+                      totalsecondsfrombegining
+                  ) {
+                    istrackexists = true;
+                    mediatrackduration =
+                      mediatrackitemgallery[mti].endtimeinsecondsinmediatrack -
                       mediatrackitemgallery[mti].starttimeinsecondsinmediatrack;
-                  
-                       if(mti%2 === 0){
-                        trackstyle = istrackexistsevenstyle;
-                      }
-                      else{
-                        trackstyle = istrackexistsoddstyle;
-                      }
+
+                    if (mti % 2 === 0) {
+                      trackstyle = istrackexistsevenstyle;
+                    } else {
+                      trackstyle = istrackexistsoddstyle;
+                    }
                   }
                 }
               }
-
 
               if (centisecn === 0) {
                 titledisplay =
@@ -2025,35 +2052,26 @@ function Mediatrackhtml(props) {
                 ":" +
                 centisecndisplay;
               trackHtml.push(
-                <div
-                  style={{
-                  
-                  }}
-                  title={title}
-                  id={title}
-                >
-                
-
-                  <div style={{ ...itemstyle,height:"30px",   borderRight: "1px solid black",}}>
-                  {titledisplay}
-                  </div>
-    
-    
-                  <div style={trackstyle}>
-           
+                <div style={{}} title={title} id={title}>
+                  <div
+                    style={{
+                      ...itemstyle,
+                      height: "30px",
+                      borderRight: "1px solid black",
+                    }}
+                  >
+                    {titledisplay}
                   </div>
 
-                  
-
+                  <div style={trackstyle}></div>
                 </div>
               );
 
-              totalsecondsfrombegining = totalsecondsfrombegining+0.01;
+              totalsecondsfrombegining = totalsecondsfrombegining + 0.01;
             }
           }
         }
       }
-
     }
   }
 
@@ -2119,7 +2137,7 @@ export function Videoeditor() {
     selectedmediatrackitem: {},
     cutstarttimeinseconds: undefined,
     cutendtimeinseconds: undefined,
-    maximumduarationoftrackinseconds:3600
+    maximumduarationoftrackinseconds: 3600,
   });
 
   useEffect(() => {
@@ -2309,8 +2327,8 @@ export function Videoeditor() {
 
       mediatrackitem.cutstarttimeinsecondsinmediaupload = cutstarttimeinseconds;
       mediatrackitem.cutendtimeinsecondsinmediaupload = cutendtimeinseconds;
-    //  mediatrackitemgallery.push(mediatrackitem);
-  let maximumduarationoftrackinseconds = 0;
+      //  mediatrackitemgallery.push(mediatrackitem);
+      let maximumduarationoftrackinseconds = 0;
       let sectioncolumnarrayjs = JSON.parse(
         JSON.stringify(mediatrackitemgallery)
       );
@@ -2324,29 +2342,36 @@ export function Videoeditor() {
         neworder: "",
       });
 
- for(let i=0; i<sectioncolumnarrayjs.length; i++){
-  let durationmediatrackitem = sectioncolumnarrayjs[i].cutendtimeinsecondsinmediaupload-sectioncolumnarrayjs[i].cutstarttimeinsecondsinmediaupload;
-  if(i == 0){
-    sectioncolumnarrayjs[i].starttimeinsecondsinmediatrack = 0;
-    sectioncolumnarrayjs[i].endtimeinsecondsinmediatrack = durationmediatrackitem;
-  }
-if(sectioncolumnarrayjs[i-1] && 
-  sectioncolumnarrayjs[i]&&
-  sectioncolumnarrayjs[i-1].endtimeinsecondsinmediatrack 
-   ){
-    sectioncolumnarrayjs[i].starttimeinsecondsinmediatrack = sectioncolumnarrayjs[i-1].endtimeinsecondsinmediatrack;
-    sectioncolumnarrayjs[i].endtimeinsecondsinmediatrack = sectioncolumnarrayjs[i].starttimeinsecondsinmediatrack+durationmediatrackitem;
-  }
-  maximumduarationoftrackinseconds =  sectioncolumnarrayjs[i].endtimeinsecondsinmediatrack;
- }
-
+      for (let i = 0; i < sectioncolumnarrayjs.length; i++) {
+        let durationmediatrackitem =
+          sectioncolumnarrayjs[i].cutendtimeinsecondsinmediaupload -
+          sectioncolumnarrayjs[i].cutstarttimeinsecondsinmediaupload;
+        if (i == 0) {
+          sectioncolumnarrayjs[i].starttimeinsecondsinmediatrack = 0;
+          sectioncolumnarrayjs[i].endtimeinsecondsinmediatrack =
+            durationmediatrackitem;
+        }
+        if (
+          sectioncolumnarrayjs[i - 1] &&
+          sectioncolumnarrayjs[i] &&
+          sectioncolumnarrayjs[i - 1].endtimeinsecondsinmediatrack
+        ) {
+          sectioncolumnarrayjs[i].starttimeinsecondsinmediatrack =
+            sectioncolumnarrayjs[i - 1].endtimeinsecondsinmediatrack;
+          sectioncolumnarrayjs[i].endtimeinsecondsinmediatrack =
+            sectioncolumnarrayjs[i].starttimeinsecondsinmediatrack +
+            durationmediatrackitem;
+        }
+        maximumduarationoftrackinseconds =
+          sectioncolumnarrayjs[i].endtimeinsecondsinmediatrack;
+      }
 
       await Hideui({});
       await Showui({
         mediatrackitemgallery: sectioncolumnarrayjs,
         cutstarttimeinseconds: undefined,
         cutendtimeinseconds: undefined,
-        maximumduarationoftrackinseconds:maximumduarationoftrackinseconds
+        maximumduarationoftrackinseconds: maximumduarationoftrackinseconds,
       });
 
       playVideo({
@@ -2467,10 +2492,9 @@ if(sectioncolumnarrayjs[i-1] &&
             crossorigin="anonymous"
           ></video>
         </div>
-        <div style={{ width: "800px", height: "300px", overflow:"auto" }}>
+        <div style={{ width: "800px", height: "300px", overflow: "auto" }}>
           <Mediatrackhtml
             compstate={compstate}
-           
             parenthandleClick={childhandleClick}
           />
         </div>
