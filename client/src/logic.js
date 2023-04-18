@@ -167,7 +167,8 @@ const sortArray = (items, orderby, typeofsortby) => {
 
 export const dragdropHandler2 = (methodprops) => {
   alltypecompconsolelog("dragdropHandler-render", methodprops);
-  let propsJS = JSON.parse(JSON.stringify(methodprops));
+ // let propsJS = JSON.parse(JSON.stringify(methodprops));
+  let propsJS = methodprops;
   let {
     changingobjectarray,
   subobject,

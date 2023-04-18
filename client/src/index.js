@@ -5,6 +5,7 @@ import App from './App';
 import {Imageupload} from './imageupload';
 import {Videoeditor} from './imageupload';
 import reportWebVitals from './reportWebVitals';
+import {BuildImage2} from "./imageeditor";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -14,6 +15,7 @@ root.render(
     {/* <App /> */}
     {/* <Imageupload maxfilesize="300000" /> */}
     <Videoeditor />
+    {/* <BuildImage2 /> */}
   </React.StrictMode>
 );
 

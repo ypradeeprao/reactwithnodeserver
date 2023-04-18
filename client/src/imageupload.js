@@ -21,12 +21,47 @@ import {
   dragdropHandler2,
 } from "./logic";
 
+var video2;
+var mycanvasmediaRecorder2;
+var mycanvasrecordedChunks2;
 var video;
 var mycanvasmediaRecorder;
 var mycanvasrecordedChunks;
 var width, height;
 let initframedata = {};
 let modifiedframedata = {};
+
+function mycanvasrecorderhandleDataAvailable(event) {
+  console.log(event.data);
+  mycanvasrecordedChunks.push(event.data);
+}
+
+function mycanvasrecorderonstop(methodprops) {
+  let { htmlid } = methodprops;
+  console.log(mycanvasrecordedChunks);
+  var mycanvasblob = new Blob(mycanvasrecordedChunks, {
+    type: "video/mp4",
+  });
+  var mycanvasurl = URL.createObjectURL(mycanvasblob);
+  var myvideo3 = document.getElementById(htmlid);
+  myvideo3.src = mycanvasurl;
+}
+
+function mycanvasrecorderhandleDataAvailable2(event) {
+  console.log(event.data);
+  mycanvasrecordedChunks2.push(event.data);
+}
+
+function mycanvasrecorderonstop2(methodprops) {
+  let { htmlid } = methodprops;
+  console.log(mycanvasrecordedChunks2);
+  var mycanvasblob2 = new Blob(mycanvasrecordedChunks2, {
+    type: "video/mp4",
+  });
+  var mycanvasurl2 = URL.createObjectURL(mycanvasblob2);
+  var myvideo32 = document.getElementById(htmlid);
+  myvideo32.src = mycanvasurl2;
+}
 
 let Videogalleryhtml = (props) => {
   const [count, setCount] = useState(0);
@@ -73,7 +108,7 @@ let Videogalleryhtml = (props) => {
       });
 
       setCompstate((oldstate) => {
-        //   console.log(oldstate);
+        //   //console.log(oldstate);
         let { mediasectiongallery, selectedmediasection } = oldstate;
         let myvideo1 = document.getElementById("videoPlayer");
 
@@ -96,7 +131,7 @@ let Videogalleryhtml = (props) => {
               newselectedmediasection.filename;
             myvideo1.play();
             oldstate.selectedmediasection = newselectedmediasection;
-            //console.log(selectedmediasection);
+            ////console.log(selectedmediasection);
           } else {
             oldstate.selectedmediasection = {};
           }
@@ -109,7 +144,7 @@ let Videogalleryhtml = (props) => {
   }
 
   let Showui = async (methodprops) => {
-    //console.log(methodprops);
+    ////console.log(methodprops);
     let compstatejs = JSON.parse(JSON.stringify(compstate));
     let methodpropsjs = JSON.parse(JSON.stringify(methodprops));
 
@@ -175,7 +210,7 @@ let Videogalleryhtml = (props) => {
   async function gototimelocal(methodprops) {
     let { gototimeinseconds } = methodprops;
     let gototimeinsecondsjs = parseInt(gototimeinseconds);
-    //console.log(gototimeinsecondsjs);
+    ////console.log(gototimeinsecondsjs);
     let myvideo1 = document.getElementById("videoPlayer");
     myvideo1.src = "";
     setTimeout(async () => {
@@ -186,7 +221,7 @@ let Videogalleryhtml = (props) => {
           gototimeinsecondsjs <
             compstate.mediasectiongallery[i].mediaendtimeinsecondsinparent
         ) {
-          //console.log(compstate.mediasectiongallery[i]);
+          ////console.log(compstate.mediasectiongallery[i]);
           let durationfrommediasectionstarttimeinsecons =
             gototimeinsecondsjs -
             compstate.mediasectiongallery[i].mediastarttimeinsecondsinparent;
@@ -208,7 +243,7 @@ let Videogalleryhtml = (props) => {
     }, 1000);
   }
 
-  //console.log(count);
+  ////console.log(count);
 
   let mainpanelhtml = [];
   let mainvideogalleryhtml = [];
@@ -217,7 +252,7 @@ let Videogalleryhtml = (props) => {
   if (
     compstate.selectedmediasection.mediastarttimeinsecondsinparent !== undefined
   ) {
-    //console.log(compstate.selectedmediasection.mediastarttimeinsecondsinparent);
+    ////console.log(compstate.selectedmediasection.mediastarttimeinsecondsinparent);
     currentTimeDisplayinSeconds =
       count + compstate.selectedmediasection.mediastarttimeinsecondsinparent;
   }
@@ -319,7 +354,7 @@ let Videoprogressbarhtml = (methodprops) => {
   let mainpanelhtml = [];
 
   let blockwidth = totalwidth / mediatotaldurationinseconds;
-  //console.log(parseInt(blockwidth));
+  ////console.log(parseInt(blockwidth));
   let normalblockprops = {
     width: parseInt(blockwidth),
     height: "10px",
@@ -443,7 +478,7 @@ let Videoimageprogressbarhtml = (methodprops) => {
   let mainpanelhtml = [];
 
   let blockwidth = totalwidth / mediatotaldurationinseconds;
-  //console.log(methodprops);
+  ////console.log(methodprops);
   let normalblockprops = {
     width: parseInt(blockwidth),
     height: "10px",
@@ -508,8 +543,8 @@ let Videoimageprogressbarhtml = (methodprops) => {
     );
   }
   if (document.getElementById(videohtmlid)) {
-    console.log(document.getElementById(videohtmlid).paused);
-    console.log(document.getElementById(videohtmlid).ended);
+    //console.log(document.getElementById(videohtmlid).paused);
+    //console.log(document.getElementById(videohtmlid).ended);
   }
   return (
     <div>
@@ -602,6 +637,15 @@ let Videoimageprogressbarhtml = (methodprops) => {
 
         <div
           style={{ padding: "5px" }}
+          onClick={() => {
+            mycanvasmediaRecorder.stop();
+          }}
+        >
+          stop recorder
+        </div>
+
+        <div
+          style={{ padding: "5px" }}
           onClick={() => handleClick({ type: "clearcurrentcutting" })}
         >
           Clear current cutting
@@ -616,9 +660,11 @@ let Videoimageprogressbarhtml = (methodprops) => {
 
         <div
           style={{ padding: "5px" }}
-          onClick={() => handleClick({ type: "addtoselectedtrack" })}
+          onClick={() =>
+            handleClick({ type: "addtoselectedtrack", trackorder: 0 })
+          }
         >
-          Add to Selected Track
+          Add to First Track
         </div>
         <div
           style={{ padding: "5px" }}
@@ -630,6 +676,97 @@ let Videoimageprogressbarhtml = (methodprops) => {
     </div>
   );
 };
+
+async function drawVideoonCanvas(methodprops) {
+  let { videohtmlid, initcanvashtmlid, finalcanvashtmlid } = methodprops;
+  var isgreyoutpixels = document.getElementById("isgreyoutpixels").checked;
+  var isdefaultpixels = document.getElementById("isdefaultpixels").checked;
+  var istransparentpixels = document.getElementById(
+    "istransparentpixels"
+  ).checked;
+  var iswatermarkimage = document.getElementById("iswatermarkimage").checked;
+  var iswatermarktext = document.getElementById("iswatermarktext").checked;
+
+  let drawvideo = document.getElementById(videohtmlid);
+  let drawwidth = drawvideo.width;
+  let drawheight = drawvideo.height;
+
+  let c3 = document.getElementById(initcanvashtmlid);
+  let ctx3 = c3.getContext("2d");
+  ctx3.drawImage(drawvideo, 0, 0, drawwidth, drawheight);
+  //console.log(drawwidth);
+  //console.log(drawheight);
+
+  let c4 = document.getElementById(finalcanvashtmlid);
+  let ctx4 = c4.getContext("2d");
+  let initframe2 = ctx4.getImageData(0, 0, drawwidth, drawheight);
+  ////console.log(initframe2);
+
+  let initframe = ctx3.getImageData(0, 0, drawwidth, drawheight);
+  //  //console.log(initframe);
+  const l = initframe.data.length / 4;
+  // //console.log(drawwidth);300
+  //  //console.log(drawheight);270
+  // //console.log(l);81000
+  let rownumber = 0;
+  let columnnumber = 0;
+  for (let i = 0; i < l; i++) {
+    if (istransparentpixels == true) {
+      initframe.data[i * 4 + 3] = 0;
+    }
+
+    if (isgreyoutpixels == true && isdefaultpixels !== true) {
+      const grey =
+        (initframe.data[i * 4 + 0] +
+          initframe.data[i * 4 + 1] +
+          initframe.data[i * 4 + 2]) /
+        3;
+
+      initframe.data[i * 4 + 0] = grey;
+      initframe.data[i * 4 + 1] = grey;
+      initframe.data[i * 4 + 2] = grey;
+      // //console.log(i);
+      if (
+        rownumber > 200 &&
+        columnnumber > 200 &&
+        !(
+          initframe2.data[i * 4 + 0] === 0 &&
+          initframe2.data[i * 4 + 1] === 0 &&
+          initframe2.data[i * 4 + 2] === 0 &&
+          initframe2.data[i * 4 + 3] === 0
+        )
+      ) {
+        //  if(initframe2.data[i * 4 + 0] !== undefined && initframe2.data[i * 4 + 0] !== ""){
+        initframe.data[i * 4 + 0] = initframe2.data[i * 4 + 0];
+        // }
+        // if(initframe2.data[i * 4 + 1]!== undefined && initframe2.data[i * 4 + 1] !== ""){
+        initframe.data[i * 4 + 1] = initframe2.data[i * 4 + 1];
+        //  }
+        ////  if(initframe2.data[i * 4 + 2] !== undefined && initframe2.data[i * 4 + 2] !== ""){
+        initframe.data[i * 4 + 2] = initframe2.data[i * 4 + 2];
+        // }
+        //  if(initframe2.data[i * 4 + 3]!== undefined && initframe2.data[i * 4 + 3] !== ""){
+        initframe.data[i * 4 + 3] = initframe2.data[i * 4 + 3];
+        // }
+      }
+    }
+
+    columnnumber = columnnumber + 1;
+    if (columnnumber === drawwidth) {
+      columnnumber = 0;
+      rownumber = rownumber + 1;
+    }
+  }
+
+  ctx3.putImageData(initframe, 0, 0);
+  if (iswatermarktext == true) {
+    ctx3.fillText("Testtest", drawwidth - 50, drawheight - 20);
+  }
+
+  if (iswatermarkimage == true) {
+    // ctx3.putImageData(img.src, 0, 0);
+  }
+}
 
 export let Imageupload = (props) => {
   useEffect(() => {
@@ -647,7 +784,8 @@ export let Imageupload = (props) => {
     var options = {};
     mycanvasmediaRecorder = new MediaRecorder(mycanvasstream, options);
     mycanvasmediaRecorder.ondataavailable = mycanvasrecorderhandleDataAvailable;
-    mycanvasmediaRecorder.onstop = (evt) => mycanvasrecorderonstop();
+    mycanvasmediaRecorder.onstop = (evt) =>
+      mycanvasrecorderonstop({ htmlid: "myvideo3" });
   };
 
   async function uploadvideo(methodprops) {
@@ -658,12 +796,12 @@ export let Imageupload = (props) => {
       endtimeinseconds,
       totaldurationinseconds,
     } = methodprops;
-    //console.log(mycanvasrecordedChunks);
+    ////console.log(mycanvasrecordedChunks);
     var mycanvasblob = new Blob(mycanvasrecordedChunks, {
       type: "video/mp4",
     });
     var mycanvasurl = URL.createObjectURL(mycanvasblob);
-    //console.log(video.currentTime);
+    ////console.log(video.currentTime);
     let filenamenodejs =
       medianame +
       "foldername" +
@@ -673,7 +811,7 @@ export let Imageupload = (props) => {
       ".mp4";
     let filename = starttimeinseconds + "to" + endtimeinseconds + ".mp4";
 
-    //console.log(filenamenodejs);
+    ////console.log(filenamenodejs);
     var myblobfile = new File([mycanvasblob], filenamenodejs, {
       type: "video/mp4",
     });
@@ -695,10 +833,10 @@ export let Imageupload = (props) => {
     await axios
       .post(url, formData, config)
       .then((response) => {
-        //console.log(response);
+        ////console.log(response);
 
         currentVideouploadingStatus = "isuploadingsuccess";
-        //console.log(currentVideouploadingStatus);
+        ////console.log(currentVideouploadingStatus);
 
         updatevideolocationstatusindatabase({
           status: currentVideouploadingStatus,
@@ -713,7 +851,7 @@ export let Imageupload = (props) => {
         });
       })
       .catch((error) => {
-        //console.log(`failed: ${error.message}`);
+        ////console.log(`failed: ${error.message}`);
 
         currentVideouploadingStatus = "isuploadingfailed";
 
@@ -753,7 +891,7 @@ export let Imageupload = (props) => {
     let { loaded, total } = e;
     let percent = (loaded / total) * 100;
     let roundedpercent = Math.round(percent);
-    //console.log(roundedpercent);
+    ////console.log(roundedpercent);
   }
 
   function getimagefromvideoattime() {
@@ -781,23 +919,23 @@ export let Imageupload = (props) => {
 
   function handleChangefile(event) {
     let targetfile = event.target.files[0];
-    //console.log(targetfile);
+    ////console.log(targetfile);
 
     var fr = new FileReader();
     fr.onload = function () {
       var data = fr.result;
       var array = new Int8Array(data);
       var uint8ClampedArray = new Uint8ClampedArray(data);
-      //console.log(data);
-      //console.log(array);
-      //console.log(uint8ClampedArray);
+      ////console.log(data);
+      ////console.log(array);
+      ////console.log(uint8ClampedArray);
       // output.value = JSON.stringify(array, null, '  ');
       // window.setTimeout(ReadFile, 1000);
     };
     fr.readAsArrayBuffer(targetfile);
 
     const urlObj = URL.createObjectURL(targetfile);
-    //console.log(urlObj);
+    ////console.log(urlObj);
     let videoupload = document.getElementById("myvideo1");
     videoupload.src = urlObj;
   }
@@ -820,7 +958,7 @@ export let Imageupload = (props) => {
       tablename: "media",
       tabledatalist: [createmediaprops],
     });
-    //console.log(createmediaresp);
+    ////console.log(createmediaresp);
 
     let createmediauploadprops = {
       id: mediauploadname,
@@ -843,7 +981,7 @@ export let Imageupload = (props) => {
         tabledatalist: [createmediauploadprops],
       });
     }
-    //console.log(createmediauploadresp);
+    ////console.log(createmediauploadresp);
 
     let createmediasectionprops = {
       id: mediasectionname,
@@ -891,7 +1029,7 @@ export let Imageupload = (props) => {
       filename,
       foldername,
     } = methodprops;
-    //console.log(methodprops);
+    ////console.log(methodprops);
 
     let updatemediaexpression = {};
     let updatemediasectionexpression = {};
@@ -916,7 +1054,7 @@ export let Imageupload = (props) => {
       updateexpression: updatemediaexpression,
       upsertifnotfound: false,
     });
-    //console.log(updatemediaresp);
+    ////console.log(updatemediaresp);
 
     let updatemediasectionresp = await updaterecordNodejs({
       tablename: "mediasection",
@@ -934,7 +1072,7 @@ export let Imageupload = (props) => {
       },
       upsertifnotfound: false,
     });
-    //console.log(updatemediasectionresp);
+    ////console.log(updatemediasectionresp);
     if (
       updatemediasectionresp.issuccess === "true" &&
       status === "isuploadingsuccess"
@@ -984,7 +1122,7 @@ export let Imageupload = (props) => {
   }
 
   async function autouploadvideo(methodprops) {
-    //console.log(methodprops);
+    ////console.log(methodprops);
     let {
       medianame,
       mediasectionname,
@@ -1003,9 +1141,9 @@ export let Imageupload = (props) => {
       currentVideouploadingStatus === "initial"
     ) {
       video.currentTime = starttimeinseconds;
-      //console.log(currentVideouploadingStatus);
-      //console.log(parseInt(video.duration));
-      //console.log(parseInt(video.currentTime));
+      ////console.log(currentVideouploadingStatus);
+      ////console.log(parseInt(video.duration));
+      ////console.log(parseInt(video.currentTime));
       if (parseInt(video.duration) < starttimeinseconds) {
         currentVideouploadingStatus = "finisheduploading";
         return;
@@ -1015,9 +1153,15 @@ export let Imageupload = (props) => {
       mycanvasmediaRecorder.start();
       video.play();
       currentVideouploadingStatus = "playing";
-      //console.log(currentVideouploadingStatus);
+      ////console.log(currentVideouploadingStatus);
     } else if (currentVideouploadingStatus === "playing") {
-      drawVideoonCanvas();
+      console.log(mycanvasmediaRecorder.status);
+      console.log(mycanvasrecordedChunks);
+      drawVideoonCanvas({
+        videohtmlid: "myvideo1",
+        initcanvashtmlid: "mycanvas",
+        finalcanvashtmlid: "mycanvas2",
+      });
       if (parseInt(video.currentTime) === endtimeinseconds) {
         video.pause();
         mycanvasmediaRecorder.stop();
@@ -1027,12 +1171,12 @@ export let Imageupload = (props) => {
       if (video.ended) {
         currentVideouploadingStatus = "ended";
       }
-      //console.log(currentVideouploadingStatus);
+      ////console.log(currentVideouploadingStatus);
     } else if (currentVideouploadingStatus === "paused") {
       if (parseInt(video.currentTime) === endtimeinseconds) {
         currentVideouploadingStatus = "startuploading";
       }
-      //console.log(currentVideouploadingStatus);
+      ////console.log(currentVideouploadingStatus);
     } else if (video.ended && currentVideouploadingStatus === "playing") {
       if (mycanvasmediaRecorder.state !== "inactive") {
         mycanvasmediaRecorder.stop();
@@ -1040,7 +1184,7 @@ export let Imageupload = (props) => {
       currentVideouploadingStatus = "startuploading";
       endtimeinseconds = parseInt(video.currentTime);
       totaldurationinseconds = parseInt(video.currentTime) - starttimeinseconds;
-      //console.log(currentVideouploadingStatus);
+      ////console.log(currentVideouploadingStatus);
     } else if (currentVideouploadingStatus === "ended") {
       if (mycanvasmediaRecorder.state !== "inactive") {
         mycanvasmediaRecorder.stop();
@@ -1049,7 +1193,7 @@ export let Imageupload = (props) => {
       endtimeinseconds = parseInt(video.currentTime);
       totaldurationinseconds = parseInt(video.currentTime) - starttimeinseconds;
 
-      //console.log(currentVideouploadingStatus);
+      ////console.log(currentVideouploadingStatus);
     } else if (currentVideouploadingStatus === "startuploading") {
       // await uploadvideo({
       //   medianame: medianame,
@@ -1058,16 +1202,16 @@ export let Imageupload = (props) => {
       //   endtimeinseconds: endtimeinseconds,
       //   totaldurationinseconds: totaldurationinseconds,
       // });
-      //console.log(currentVideouploadingStatus);
+      ////console.log(currentVideouploadingStatus);
       return;
     } else if (
       currentVideouploadingStatus === "isuploadingfailed" ||
       currentVideouploadingStatus === "finisheduploading"
     ) {
-      //console.log(currentVideouploadingStatus);
+      ////console.log(currentVideouploadingStatus);
       return;
     } else if (currentVideouploadingStatus === "isuploadingsuccess") {
-      //console.log(currentVideouploadingStatus);
+      ////console.log(currentVideouploadingStatus);
       return;
       // if (video.ended) {
       //   currentVideouploadingStatus = "finisheduploading";
@@ -1077,7 +1221,7 @@ export let Imageupload = (props) => {
       //   currentrecordingendtime = currentrecordingendtime + 10;
       // }
     } else {
-      //console.log(currentVideouploadingStatus);
+      ////console.log(currentVideouploadingStatus);
     }
 
     setTimeout(() => {
@@ -1091,31 +1235,16 @@ export let Imageupload = (props) => {
     }, 16);
   }
 
-  function mycanvasrecorderhandleDataAvailable(event) {
-    //console.log(mycanvasrecordedChunks);
-    mycanvasrecordedChunks.push(event.data);
-  }
-
-  function mycanvasrecorderonstop() {
-    //console.log(mycanvasrecordedChunks);
-    var mycanvasblob = new Blob(mycanvasrecordedChunks, {
-      type: "video/mp4",
-    });
-    var mycanvasurl = URL.createObjectURL(mycanvasblob);
-    var myvideo3 = document.getElementById("myvideo3");
-    myvideo3.src = mycanvasurl;
-  }
-
   function greoutSimilarPixels(event) {
     const canvas = document.querySelector("canvas");
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    ////console.log("x: " + x + " y: " + y);
+    //////console.log("x: " + x + " y: " + y);
     let myctx = canvas.getContext("2d");
 
     const clickedpointframedata = myctx.getImageData(x, y, 1, 1);
-    //console.log(clickedpointframedata);
+    ////console.log(clickedpointframedata);
 
     const frame = myctx.getImageData(0, 0, width, height);
     if (initframedata && Object.keys(initframedata).length > 0) {
@@ -1124,10 +1253,10 @@ export let Imageupload = (props) => {
     }
 
     modifiedframedata = myctx.getImageData(0, 0, width, height);
-    //console.log(frame);
-    //console.log(JSON.parse(JSON.stringify(frame)));
-    //console.log(width);
-    //console.log(height);
+    ////console.log(frame);
+    ////console.log(JSON.parse(JSON.stringify(frame)));
+    ////console.log(width);
+    ////console.log(height);
     const l = frame.data.length / 4;
 
     for (let i = 0; i < l; i++) {
@@ -1163,90 +1292,6 @@ export let Imageupload = (props) => {
     myctx.putImageData(modifiedframedata, 0, 0);
   }
 
-  async function drawVideoonCanvas() {
-    let c4 = document.getElementById("mycanvas2");
-    let ctx4 = c4.getContext("2d");
-    let initframe2 = ctx4.getImageData(0, 0, width, height);
-    //console.log(initframe2);
-
-    let c3 = document.getElementById("mycanvas");
-    let ctx3 = c3.getContext("2d");
-    ctx3.drawImage(video, 0, 0, width, height);
-
-    var isgreyoutpixels = document.getElementById("isgreyoutpixels").checked;
-    var isdefaultpixels = document.getElementById("isdefaultpixels").checked;
-    var istransparentpixels = document.getElementById(
-      "istransparentpixels"
-    ).checked;
-    var iswatermarkimage = document.getElementById("iswatermarkimage").checked;
-    var iswatermarktext = document.getElementById("iswatermarktext").checked;
-
-    let initframe = ctx3.getImageData(0, 0, width, height);
-    //  console.log(initframe);
-    const l = initframe.data.length / 4;
-    // console.log(width);300
-    //  console.log(height);270
-    // console.log(l);81000
-    let rownumber = 0;
-    let columnnumber = 0;
-    for (let i = 0; i < l; i++) {
-      if (istransparentpixels == true) {
-        initframe.data[i * 4 + 3] = 0;
-      }
-
-      if (isgreyoutpixels == true && isdefaultpixels !== true) {
-        const grey =
-          (initframe.data[i * 4 + 0] +
-            initframe.data[i * 4 + 1] +
-            initframe.data[i * 4 + 2]) /
-          3;
-
-        initframe.data[i * 4 + 0] = grey;
-        initframe.data[i * 4 + 1] = grey;
-        initframe.data[i * 4 + 2] = grey;
-        // console.log(i);
-        if (
-          rownumber > 200 &&
-          columnnumber > 200 &&
-          !(
-            initframe2.data[i * 4 + 0] === 0 &&
-            initframe2.data[i * 4 + 1] === 0 &&
-            initframe2.data[i * 4 + 2] === 0 &&
-            initframe2.data[i * 4 + 3] === 0
-          )
-        ) {
-          //  if(initframe2.data[i * 4 + 0] !== undefined && initframe2.data[i * 4 + 0] !== ""){
-          initframe.data[i * 4 + 0] = initframe2.data[i * 4 + 0];
-          // }
-          // if(initframe2.data[i * 4 + 1]!== undefined && initframe2.data[i * 4 + 1] !== ""){
-          initframe.data[i * 4 + 1] = initframe2.data[i * 4 + 1];
-          //  }
-          ////  if(initframe2.data[i * 4 + 2] !== undefined && initframe2.data[i * 4 + 2] !== ""){
-          initframe.data[i * 4 + 2] = initframe2.data[i * 4 + 2];
-          // }
-          //  if(initframe2.data[i * 4 + 3]!== undefined && initframe2.data[i * 4 + 3] !== ""){
-          initframe.data[i * 4 + 3] = initframe2.data[i * 4 + 3];
-          // }
-        }
-      }
-
-      columnnumber = columnnumber + 1;
-      if (columnnumber === width) {
-        columnnumber = 0;
-        rownumber = rownumber + 1;
-      }
-    }
-
-    ctx3.putImageData(initframe, 0, 0);
-    if (iswatermarktext == true) {
-      ctx3.fillText("Testtest", width - 50, height - 20);
-    }
-
-    if (iswatermarkimage == true) {
-      // ctx3.putImageData(img.src, 0, 0);
-    }
-  }
-
   function drawImageonCanvas(event) {
     let c3 = document.getElementById("mycanvas2");
 
@@ -1258,7 +1303,7 @@ export let Imageupload = (props) => {
     img.onload = function () {
       ctx3.drawImage(img, width - 100, height - 100, 100, 100);
       let initframe = ctx3.getImageData(0, 0, width, height);
-      //console.log(initframe);
+      ////console.log(initframe);
     };
     // img.src = "https://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png";
   }
@@ -1276,7 +1321,7 @@ export let Imageupload = (props) => {
     //       gototimeinsecondsjs <
     //         compstate.mediasectiongallery[i].mediaendtimeinsecondsinparent
     //     ) {
-    //       console.log(compstate.mediasectiongallery[i]);
+    //       //console.log(compstate.mediasectiongallery[i]);
     //       let durationfrommediasectionstarttimeinsecons =
     //         gototimeinsecondsjs -
     //         compstate.mediasectiongallery[i].mediastarttimeinsecondsinparent;
@@ -1299,7 +1344,7 @@ export let Imageupload = (props) => {
   }
 
   let currentVideouploadingStatus = "initial";
-
+  console.log(mycanvasrecordedChunks);
   let mainpanelhtml = [];
   mainpanelhtml.push(
     <div style={{ width: "100%" }}>
@@ -1486,7 +1531,7 @@ export function Mediauploadhtml(props) {
   let { dropHandler } = props;
 
   async function dropHandlerLocal(ev) {
-    //console.log("File(s) dropped");
+    ////console.log("File(s) dropped");
     let files = [];
     // Prevent default behavior (Prevent file from being opened)
     ev.preventDefault();
@@ -1497,16 +1542,16 @@ export function Mediauploadhtml(props) {
         // If dropped items aren't files, reject them
         if (item.kind === "file") {
           const file = item.getAsFile();
-          //console.log(`… file[${i}].name = ${file.name}`);
-          //console.log(file);
+          ////console.log(`… file[${i}].name = ${file.name}`);
+          ////console.log(file);
           files.push({ type: "file", file: file });
         }
       });
     } else {
       // Use DataTransfer interface to access the file(s)
       [...ev.dataTransfer.files].forEach((file, i) => {
-        //console.log(`… file[${i}].name = ${file.name}`);
-        //console.log(file);
+        ////console.log(`… file[${i}].name = ${file.name}`);
+        ////console.log(file);
         files.push({ type: "file", file: file });
       });
     }
@@ -1515,7 +1560,7 @@ export function Mediauploadhtml(props) {
   }
 
   function dragOverHandler(ev) {
-    //console.log("File(s) in drop zone");
+    ////console.log("File(s) in drop zone");
 
     // Prevent default behavior (Prevent file from being opened)
     ev.preventDefault();
@@ -1524,7 +1569,7 @@ export function Mediauploadhtml(props) {
   async function handleChangefile(event) {
     let files = [];
     let targetfile = event.target.files[0];
-    //console.log(targetfile);
+    ////console.log(targetfile);
     files.push({ type: "file", file: targetfile });
 
     dropHandler({ files: files });
@@ -1573,7 +1618,7 @@ async function gototimelocal(methodprops) {
   //       gototimeinsecondsjs <
   //         compstate.mediasectiongallery[i].mediaendtimeinsecondsinparent
   //     ) {
-  //       console.log(compstate.mediasectiongallery[i]);
+  //       //console.log(compstate.mediasectiongallery[i]);
   //       let durationfrommediasectionstarttimeinsecons =
   //         gototimeinsecondsjs -
   //         compstate.mediasectiongallery[i].mediastarttimeinsecondsinparent;
@@ -1595,103 +1640,17 @@ async function gototimelocal(methodprops) {
   // }, 1000);
 }
 
-function Mediatrackhtml(props) {
-  const [compstate, setCompstate] = useState({
-    showui: "true",
-    trackviewtype: "hours",
-    fromHours: 0,
-    toHours: 1,
-    fromMinutes: 0,
-    toMinutes: 60,
-    maximumnoofcentisecondspersec: 100,
-  });
-
-  let Showui = async (methodprops) => {
-    //console.log(methodprops);
-    let compstatejs = JSON.parse(JSON.stringify(compstate));
-    let methodpropsjs = JSON.parse(JSON.stringify(methodprops));
-    //console.log(methodpropsjs);
-    // await setCompstate({ ...compstatejs, ...methodpropsjs, showui: "true" });
-    await setCompstate({ ...compstate, ...methodprops, showui: "true" });
-  };
-  let Hideui = async (methodprops) => {
-    let compstatejs = JSON.parse(JSON.stringify(compstate));
-    let methodpropsjs = JSON.parse(JSON.stringify(methodprops));
-
-    await setCompstate({ ...compstatejs, ...methodpropsjs, showui: "false" });
-  };
-
-  let handleClick = async (methodprops) => {
-    let { type, value } = methodprops;
-    let { fromHours, trackviewtype, fromHoursscrollintoview } = compstate;
-    if (type === "settrackviewtype") {
-      await Hideui({});
-      if (value === "seconds") {
-        // limit for loop iterations
-        await Showui({
-          trackviewtype: value,
-          fromHours: 0,
-          toHours: 1,
-          fromMinutes: 0,
-          toMinutes: 1,
-          maximumnoofcentisecondspersec: 100,
-        });
-      } else {
-        await Showui({ trackviewtype: value });
-      }
-    } else if (type === "gotohours") {
-      if (trackviewtype == "seconds") {
-        await Hideui({});
-
-        await Showui({
-          fromHours: value,
-          toHours: value + 1,
-          fromMinutes: 0,
-          toMinutes: 1,
-        });
-      } else {
-        await Showui({
-          fromHoursscrollintoview: value,
-        });
-        let elem = document.getElementById(
-          value.toString().padStart(2, "0") + ":00:00:00"
-        );
-        elem.scrollIntoView();
-      }
-    } else if (type === "gotominutes") {
-      if (trackviewtype == "seconds") {
-        await Hideui({});
-
-        await Showui({
-          fromHours: fromHours,
-          toHours: fromHours + 1,
-          fromMinutes: value,
-          toMinutes: value + 1,
-        });
-      } else {
-        let elem = document.getElementById(
-          fromHoursscrollintoview.toString().padStart(2, "0") +
-            ":" +
-            value.toString().padStart(2, "0") +
-            ":00:00"
-        );
-        elem.scrollIntoView();
-      }
-    } else if (type === "gotoseconds") {
-      let elem = document.getElementById(
-        fromHours.toString().padStart(2, "0") +
-          ":" +
-          fromMinutes.toString().padStart(2, "0") +
-          ":" +
-          value.toString().padStart(2, "0") +
-          ":00"
-      );
-      elem.scrollIntoView();
-    }
-  };
-  console.log(props);
-  let mainpanelhtml = [];
-  let trackHtml = [];
+function Mediatrackitemhtml(props) {
+  let {
+    listmediatrack,
+    totalsecondsfrombeginingintrack,
+    trackviewtype,
+    centisecn,
+    secn,
+    min,
+    hr,
+    parenthandleClick,
+  } = props;
 
   let centiSecondStyle = {
     backgroundColor: "yellow",
@@ -1709,6 +1668,201 @@ function Mediatrackhtml(props) {
     backgroundColor: "red",
     height: "50px",
   };
+  let hrdisplay = hr.toString().padStart(2, "0");
+  let mindisplay = min.toString().padStart(2, "0");
+  let secdisplay = secn.toString().padStart(2, "0");
+  let centisecndisplay = centisecn.toString().padStart(2, "0");
+  let title = "";
+  let titledisplay = ".";
+
+  let itemstyle = {};
+  itemstyle = centiSecondStyle;
+  if (trackviewtype === "hours") {
+    if (min === 0) {
+      itemstyle = hourStyle;
+      titledisplay = hrdisplay + ":" + mindisplay + ":00:00";
+    } else {
+      titledisplay = ".";
+    }
+
+    title = hrdisplay + ":" + mindisplay + ":00:00";
+  } else if (trackviewtype === "minutes") {
+    if (secn === 0) {
+      itemstyle = minuteStyle;
+      titledisplay = hrdisplay + ":" + mindisplay + ":" + secdisplay + ":00";
+      if (min === 0) {
+        itemstyle = hourStyle;
+      }
+    } else {
+      titledisplay = ".";
+    }
+
+    title = hrdisplay + ":" + mindisplay + ":" + secdisplay + ":00";
+  } else {
+    if (centisecn === 0) {
+      titledisplay =
+        hrdisplay +
+        ":" +
+        mindisplay +
+        ":" +
+        secdisplay +
+        ":" +
+        centisecndisplay;
+      itemstyle = secondStyle;
+      if (secn === 0) {
+        itemstyle = minuteStyle;
+        if (min === 0) {
+          itemstyle = hourStyle;
+        }
+      }
+    } else {
+      titledisplay = ".";
+    }
+
+    title =
+      hrdisplay + ":" + mindisplay + ":" + secdisplay + ":" + centisecndisplay;
+  }
+
+  let istrackitemnotexiststyle = {
+    height: "50px",
+    backgroundColor: "yellow",
+    marginTop: "20px",
+    marginBottom: "20px",
+  };
+  let istrackitemexistsevenstyle = {
+    height: "50px",
+    backgroundColor: "lightblue",
+    marginTop: "20px",
+    marginBottom: "20px",
+  };
+  let istrackitemexistsoddstyle = {
+    height: "50px",
+    backgroundColor: "green",
+    marginTop: "20px",
+    marginBottom: "20px",
+  };
+
+  let mediatrackduration = 0;
+  let mainpanelhtml = [];
+  let trackitemHtml = [];
+
+  if (listmediatrack && listmediatrack.length > 0) {
+    for (let mt = 0; mt < listmediatrack.length; mt++) {
+      let trackitems = listmediatrack[mt].items;
+      let trackstyle = {};
+      trackstyle = istrackitemnotexiststyle;
+      let trackitemshtml = [];
+      let trackitemstyle = {};
+      let existingmediatrackorder = undefined;
+      let existingmediatrackitemorder = undefined;
+      trackitemstyle = istrackitemnotexiststyle;
+      if (trackitems && trackitems.length > 0) {
+        for (let mti = 0; mti < trackitems.length; mti++) {
+          if (
+            trackitems[mti].starttimeinsecondsinmediatrack !== undefined &&
+            trackitems[mti].starttimeinsecondsinmediatrack <=
+              totalsecondsfrombeginingintrack &&
+            trackitems[mti].endtimeinsecondsinmediatrack !== undefined &&
+            trackitems[mti].endtimeinsecondsinmediatrack >
+              totalsecondsfrombeginingintrack
+          ) {
+            mediatrackduration =
+              trackitems[mti].endtimeinsecondsinmediatrack -
+              trackitems[mti].starttimeinsecondsinmediatrack;
+            existingmediatrackorder = listmediatrack[mt].order;
+            existingmediatrackitemorder = trackitems[mti].order;
+            if (mti % 2 === 0) {
+              trackitemstyle = istrackitemexistsevenstyle;
+            } else {
+              trackitemstyle = istrackitemexistsoddstyle;
+            }
+          }
+        }
+      }
+
+      trackitemHtml.push(
+        <div
+          style={trackitemstyle}
+          onClick={() => {
+            parenthandleClick({
+              type: "selecttrackitem",
+              trackorder: existingmediatrackorder,
+              trackitemorder: existingmediatrackitemorder,
+              totalsecondsfrombeginingintrack: totalsecondsfrombeginingintrack,
+            });
+          }}
+        ></div>
+      );
+    }
+  }
+
+  mainpanelhtml.push(
+    <div
+      style={
+        {
+          // padding: "1px",
+        }
+      }
+      title={title}
+      id={title}
+    >
+      <div
+        style={{
+          ...itemstyle,
+          height: "30px",
+          borderRight: "1px solid black",
+        }}
+        onClick={() => {
+          parenthandleClick({
+            type: "selecttrackattime",
+            totalsecondsfrombeginingintrack: totalsecondsfrombeginingintrack,
+          });
+        }}
+      >
+        {titledisplay}
+      </div>
+      {trackitemHtml}
+    </div>
+  );
+
+  return <>{mainpanelhtml}</>;
+}
+
+function Mediatrackhtml(props) {
+  const [compstate, setCompstate] = useState({
+    showui: "true",
+
+    maximumnoofcentisecondspersec: 100,
+  });
+
+  let Showui = async (methodprops) => {
+    ////console.log(methodprops);
+    let compstatejs = JSON.parse(JSON.stringify(compstate));
+    let methodpropsjs = JSON.parse(JSON.stringify(methodprops));
+    ////console.log(methodpropsjs);
+    // await setCompstate({ ...compstatejs, ...methodpropsjs, showui: "true" });
+    await setCompstate({ ...compstate, ...methodprops, showui: "true" });
+  };
+  let Hideui = async (methodprops) => {
+    let compstatejs = JSON.parse(JSON.stringify(compstate));
+    let methodpropsjs = JSON.parse(JSON.stringify(methodprops));
+
+    await setCompstate({ ...compstatejs, ...methodprops, showui: "false" });
+  };
+
+  let handleClick = async (methodprops) => {
+    let { parenthandleClick } = props;
+    parenthandleClick(methodprops);
+  };
+  let childhandleClick = async (methodprops) => {
+    let { parenthandleClick } = props;
+    let { type, value } = methodprops;
+
+    parenthandleClick(methodprops);
+  };
+  //console.log(props);
+  let mainpanelhtml = [];
+
   let itemstyle = {};
 
   let maximumduarationoftrackinseconds = 100;
@@ -1718,20 +1872,19 @@ function Mediatrackhtml(props) {
     props.compstate.maximumduarationoftrackinseconds;
   maxiumumduarationoftrackinhours =
     parseInt(maximumduarationoftrackinseconds / (60 * 60)) + 1;
-  let { mediatrackitemgallery } = props.compstate;
   let {
+    listmediatrack,
     trackviewtype,
     fromHours,
     toHours,
     fromMinutes,
     toMinutes,
-    maximumnoofcentisecondspersec,
-  } = compstate;
+  } = props.compstate;
+  let { maximumnoofcentisecondspersec } = compstate;
   let gotohoursHtml = [];
   let gotominutesHtml = [];
   let gotosecondsHtml = [];
-  let title = "";
-  let titledisplay = ".";
+
   if (trackviewtype !== "seconds") {
     toHours = maxiumumduarationoftrackinhours;
   }
@@ -1807,12 +1960,12 @@ function Mediatrackhtml(props) {
           })
         }
       >
-        {min}minutes
+        {min}
       </div>
     );
   }
   for (let secn = 0; secn < 60; secn++) {
-    gotominutesHtml.push(
+    gotosecondsHtml.push(
       <div
         style={{ padding: "10px" }}
         onClick={() =>
@@ -1822,252 +1975,161 @@ function Mediatrackhtml(props) {
           })
         }
       >
-        {secn}seconds
+        {secn}
       </div>
     );
   }
 
-  let totalsecondsfrombegining = 0;
-  let totalcentisecondsfrombegining = 0;
-  let mediatrackduration = 0;
-  let istrackexists = false;
-  let trackstyle = {};
-  let istracknotexistsevenstyle = {
-    height: "50px",
-    backgroundColor: "yellow",
-    marginTop: "20px",
-    marginBottom: "20px",
-  };
-  let istrackexistsevenstyle = {
-    height: "50px",
-    backgroundColor: "lightblue",
-    marginTop: "20px",
-    marginBottom: "20px",
-  };
-  let istrackexistsoddstyle = {
-    height: "50px",
-    backgroundColor: "green",
-    marginTop: "20px",
-    marginBottom: "20px",
-  };
+  let totalsecondsfrombeginingintrack = 0;
+  let trackHtml = [];
+
+  let trackbuttonsitemHtml = [];
+
+  if (listmediatrack && listmediatrack.length > 0) {
+    for (let mt = 0; mt < listmediatrack.length; mt++) {
+      trackbuttonsitemHtml.push(
+        <div
+          style={{
+            height: "50px",
+            backgroundColor: "yellow",
+            marginTop: "20px",
+            marginBottom: "20px",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <div
+            style={{ paddingLeft: "2px", paddingRight: "2px" }}
+            onClick={() =>
+              handleClick({
+                type: "addtoselectedtrack",
+                trackorder: listmediatrack[mt].order,
+              })
+            }
+          >
+            <i class="fa fa-plus"></i>
+          </div>
+
+          <div
+            style={{ paddingLeft: "2px", paddingRight: "2px" }}
+            onClick={() =>
+              handleClick({
+                type: "playselectedtrack",
+                trackorder: listmediatrack[mt].order,
+              })
+            }
+          >
+            <i class="fa fa-play"></i>
+          </div>
+
+          <div
+            style={{ paddingLeft: "2px", paddingRight: "2px" }}
+            onClick={() =>
+              handleClick({
+                type: "removetrack",
+                order: listmediatrack[mt].order,
+              })
+            }
+          >
+            <i class="fa fa-remove"></i>
+          </div>
+
+          <div
+            style={{ paddingLeft: "2px", paddingRight: "2px" }}
+            onClick={() =>
+              handleClick({
+                type: "removeselectedtrackitem",
+                order: listmediatrack[mt].order,
+              })
+            }
+          >
+            <i class="fa fa-trash"></i>
+          </div>
+        </div>
+      );
+    }
+  }
+
+  let trackbuttonsHtml = [];
+  trackbuttonsHtml.push(
+    <>
+      <div>
+        <div
+          style={{
+            height: "30px",
+          }}
+        ></div>
+        {trackbuttonsitemHtml}
+      </div>
+    </>
+  );
 
   for (let hr = fromHours; hr < toHours; hr++) {
-    let hrdisplay = hr.toString().padStart(2, "0");
-
     for (let min = fromMinutes; min < toMinutes; min++) {
-      trackstyle = istracknotexistsevenstyle;
-      let mindisplay = min.toString().padStart(2, "0");
       if (trackviewtype === "hours") {
-        itemstyle = centiSecondStyle;
-
-        if (min === 0) {
-          itemstyle = hourStyle;
-          titledisplay = hrdisplay + ":" + mindisplay + ":00:00";
-        } else {
-          titledisplay = ".";
-        }
-
-        title = hrdisplay + ":" + mindisplay + ":00:00";
-        let scrollIntoViewid = hr + "hrs" + min + "mins";
-
-        if (mediatrackitemgallery && mediatrackitemgallery.length > 0) {
-          for (let mti = 0; mti < mediatrackitemgallery.length; mti++) {
-            if (
-              mediatrackitemgallery[mti].starttimeinsecondsinmediatrack !==
-                undefined &&
-              mediatrackitemgallery[mti].starttimeinsecondsinmediatrack <=
-                totalsecondsfrombegining &&
-              mediatrackitemgallery[mti].endtimeinsecondsinmediatrack !==
-                undefined &&
-              mediatrackitemgallery[mti].endtimeinsecondsinmediatrack >
-                totalsecondsfrombegining
-            ) {
-              istrackexists = true;
-              mediatrackduration =
-                mediatrackitemgallery[mti].endtimeinsecondsinmediatrack -
-                mediatrackitemgallery[mti].starttimeinsecondsinmediatrack;
-              if (mti % 2 === 0) {
-                trackstyle = istrackexistsevenstyle;
-              } else {
-                trackstyle = istrackexistsoddstyle;
-              }
-            }
-          }
-        }
-
         trackHtml.push(
-          <div
-            style={
-              {
-                // padding: "1px",
-              }
-            }
-            title={title}
-            id={title}
-          >
-            <div
-              style={{
-                ...itemstyle,
-                height: "30px",
-                borderRight: "1px solid black",
-              }}
-            >
-              {titledisplay}
-            </div>
-            <div style={trackstyle}>
-
-           
-            </div>
-          </div>
+          <>
+            <Mediatrackitemhtml
+              listmediatrack={listmediatrack}
+              totalsecondsfrombeginingintrack={totalsecondsfrombeginingintrack}
+              trackviewtype={trackviewtype}
+              hr={hr}
+              min={min}
+              secn={0}
+              centisecn={0}
+              parenthandleClick={childhandleClick}
+            />
+          </>
         );
-        totalsecondsfrombegining = totalsecondsfrombegining + 60;
+
+        totalsecondsfrombeginingintrack = totalsecondsfrombeginingintrack + 60;
       } else {
         for (let secn = 0; secn < 60; secn++) {
-          trackstyle = istracknotexistsevenstyle;
-          let secdisplay = secn.toString().padStart(2, "0");
           if (trackviewtype === "minutes") {
-            let scrollIntoViewid = hr + "hrs" + min + "mins";
-            itemstyle = centiSecondStyle;
-
-            istrackexists = false;
-
-            if (mediatrackitemgallery && mediatrackitemgallery.length > 0) {
-              for (let mti = 0; mti < mediatrackitemgallery.length; mti++) {
-                if (
-                  mediatrackitemgallery[mti].starttimeinsecondsinmediatrack !==
-                    undefined &&
-                  mediatrackitemgallery[mti].starttimeinsecondsinmediatrack <=
-                    totalsecondsfrombegining &&
-                  mediatrackitemgallery[mti].endtimeinsecondsinmediatrack !==
-                    undefined &&
-                  mediatrackitemgallery[mti].endtimeinsecondsinmediatrack >
-                    totalsecondsfrombegining
-                ) {
-                  istrackexists = true;
-                  mediatrackduration =
-                    mediatrackitemgallery[mti].endtimeinsecondsinmediatrack -
-                    mediatrackitemgallery[mti].starttimeinsecondsinmediatrack;
-
-                  if (mti % 2 === 0) {
-                    trackstyle = istrackexistsevenstyle;
-                  } else {
-                    trackstyle = istrackexistsoddstyle;
-                  }
-                }
-              }
-            }
-
-            if (secn === 0) {
-              itemstyle = minuteStyle;
-              titledisplay =
-                hrdisplay + ":" + mindisplay + ":" + secdisplay + ":00";
-              if (min === 0) {
-                itemstyle = hourStyle;
-              }
-            } else {
-              titledisplay = ".";
-            }
-
-            title = hrdisplay + ":" + mindisplay + ":" + secdisplay + ":00";
             trackHtml.push(
-              <div style={{}} title={title} id={title}>
-                <div
-                  style={{
-                    ...itemstyle,
-                    height: "30px",
-                    borderRight: "1px solid black",
-                  }}
-                >
-                  {titledisplay}
-                </div>
-
-                <div style={trackstyle}></div>
-              </div>
+              <>
+                <Mediatrackitemhtml
+                  listmediatrack={listmediatrack}
+                  totalsecondsfrombeginingintrack={
+                    totalsecondsfrombeginingintrack
+                  }
+                  trackviewtype={trackviewtype}
+                  hr={hr}
+                  min={min}
+                  secn={secn}
+                  centisecn={0}
+                  parenthandleClick={childhandleClick}
+                />
+              </>
             );
-            totalsecondsfrombegining = totalsecondsfrombegining + 1;
+
+            totalsecondsfrombeginingintrack =
+              totalsecondsfrombeginingintrack + 1;
           } else {
             for (
               let centisecn = 0;
               centisecn < maximumnoofcentisecondspersec;
               centisecn++
             ) {
-              trackstyle = istracknotexistsevenstyle;
-              let centisecndisplay = centisecn.toString().padStart(2, "0");
-              itemstyle = centiSecondStyle;
-
-              istrackexists = false;
-
-              if (mediatrackitemgallery && mediatrackitemgallery.length > 0) {
-                for (let mti = 0; mti < mediatrackitemgallery.length; mti++) {
-                  if (
-                    mediatrackitemgallery[mti]
-                      .starttimeinsecondsinmediatrack !== undefined &&
-                    mediatrackitemgallery[mti].starttimeinsecondsinmediatrack <=
-                      totalsecondsfrombegining &&
-                    mediatrackitemgallery[mti].endtimeinsecondsinmediatrack !==
-                      undefined &&
-                    mediatrackitemgallery[mti].endtimeinsecondsinmediatrack >
-                      totalsecondsfrombegining
-                  ) {
-                    istrackexists = true;
-                    mediatrackduration =
-                      mediatrackitemgallery[mti].endtimeinsecondsinmediatrack -
-                      mediatrackitemgallery[mti].starttimeinsecondsinmediatrack;
-
-                    if (mti % 2 === 0) {
-                      trackstyle = istrackexistsevenstyle;
-                    } else {
-                      trackstyle = istrackexistsoddstyle;
-                    }
-                  }
-                }
-              }
-
-              if (centisecn === 0) {
-                titledisplay =
-                  hrdisplay +
-                  ":" +
-                  mindisplay +
-                  ":" +
-                  secdisplay +
-                  ":" +
-                  centisecndisplay;
-                itemstyle = secondStyle;
-                if (secn === 0) {
-                  itemstyle = minuteStyle;
-                  if (min === 0) {
-                    itemstyle = hourStyle;
-                  }
-                }
-              } else {
-                titledisplay = ".";
-              }
-
-              title =
-                hrdisplay +
-                ":" +
-                mindisplay +
-                ":" +
-                secdisplay +
-                ":" +
-                centisecndisplay;
               trackHtml.push(
-                <div style={{}} title={title} id={title}>
-                  <div
-                    style={{
-                      ...itemstyle,
-                      height: "30px",
-                      borderRight: "1px solid black",
-                    }}
-                  >
-                    {titledisplay}
-                  </div>
-
-                  <div style={trackstyle}></div>
-                </div>
+                <>
+                  <Mediatrackitemhtml
+                    listmediatrack={listmediatrack}
+                    totalsecondsfrombeginingintrack={
+                      totalsecondsfrombeginingintrack
+                    }
+                    trackviewtype={trackviewtype}
+                    hr={hr}
+                    min={min}
+                    secn={secn}
+                    centisecn={centisecn}
+                    parenthandleClick={childhandleClick}
+                  />
+                </>
               );
 
-              totalsecondsfrombegining = totalsecondsfrombegining + 0.01;
+              totalsecondsfrombeginingintrack =
+                totalsecondsfrombeginingintrack + 0.01;
             }
           }
         }
@@ -2090,12 +2152,32 @@ function Mediatrackhtml(props) {
       <div
         style={{
           display: "flex",
-          flexWrap: "nowrap",
-          height: "200px",
-          overflow: "auto",
+          flexWrap: "wrap",
         }}
       >
-        {trackHtml}
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "nowrap",
+            width: "10%",
+            height: "400px",
+            overflow: "auto",
+          }}
+        >
+          {trackbuttonsHtml}
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "nowrap",
+            width: "90%",
+            height: "400px",
+            overflow: "auto",
+          }}
+        >
+          {trackHtml}
+        </div>
       </div>
       <div
         style={{
@@ -2113,7 +2195,18 @@ function Mediatrackhtml(props) {
           overflow: "auto",
         }}
       >
+        Minutes
         {gotominutesHtml}
+      </div>
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          overflow: "auto",
+        }}
+      >
+        Seconds
+        {gotosecondsHtml}
       </div>
     </div>
   );
@@ -2122,7 +2215,11 @@ function Mediatrackhtml(props) {
 
 export function Videoeditor() {
   const [videoclipcurrenttime, setVideoclipcurrenttime] = useState(0);
-  const [videofinalcurrenttime, setVideofinalcurrenttime] = useState(0);
+  const [playingmediatrackitem, setPlayingmediatrackitem] = useState({});
+  const [playingmediatrack, setPlayingmediatrack] = useState({
+    mediatrack: {},
+    mediatrackitem: {},
+  });
   const [compstate, setCompstate] = useState({
     showui: "true",
     mediauploadgallery: [],
@@ -2131,24 +2228,378 @@ export function Videoeditor() {
     selectedmediacut: {},
     mediafinalgallery: [],
     selectedmediafinal: {},
-    mediatrackgallery: [],
+
+    listmediatrack: [{ order: 0, items: [] }],
+
     selectedmediatrack: {},
-    mediatrackitemgallery: [],
-    selectedmediatrackitem: {},
     cutstarttimeinseconds: undefined,
     cutendtimeinseconds: undefined,
     maximumduarationoftrackinseconds: 3600,
+    trackviewtype: "hours",
+    fromHours: 0,
+    toHours: 1,
+    fromMinutes: 0,
+    toMinutes: 60,
   });
 
   useEffect(() => {
-    fetchData();
+    doInit();
   }, []);
 
-  let fetchData = async (methodprops) => {
-    updatetime();
+  let doInit = async () => {
+    video2 = document.getElementById("myvideo1");
+    // width = video.width;
+    //  height = video.height;
+
+    var mycanvas2 = document.getElementById("mycanvas12");
+    const mycanvasstream2 = mycanvas2.captureStream();
+    mycanvasrecordedChunks2 = [];
+    var options2 = {};
+    mycanvasmediaRecorder2 = new MediaRecorder(mycanvasstream2, options2);
+    mycanvasmediaRecorder2.ondataavailable =
+      mycanvasrecorderhandleDataAvailable2;
+    mycanvasmediaRecorder2.onstop = (evt) =>
+      mycanvasrecorderonstop2({ htmlid: "videofinalhtmlid" });
   };
 
-  function updatetime() {
+  let fetchData = async (methodprops) => {
+    var mycanvas = document.getElementById("mycanvas12");
+    const mycanvasstream = mycanvas.captureStream();
+    mycanvasrecordedChunks = [];
+    var options = {};
+    mycanvasmediaRecorder = new MediaRecorder(mycanvasstream, options);
+    mycanvasmediaRecorder.ondataavailable = mycanvasrecorderhandleDataAvailable;
+    mycanvasmediaRecorder.onstop = (evt) =>
+      mycanvasrecorderonstop({ htmlid: "videofinalhtmlid" });
+
+    // updatetime();
+  };
+
+  async function updatetime2() {
+    console.log(mycanvasrecordedChunks);
+    console.log(mycanvasmediaRecorder.status);
+    try {
+      mycanvasmediaRecorder.start();
+    } catch (e) {}
+    drawVideoonCanvas({
+      videohtmlid: "videocliphtmlid",
+      initcanvashtmlid: "mycanvas12",
+      finalcanvashtmlid: "mycanvas123",
+    });
+
+    setTimeout(() => {
+      updatetime2();
+    }, 100);
+  }
+
+  async function startautouploadvideo() {
+    autouploadvideo({ htmlid: "videocliphtmlid" });
+  }
+
+  async function autouploadvideo(methodprops) {
+    console.log(currentVideouploadingStatus2);
+    let {
+      medianame,
+      mediasectionname,
+      starttimeinseconds,
+      endtimeinseconds,
+      totaldurationinseconds,
+      htmlid,
+    } = methodprops;
+
+    let videocurrenttimeinseconds = 0;
+
+    let videoupload = document.getElementById(htmlid);
+    if (currentVideouploadingStatus2 === "initial") {
+      mycanvasrecordedChunks2 = [];
+      mycanvasmediaRecorder2.start();
+
+      videoupload.play();
+      currentVideouploadingStatus2 = "playing";
+      ////console.log(currentVideouploadingStatus);
+      console.log(mycanvasmediaRecorder2.status);
+    } else if (currentVideouploadingStatus2 === "playing") {
+      console.log(mycanvasmediaRecorder2.status);
+      drawVideoonCanvas({
+        videohtmlid: htmlid,
+        initcanvashtmlid: "mycanvas12",
+        finalcanvashtmlid: "mycanvas123",
+      });
+      ////console.log(currentVideouploadingStatus);
+
+      if (videoupload.ended) {
+        currentVideouploadingStatus2 = "ended";
+      }
+    } else if (currentVideouploadingStatus2 === "paused") {
+    } else if (
+      videoupload.ended &&
+      currentVideouploadingStatus2 === "playing"
+    ) {
+      if (mycanvasmediaRecorder2.state !== "inactive") {
+        mycanvasmediaRecorder2.stop();
+      }
+      currentVideouploadingStatus2 = "startuploading";
+      //endtimeinseconds = parseInt(video.currentTime);
+      //totaldurationinseconds = parseInt(video.currentTime) - starttimeinseconds;
+      ////console.log(currentVideouploadingStatus);
+    } else if (currentVideouploadingStatus2 === "ended") {
+      if (mycanvasmediaRecorder2.state !== "inactive") {
+        mycanvasmediaRecorder2.stop();
+      }
+      currentVideouploadingStatus2 = "startuploading";
+
+      ////console.log(currentVideouploadingStatus);
+    } else if (currentVideouploadingStatus2 === "startuploading") {
+      return;
+    } else if (
+      currentVideouploadingStatus2 === "isuploadingfailed" ||
+      currentVideouploadingStatus2 === "finisheduploading"
+    ) {
+      ////console.log(currentVideouploadingStatus);
+      return;
+    } else if (currentVideouploadingStatus2 === "isuploadingsuccess") {
+      ////console.log(currentVideouploadingStatus);
+      return;
+      // if (video.ended) {
+      //   currentVideouploadingStatus = "finisheduploading";
+      //   currentrecordingendtime = 0;
+      // } else {
+      //   currentVideouploadingStatus = "initial";
+      //   currentrecordingendtime = currentrecordingendtime + 10;
+      // }
+    } else {
+      ////console.log(currentVideouploadingStatus);
+    }
+
+    setTimeout(() => {
+      autouploadvideo({
+        htmlid: htmlid,
+      });
+    }, 16);
+  }
+
+  async function playtrackitem(methodprops) {
+    let {
+      medianame,
+      mediasectionname,
+      starttimeinseconds,
+      endtimeinseconds,
+      totaldurationinseconds,
+      // htmlid,
+      listmediatrack,
+      selectedmediatrack,
+
+      playtrackstatus,
+      totalsecondsfrombeginingintrack,
+    } = methodprops;
+    console.log(methodprops);
+    let videocurrenttimeinseconds = 0;
+
+    // let videoupload = document.getElementById(htmlid);
+
+    // playtrackstatus > initial, createvideoelements, addsourcetovideos,
+    //setvideoplayingtime, checkplayingtime, playing, ended
+    //
+    if (playtrackstatus === "initial") {
+      mycanvasrecordedChunks2 = [];
+      mycanvasmediaRecorder2.start();
+
+      // videoupload.play();
+      playtrackstatus = "createvideoelements";
+    } else if (playtrackstatus === "createvideoelements") {
+      document.getElementById("divfinalvideohtmlid").innerHTML = "";
+      document.getElementById("divofinalcanvashtmlid").innerHTML = "";
+
+      for (let i = 0; i < listmediatrack.length; i++) {
+        const divfinalvideohtmlidvideo = document.createElement("video");
+        divfinalvideohtmlidvideo.controls = true;
+        divfinalvideohtmlidvideo.muted = false;
+        divfinalvideohtmlidvideo.height = 240; // in px
+        divfinalvideohtmlidvideo.width = 320; // in px
+        divfinalvideohtmlidvideo.id =
+          "divfinalvideohtmlid" + listmediatrack[i].order;
+        document
+          .getElementById("divfinalvideohtmlid")
+          .appendChild(divfinalvideohtmlidvideo);
+      }
+
+      const divofinalcanvashtmlidvideo = document.createElement("canvas");
+      divofinalcanvashtmlidvideo.height = 240; // in px
+      divofinalcanvashtmlidvideo.width = 320; // in px
+
+      document
+        .getElementById("divofinalcanvashtmlid")
+        .appendChild(divofinalcanvashtmlidvideo);
+
+      playtrackstatus = "addsourcetovideos";
+    }
+     else if (playtrackstatus === "addsourcetovideos") {
+      for (let i = 0; i < listmediatrack.length; i++) {
+        let currenttimemediatrackitem = {};
+        if (listmediatrack[i].items) {
+          for (let j = 0; j < listmediatrack[i].items.length; j++) {
+            if (
+              listmediatrack[i].items[j].starttimeinsecondsinmediatrack <=
+                totalsecondsfrombeginingintrack &&
+              listmediatrack[i].items[j].endtimeinsecondsinmediatrack >
+                totalsecondsfrombeginingintrack
+            ) {
+              if (
+                selectedmediatrack &&
+                Object.keys(selectedmediatrack).length > 0
+              ) {
+                if (selectedmediatrack.order === listmediatrack[i].order) {
+                  currenttimemediatrackitem = listmediatrack[i].items[j];
+                  let urlObj2 = URL.createObjectURL(
+                    currenttimemediatrackitem.mediauploadobject.file
+                  );
+                  document.getElementById(
+                    "divfinalvideohtmlid" + listmediatrack[i].order
+                  ).src = urlObj2;
+                  listmediatrack[i].playingitem = currenttimemediatrackitem;
+                }
+              } else {
+                currenttimemediatrackitem = listmediatrack[i].items[j];
+                let urlObj2 = URL.createObjectURL(
+                  currenttimemediatrackitem.mediauploadobject.file
+                );
+                document.getElementById(
+                  "divfinalvideohtmlid" + listmediatrack[i].order
+                ).src = urlObj2;
+                listmediatrack[i].playingitem = currenttimemediatrackitem;
+              }
+            }
+          }
+        }
+      }
+
+      playtrackstatus = "setvideoplayingtime";
+    }
+     else if (playtrackstatus === "setvideoplayingtime") {
+      let issetvideoplayingtime = true;
+      for (let i = 0; i < listmediatrack.length; i++) {
+        let currenttimemediatrackitem = {};
+        if (listmediatrack[i].items) {
+          for (let j = 0; j < listmediatrack[i].items.length; j++) {
+            if (
+              listmediatrack[i].items[j].starttimeinsecondsinmediatrack <=
+                totalsecondsfrombeginingintrack &&
+              listmediatrack[i].items[j].endtimeinsecondsinmediatrack >
+                totalsecondsfrombeginingintrack
+            ) {
+              if (
+                selectedmediatrack &&
+                Object.keys(selectedmediatrack).length > 0
+              ) {
+                if (selectedmediatrack.order === listmediatrack[i].order) {
+                  if (
+                    document.getElementById(
+                      "divfinalvideohtmlid" + listmediatrack[i].order
+                    ).currentTime !== totalsecondsfrombeginingintrack
+                  ) {
+                    issetvideoplayingtime = false;
+                  }
+                }
+              } else {
+                if (
+                  document.getElementById(
+                    "divfinalvideohtmlid" + listmediatrack[i].order
+                  ).currentTime !== totalsecondsfrombeginingintrack
+                ) {
+                  issetvideoplayingtime = false;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      if (issetvideoplayingtime == false) {
+        for (let i = 0; i < listmediatrack.length; i++) {
+          let currenttimemediatrackitem = {};
+          if (listmediatrack[i].items) {
+            for (let j = 0; j < listmediatrack[i].items.length; j++) {
+              if (
+                listmediatrack[i].items[j].starttimeinsecondsinmediatrack <=
+                  totalsecondsfrombeginingintrack &&
+                listmediatrack[i].items[j].endtimeinsecondsinmediatrack >
+                  totalsecondsfrombeginingintrack
+              ) {
+                if (
+                  selectedmediatrack &&
+                  Object.keys(selectedmediatrack).length > 0
+                ) {
+                  if (selectedmediatrack.order === listmediatrack[i].order) {
+                    currenttimemediatrackitem = listmediatrack[i].items[j];
+
+                    document.getElementById(
+                      "divfinalvideohtmlid" + listmediatrack[i].order
+                    ).currentTime = totalsecondsfrombeginingintrack;
+                  }
+                } else {
+                  document.getElementById(
+                    "divfinalvideohtmlid" + listmediatrack[i].order
+                  ).currentTime = totalsecondsfrombeginingintrack;
+                }
+              }
+            }
+          }
+        }
+      } else {
+        playtrackstatus = "startplaying";
+      }
+    }
+     else if (playtrackstatus === "startplaying") {
+      for (let i = 0; i < listmediatrack.length; i++) {
+        document
+          .getElementById("divfinalvideohtmlid" + listmediatrack[i].order)
+          .play();
+      }
+
+      playtrackstatus = "playing";
+    }
+     else if (playtrackstatus === "playing") {
+      for (let i = 0; i < listmediatrack.length; i++) {
+        let currenttimemediatrackitem = {};
+        if (listmediatrack[i].items) {
+          for (let j = 0; j < listmediatrack[i].items.length; j++) {
+
+           let playingitem = listmediatrack[i].playingitem;
+
+           if (
+            playingitem ){
+            if (
+              playingitem.starttimeinsecondsinmediatrack <=
+                totalsecondsfrombeginingintrack &&
+                playingitem.endtimeinsecondsinmediatrack >
+                totalsecondsfrombeginingintrack
+            ) {
+              
+            } else {
+              playtrackstatus = "addsourcetovideos";
+            }
+          }
+          }
+        }
+      }
+
+      //playtrackstatus = "ended";
+    } else if (playtrackstatus === "ended") {
+      mycanvasmediaRecorder2.stop();
+    }
+    totalsecondsfrombeginingintrack = totalsecondsfrombeginingintrack+(16/1000)
+    setTimeout(() => {
+      playtrackitem({
+        listmediatrack: listmediatrack,
+        selectedmediatrack: selectedmediatrack,
+        playtrackstatus: playtrackstatus,
+        totalsecondsfrombeginingintrack:
+        totalsecondsfrombeginingintrack,
+      });
+    }, 16);
+  }
+
+  async function updatetime() {
     setTimeout(() => {
       setVideoclipcurrenttime((oldstate) => {
         let myvideo1 = document.getElementById("videocliphtmlid");
@@ -2160,15 +2611,154 @@ export function Videoeditor() {
         return oldstate;
       });
 
+      setPlayingmediatrackitem((oldstate) => {
+        ////console.log(oldstate);
+        //  console.log(oldstate);
+        if (oldstate && Object.keys(oldstate).length > 0) {
+          drawVideoonCanvas({
+            videohtmlid: "videocliphtmlid",
+            initcanvashtmlid: "mycanvas12",
+            finalcanvashtmlid: "mycanvas123",
+          });
+
+          let cutendtimeinsecondsinmediaupload =
+            oldstate.cutendtimeinsecondsinmediaupload;
+
+          let myvideo1 = document.getElementById("videocliphtmlid");
+          console.log(cutendtimeinsecondsinmediaupload);
+          // //console.log(myvideo1.currentTime);
+          //  //console.log(myvideo1.paused);
+
+          if (
+            myvideo1 &&
+            myvideo1.currentTime &&
+            !myvideo1.paused &&
+            !myvideo1.ended
+          ) {
+            if (cutendtimeinsecondsinmediaupload < myvideo1.currentTime) {
+              myvideo1.pause();
+
+              if (mycanvasmediaRecorder.state !== "inactive") {
+                mycanvasmediaRecorder.stop();
+              }
+
+              oldstate = {};
+            }
+          }
+        }
+        return oldstate;
+      });
+
+      setPlayingmediatrack((oldstate) => {
+        if (
+          oldstate &&
+          oldstate.mediatrack &&
+          Object.keys(oldstate.mediatrack).length > 0
+        ) {
+          let { mediatrack, currentmediatrackitemorder, status } = oldstate;
+
+          //console.log(oldstate);
+          if (status === "startplaytrack") {
+            status = "playnexttrackitem";
+          } else if (status === "playnexttrackitem") {
+            currentmediatrackitemorder = currentmediatrackitemorder + 1;
+            let currentmediatrackitem = {};
+            if (mediatrack && mediatrack.items.length > 0) {
+              for (let mti = 0; mti < mediatrack.items.length; mti++) {
+                if (
+                  currentmediatrackitemorder === mediatrack.items[mti].order
+                ) {
+                  currentmediatrackitem = mediatrack.items[mti];
+                }
+              }
+            }
+            if (
+              currentmediatrackitem &&
+              currentmediatrackitem.mediauploadobject &&
+              currentmediatrackitem.mediauploadobject.file
+            ) {
+              status = "playingtrackitem";
+
+              // mycanvasrecordedChunks = [];
+
+              //   mycanvasmediaRecorder.start();
+
+              playVideo({
+                htmlid: "videocliphtmlid",
+                file: currentmediatrackitem.mediauploadobject.file,
+                currentTimeDisplayinSeconds:
+                  currentmediatrackitem.cutstarttimeinsecondsinmediaupload,
+              });
+            } else {
+              //  let myvideo1 = document.getElementById("videocliphtmlid");
+              //  myvideo1.src = "";
+              // status = "endedtrack";
+            }
+          } else if (status === "playingtrackitem") {
+            let currentmediatrackitem = {};
+            if (mediatrack && mediatrack.items.length > 0) {
+              for (let mti = 0; mti < mediatrack.items.length; mti++) {
+                if (
+                  currentmediatrackitemorder === mediatrack.items[mti].order
+                ) {
+                  currentmediatrackitem = mediatrack.items[mti];
+                }
+              }
+            }
+
+            let myvideo1 = document.getElementById("videocliphtmlid");
+            if (
+              myvideo1 &&
+              myvideo1.currentTime &&
+              !myvideo1.paused &&
+              !myvideo1.ended
+            ) {
+              if (
+                currentmediatrackitem.cutendtimeinsecondsinmediaupload <
+                myvideo1.currentTime
+              ) {
+                myvideo1.src = "";
+                status = "playnexttrackitem";
+              }
+            } else if (myvideo1 && myvideo1.ended) {
+              status = "endedtrackitem";
+            } else if (myvideo1 && myvideo1.paused) {
+              // status = "pausedtrackitem";
+            }
+          } else if (status === "endedtrackitem") {
+            if (mycanvasmediaRecorder.state !== "inactive") {
+              mycanvasmediaRecorder.stop();
+            }
+            status = "playnexttrackitem";
+            currentmediatrackitemorder = currentmediatrackitemorder + 1;
+          } else if (status === "pausedtrackitem") {
+          } else if (status === "endedtrack") {
+            if (mycanvasmediaRecorder.state !== "inactive") {
+              // alert();
+              //   mycanvasmediaRecorder.stop();
+            }
+          }
+          oldstate.status = status;
+          oldstate.currentmediatrackitemorder = currentmediatrackitemorder;
+        }
+        return oldstate;
+      });
+
+      // drawVideoonCanvas({
+      //   videohtmlid: "videocliphtmlid",
+      //   initcanvashtmlid: "mycanvas",
+      //   finalcanvashtmlid: "mycanvas2",
+      // });
+
       updatetime();
     }, 100);
   }
 
   let Showui = async (methodprops) => {
-    //console.log(methodprops);
+    ////console.log(methodprops);
     let compstatejs = JSON.parse(JSON.stringify(compstate));
     let methodpropsjs = JSON.parse(JSON.stringify(methodprops));
-    //console.log(methodpropsjs);
+    ////console.log(methodpropsjs);
     // await setCompstate({ ...compstatejs, ...methodpropsjs, showui: "true" });
     await setCompstate({ ...compstate, ...methodprops, showui: "true" });
   };
@@ -2176,15 +2766,18 @@ export function Videoeditor() {
     let compstatejs = JSON.parse(JSON.stringify(compstate));
     let methodpropsjs = JSON.parse(JSON.stringify(methodprops));
 
-    await setCompstate({ ...compstatejs, ...methodpropsjs, showui: "false" });
+    await setCompstate({ ...compstatejs, ...methodprops, showui: "false" });
   };
 
   async function dropHandler(methodprops) {
-    //console.log("File(s) dropped");
+    ////console.log("File(s) dropped");
     let { files } = methodprops;
     let { mediauploadgallery } = compstate;
 
-    //console.log(mediauploadgallery);
+    //let targetfile = selectedmediaupload.file;
+    ////console.log(targetfile);
+
+    ////console.log(mediauploadgallery);
     if (files && files.length > 0) {
       for (let i = 0; i < files.length; i++) {
         mediauploadgallery.push(files[i]);
@@ -2192,6 +2785,7 @@ export function Videoeditor() {
     }
     await Hideui({});
     await Showui({ mediauploadgallery: mediauploadgallery });
+    doInit();
   }
 
   async function selectMediaUpload(methodprops) {
@@ -2210,40 +2804,65 @@ export function Videoeditor() {
 
     await Hideui({});
     await Showui({ selectedmediaupload: selectedmediaupload });
-    if (selectedmediaupload.file) {
-      var fr = new FileReader();
-      fr.onload = function () {
-        var data = fr.result;
-        var array = new Int8Array(data);
-        var uint8ClampedArray = new Uint8ClampedArray(data);
-      };
-      fr.readAsArrayBuffer(selectedmediaupload.file);
 
-      const urlObj = URL.createObjectURL(selectedmediaupload.file);
-      let videoupload = document.getElementById("videocliphtmlid");
-      videoupload.src = urlObj;
-    }
+    playVideo({
+      htmlid: "videocliphtmlid",
+      currentTimeDisplayinSeconds: 0,
+      file: selectedmediaupload.file,
+    });
+
+    // if (selectedmediaupload.file) {
+    //   let targetfile = selectedmediaupload.file;
+    //   ////console.log(targetfile);
+
+    //   var fr = new FileReader();
+    //   fr.onload = function () {
+    //     var data = fr.result;
+    //     var array = new Int8Array(data);
+    //     var uint8ClampedArray = new Uint8ClampedArray(data);
+
+    //     const urlObj = URL.createObjectURL(targetfile);
+    //     let videoupload = document.getElementById("videocliphtmlid");
+    //     videoupload.src = urlObj;
+
+    //   };
+    //   fr.readAsArrayBuffer(targetfile);
+
+    // }
+
+    // if (selectedmediaupload.file) {
+    //   var fr = new FileReader();
+    //   fr.onload = function () {
+    //     var data = fr.result;
+    //     var array = new Int8Array(data);
+    //     var uint8ClampedArray = new Uint8ClampedArray(data);
+    //   };
+    //   fr.readAsArrayBuffer(selectedmediaupload.file);
+
+    //   const urlObj = URL.createObjectURL(selectedmediaupload.file);
+    //   let videoupload = document.getElementById("videocliphtmlid");
+    //   videoupload.src = urlObj;
+    //   // videoupload.play();
+    //   // mycanvasrecordedChunks = [];
+    //   // mycanvasmediaRecorder.start();
+    //   // updatetime2();
+    //   //autouploadvideo({});
+    // }
   }
 
   async function playVideo(methodprops) {
-    let { htmlid, currentTimeDisplayinSeconds, ispause } = methodprops;
-    let {
-      mediauploadgallery,
-      selectedmediaupload,
-      mediatrackitemgallery,
-      cutstarttimeinseconds,
-      cutendtimeinseconds,
-    } = compstate;
-    if (selectedmediaupload.file) {
+    let { htmlid, currentTimeDisplayinSeconds, ispause, file } = methodprops;
+
+    if (file) {
       var fr = new FileReader();
       fr.onload = function () {
         var data = fr.result;
         var array = new Int8Array(data);
         var uint8ClampedArray = new Uint8ClampedArray(data);
       };
-      fr.readAsArrayBuffer(selectedmediaupload.file);
+      fr.readAsArrayBuffer(file);
 
-      const urlObj = URL.createObjectURL(selectedmediaupload.file);
+      const urlObj = URL.createObjectURL(file);
       let videoupload = document.getElementById(htmlid);
       videoupload.src = urlObj;
 
@@ -2262,18 +2881,40 @@ export function Videoeditor() {
   }
 
   async function handleClick(methodprops) {
-    //console.log(methodprops);
-    let { type, value, htmlid, timeinseconds } = methodprops;
+    let { type, value, htmlid, timeinseconds, order } = methodprops;
 
     let {
       mediauploadgallery,
       selectedmediaupload,
-      mediatrackitemgallery,
+      listmediatrack,
+      selectedmediatrack,
       cutstarttimeinseconds,
       currentTimeDisplayinSeconds,
 
       cutendtimeinseconds,
     } = compstate;
+  }
+  async function childhandleClick(methodprops) {
+    console.log(methodprops);
+    let { type, value, htmlid, timeinseconds, order, trackorder } = methodprops;
+
+    let {
+      mediauploadgallery,
+      selectedmediaupload,
+      listmediatrack,
+      selectedmediatrack,
+      cutstarttimeinseconds,
+      currentTimeDisplayinSeconds,
+
+      cutendtimeinseconds,
+      trackviewtype,
+      fromHoursscrollintoview,
+      fromHours,
+      toHours,
+      fromMinutes,
+      toMinutes,
+    } = compstate;
+
     if (type === "gototime") {
       await Hideui({});
       //setTimeout(async () => {
@@ -2284,6 +2925,7 @@ export function Videoeditor() {
         playVideo({
           htmlid: "videocliphtmlid",
           currentTimeDisplayinSeconds: timeinseconds,
+          file: selectedmediaupload.file,
         });
       }, 500);
     } else if (type === "startcutting") {
@@ -2294,10 +2936,12 @@ export function Videoeditor() {
         cutstarttimeinseconds: cutstarttimeinseconds,
         currentTimeDisplayinSeconds: cutstarttimeinseconds,
       });
+      console.log(selectedmediaupload);
       // setTimeout(async () => {
       playVideo({
-        htmlid: "videocliphtmlid",
+        htmlid: htmlid,
         currentTimeDisplayinSeconds: cutstarttimeinseconds,
+        file: selectedmediaupload.file,
       });
       //  }, 500);
     } else if (type === "stopcutting") {
@@ -2313,8 +2957,21 @@ export function Videoeditor() {
         htmlid: "videocliphtmlid",
         currentTimeDisplayinSeconds: cutendtimeinseconds,
         ispause: true,
+        file: selectedmediaupload.file,
       });
     } else if (type === "addtoselectedtrack") {
+      // find track to add items
+      let maximumduarationoftrackinseconds = 0;
+      let selectedmediatrack = {};
+      if (listmediatrack && listmediatrack.length > 0) {
+        for (let mt = 0; mt < listmediatrack.length; mt++) {
+          if (trackorder === listmediatrack[mt].order) {
+            selectedmediatrack = listmediatrack[mt];
+          }
+        }
+      }
+
+      // prepare mediatrackitem
       let mediatrackitem = {};
       for (let i = 0; i < mediauploadgallery.length; i++) {
         if (
@@ -2327,12 +2984,10 @@ export function Videoeditor() {
 
       mediatrackitem.cutstarttimeinsecondsinmediaupload = cutstarttimeinseconds;
       mediatrackitem.cutendtimeinsecondsinmediaupload = cutendtimeinseconds;
-      //  mediatrackitemgallery.push(mediatrackitem);
-      let maximumduarationoftrackinseconds = 0;
-      let sectioncolumnarrayjs = JSON.parse(
-        JSON.stringify(mediatrackitemgallery)
-      );
-      console.log(sectioncolumnarrayjs);
+
+      // add to track
+      let sectioncolumnarrayjs = selectedmediatrack.items;
+      //console.log(sectioncolumnarrayjs);
       sectioncolumnarrayjs = dragdropHandler2({
         changingobjectarray: sectioncolumnarrayjs,
         subobject: mediatrackitem,
@@ -2342,6 +2997,8 @@ export function Videoeditor() {
         neworder: "",
       });
 
+      // set starttimeinsecondsinmediatrack,endtimeinsecondsinmediatrack,
+      //durationmediatrackitem
       for (let i = 0; i < sectioncolumnarrayjs.length; i++) {
         let durationmediatrackitem =
           sectioncolumnarrayjs[i].cutendtimeinsecondsinmediaupload -
@@ -2365,10 +3022,20 @@ export function Videoeditor() {
         maximumduarationoftrackinseconds =
           sectioncolumnarrayjs[i].endtimeinsecondsinmediatrack;
       }
+      selectedmediatrack.items = sectioncolumnarrayjs;
+
+      // update mediatrack
+      if (listmediatrack && listmediatrack.length > 0) {
+        for (let mt = 0; mt < listmediatrack.length; mt++) {
+          if (trackorder === listmediatrack[mt].order) {
+            listmediatrack[mt].items = selectedmediatrack.items;
+          }
+        }
+      }
 
       await Hideui({});
       await Showui({
-        mediatrackitemgallery: sectioncolumnarrayjs,
+        listmediatrack: listmediatrack,
         cutstarttimeinseconds: undefined,
         cutendtimeinseconds: undefined,
         maximumduarationoftrackinseconds: maximumduarationoftrackinseconds,
@@ -2378,6 +3045,113 @@ export function Videoeditor() {
         htmlid: "videocliphtmlid",
         currentTimeDisplayinSeconds: videoclipcurrenttime,
         ispause: true,
+        file: selectedmediaupload.file,
+      });
+    } else if (type === "addanothertrack") {
+      let maximumduarationoftrackinseconds = 0;
+      let selectedmediatrack = { order: "", items: [] };
+
+      let sectioncolumnarrayjs = listmediatrack;
+      //console.log(sectioncolumnarrayjs);
+      listmediatrack = dragdropHandler2({
+        changingobjectarray: sectioncolumnarrayjs,
+        subobject: selectedmediatrack,
+        operationtype: "add",
+        preposttext: "",
+        draggedcomporder: "",
+        neworder: "",
+      });
+
+      await Hideui({});
+      await Showui({
+        listmediatrack: listmediatrack,
+      });
+
+      playVideo({
+        htmlid: "videocliphtmlid",
+        currentTimeDisplayinSeconds: videoclipcurrenttime,
+        ispause: true,
+        file: selectedmediaupload.file,
+      });
+    } else if (type === "removetrack") {
+      let maximumduarationoftrackinseconds = 0;
+      let selectedmediatrack = { order: order, items: [] };
+
+      let sectioncolumnarrayjs = listmediatrack;
+      //console.log(sectioncolumnarrayjs);
+
+      listmediatrack = dragdropHandler2({
+        changingobjectarray: sectioncolumnarrayjs,
+        subobject: selectedmediatrack,
+        operationtype: "delete",
+        preposttext: "",
+        draggedcomporder: "",
+        neworder: "",
+      });
+
+      await Hideui({});
+      await Showui({
+        listmediatrack: listmediatrack,
+      });
+
+      playVideo({
+        htmlid: "videocliphtmlid",
+        currentTimeDisplayinSeconds: videoclipcurrenttime,
+        ispause: true,
+        file: selectedmediaupload.file,
+      });
+    } else if (type === "selecttrackitem") {
+      let selectedmediatrack = {};
+      if (listmediatrack && listmediatrack.length > 0) {
+        for (let mt = 0; mt < listmediatrack.length; mt++) {
+          if (methodprops.trackorder === listmediatrack[mt].order) {
+            selectedmediatrack = listmediatrack[mt];
+          }
+        }
+      }
+      //console.log(selectedmediatrack);
+
+      let selectedmediatrackitem = {};
+      if (selectedmediatrack && selectedmediatrack.items.length > 0) {
+        for (let mti = 0; mti < selectedmediatrack.items.length; mti++) {
+          if (
+            methodprops.trackitemorder === selectedmediatrack.items[mti].order
+          ) {
+            selectedmediatrackitem = selectedmediatrack.items[mti];
+          }
+        }
+      }
+      playtrackitem({
+        listmediatrack: listmediatrack,
+        selectedmediatrack: selectedmediatrack,
+        playtrackstatus: "initial",
+        totalsecondsfrombeginingintrack:
+          methodprops.totalsecondsfrombeginingintrack,
+      });
+    } else if (type === "playselectedtrack") {
+      let selectedmediatrack = {};
+      if (listmediatrack && listmediatrack.length > 0) {
+        for (let mt = 0; mt < listmediatrack.length; mt++) {
+          if (methodprops.trackorder === listmediatrack[mt].order) {
+            selectedmediatrack = listmediatrack[mt];
+          }
+        }
+      }
+      //console.log(selectedmediatrack);
+
+      playtrackitem({
+        listmediatrack: listmediatrack,
+        selectedmediatrack: selectedmediatrack,
+        playtrackstatus: "initial",
+        totalsecondsfrombeginingintrack: 0,
+      });
+    } else if (type === "selecttrackattime") {
+      playtrackitem({
+        listmediatrack: listmediatrack,
+        selectedmediatrack: {},
+        playtrackstatus: "initial",
+        totalsecondsfrombeginingintrack:
+          methodprops.totalsecondsfrombeginingintrack,
       });
     } else if (type === "clearcurrentcutting") {
       await Hideui({});
@@ -2391,21 +3165,22 @@ export function Videoeditor() {
         htmlid: "videocliphtmlid",
         currentTimeDisplayinSeconds: videoclipcurrenttime,
         ispause: true,
+        file: selectedmediaupload.file,
       });
     } else if (type === "clearallcuttingsinthisvideo") {
-      let updatedmediatrackitemgallery = [];
-      for (let i = 0; i < mediatrackitemgallery.length; i++) {
+      let updatedmediatrackgallery = [];
+      for (let i = 0; i < listmediatrack.length; i++) {
         if (
-          mediatrackitemgallery[i].mediauploadobject.file.name !==
+          listmediatrack[i].mediauploadobject.file.name !==
           selectedmediaupload.file.name
         ) {
-          updatedmediatrackitemgallery.push(mediatrackitemgallery[i]);
+          updatedmediatrackgallery.push(listmediatrack[i]);
         }
       }
 
       await Hideui({});
       await Showui({
-        mediatrackitemgallery: updatedmediatrackitemgallery,
+        listmediatrack: updatedmediatrackgallery,
         cutstarttimeinseconds: undefined,
         cutendtimeinseconds: undefined,
       });
@@ -2414,33 +3189,111 @@ export function Videoeditor() {
         htmlid: "videocliphtmlid",
         currentTimeDisplayinSeconds: videoclipcurrenttime,
         ispause: true,
+        file: selectedmediaupload.file,
       });
+    } else if (type === "settrackviewtype") {
+      if (value === "seconds") {
+        await Hideui({});
+        await Showui({
+          trackviewtype: value,
+          fromHours: 0,
+          toHours: 1,
+          fromMinutes: 0,
+          toMinutes: 1,
+          maximumnoofcentisecondspersec: 100,
+        });
+      } else {
+        await Hideui({});
+        await Showui({
+          trackviewtype: value,
+          fromHours: 0,
+          toHours: 1,
+          fromMinutes: 0,
+          toMinutes: 60,
+        });
+      }
+      playVideo({
+        htmlid: "videocliphtmlid",
+        currentTimeDisplayinSeconds: videoclipcurrenttime,
+        ispause: true,
+        file: selectedmediaupload.file,
+      });
+    } else if (type === "gotohours") {
+      if (trackviewtype == "seconds") {
+        await Hideui({});
+
+        await Showui({
+          fromHours: value,
+          toHours: value + 1,
+          fromMinutes: 0,
+          toMinutes: 1,
+        });
+      } else {
+        await Showui({
+          fromHoursscrollintoview: value,
+        });
+        let elem = document.getElementById(
+          value.toString().padStart(2, "0") + ":00:00:00"
+        );
+        elem.scrollIntoView();
+      }
+    } else if (type === "gotominutes") {
+      if (trackviewtype == "seconds") {
+        await Hideui({});
+
+        await Showui({
+          fromHours: fromHours,
+          toHours: fromHours + 1,
+          fromMinutes: value,
+          toMinutes: value + 1,
+        });
+      } else {
+        let elem = document.getElementById(
+          fromHoursscrollintoview.toString().padStart(2, "0") +
+            ":" +
+            value.toString().padStart(2, "0") +
+            ":00:00"
+        );
+        elem.scrollIntoView();
+      }
+    } else if (type === "gotoseconds") {
+      let elem = document.getElementById(
+        fromHours.toString().padStart(2, "0") +
+          ":" +
+          fromMinutes.toString().padStart(2, "0") +
+          ":" +
+          value.toString().padStart(2, "0") +
+          ":00"
+      );
+      elem.scrollIntoView();
     }
   }
-  async function childhandleClick(methodprops) {}
+
+  let currentVideouploadingStatus2 = "initial";
   let {
     mediauploadgallery,
 
     cutstarttimeinseconds,
     cutendtimeinseconds,
   } = compstate;
-  let mediauploadedFileshtml = [];
-  for (let i = 0; i < mediauploadgallery.length; i++) {
-    mediauploadedFileshtml.push(
-      <div
-        onClick={() =>
-          selectMediaUpload({ name: mediauploadgallery[i].file.name })
-        }
-      >
-        {mediauploadgallery[i].file.name}
-      </div>
-    );
-  }
-  console.log(compstate);
 
   if (compstate.showui != "true") {
     return <></>;
   } else {
+    let mediauploadedFileshtml = [];
+    for (let i = 0; i < mediauploadgallery.length; i++) {
+      mediauploadedFileshtml.push(
+        <div
+          onClick={() =>
+            selectMediaUpload({ name: mediauploadgallery[i].file.name })
+          }
+        >
+          {mediauploadgallery[i].file.name}
+        </div>
+      );
+    }
+    //console.log(compstate);
+
     return (
       <div
         style={{
@@ -2450,6 +3303,15 @@ export function Videoeditor() {
           boxSizing: "border-box",
         }}
       >
+        <div
+          style={{ padding: "5px" }}
+          onClick={() => {
+            startautouploadvideo();
+          }}
+        >
+          startautouploadvideo
+        </div>
+
         <div style={{ width: 200, height: "400px", padding: "5px" }}>
           <Mediauploadhtml dropHandler={dropHandler} />
           {mediauploadedFileshtml}
@@ -2465,7 +3327,7 @@ export function Videoeditor() {
           <video
             id="videocliphtmlid"
             controls="true"
-            width="100%"
+            width="470"
             height="270"
             crossorigin="anonymous"
           ></video>
@@ -2479,20 +3341,80 @@ export function Videoeditor() {
               cutendtimeinseconds={cutendtimeinseconds}
               videohtmlid={"videocliphtmlid"}
               gototimelocal={() => gototimelocal({ htmlid: "videocliphtmlid" })}
-              handleClick={handleClick}
+              handleClick={childhandleClick}
             />
           </div>
         </div>
-        <div style={{ width: 470, height: "400px", padding: "5px" }}>
-          <video
-            id="videofinalhtmlid"
-            controls="true"
-            width="100%"
-            height="270"
-            crossorigin="anonymous"
-          ></video>
+        <div
+          style={{
+            padding: "5px",
+            display: "flex",
+            flexWrap: "wrap",
+          }}
+          id="divfinalvideohtmlid"
+        ></div>
+        <div
+          style={{
+            padding: "5px",
+            display: "flex",
+            flexWrap: "wrap",
+          }}
+          id="divofinalcanvashtmlid"
+        ></div>
+        <div style={{ width: "100%" }}>
+          <video controls id="videofinalhtmlid"></video>
         </div>
-        <div style={{ width: "800px", height: "300px", overflow: "auto" }}>
+        <div
+          style={{ padding: "5px" }}
+          onClick={() => {
+            //  colorpixels();
+          }}
+        >
+          defaultpixels
+          <input type="checkbox" id="isdefaultpixels" />
+        </div>
+
+        <div style={{ padding: "5px" }}>
+          greyoutPixels
+          <input type="checkbox" id="isgreyoutpixels"></input>
+        </div>
+
+        <div style={{ padding: "5px" }}>
+          istransparentpixels
+          <input type="checkbox" id="istransparentpixels"></input>
+        </div>
+
+        <div style={{ padding: "5px" }}>
+          iswatermarktext
+          <input type="checkbox" id="iswatermarktext"></input>
+        </div>
+
+        <div style={{ padding: "5px" }}>
+          iswatermarkimage
+          <input type="checkbox" id="iswatermarkimage"></input>
+        </div>
+        <div style={{ display: "flex", flexWrap: "wrap", width: "100%" }}>
+          <canvas
+            id="mycanvas12"
+            width="470"
+            height="270"
+            //  onMouseDown={(e) => greoutSimilarPixels(e)}
+            style={{ border: "1px solid #d3d3d3" }}
+          >
+            Your browser does not support the HTML canvas tag.
+          </canvas>
+
+          <canvas
+            id="mycanvas123"
+            width="470"
+            height="270"
+            // onMouseDown={(e) => greoutSimilarPixels(e)}
+            style={{ border: "1px solid #d3d3d3" }}
+          >
+            Your browser does not support the HTML canvas tag.
+          </canvas>
+        </div>
+        <div style={{ width: "1000px", height: "500px", overflow: "auto" }}>
           <Mediatrackhtml
             compstate={compstate}
             parenthandleClick={childhandleClick}
