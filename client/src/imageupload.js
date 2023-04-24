@@ -30,6 +30,7 @@ var mycanvasrecordedChunks;
 var width, height;
 let initframedata = {};
 let modifiedframedata = {};
+var myTimeout;
 
 function mycanvasrecorderhandleDataAvailable(event) {
   console.log(event.data);
@@ -1643,7 +1644,7 @@ async function gototimelocal(methodprops) {
 function Mediatrackitemhtml(props) {
   let {
     listmediatrack,
-    totalsecondsfrombeginingintrack,
+    alltrackscurrentplayingtimeinseconds,
     trackviewtype,
     centisecn,
     secn,
@@ -1761,10 +1762,10 @@ function Mediatrackitemhtml(props) {
           if (
             trackitems[mti].starttimeinsecondsinmediatrack !== undefined &&
             trackitems[mti].starttimeinsecondsinmediatrack <=
-              totalsecondsfrombeginingintrack &&
+              alltrackscurrentplayingtimeinseconds &&
             trackitems[mti].endtimeinsecondsinmediatrack !== undefined &&
             trackitems[mti].endtimeinsecondsinmediatrack >
-              totalsecondsfrombeginingintrack
+              alltrackscurrentplayingtimeinseconds
           ) {
             mediatrackduration =
               trackitems[mti].endtimeinsecondsinmediatrack -
@@ -1788,7 +1789,8 @@ function Mediatrackitemhtml(props) {
               type: "selecttrackitem",
               trackorder: existingmediatrackorder,
               trackitemorder: existingmediatrackitemorder,
-              totalsecondsfrombeginingintrack: totalsecondsfrombeginingintrack,
+              alltrackscurrentplayingtimeinseconds:
+                alltrackscurrentplayingtimeinseconds,
             });
           }}
         ></div>
@@ -1815,7 +1817,8 @@ function Mediatrackitemhtml(props) {
         onClick={() => {
           parenthandleClick({
             type: "selecttrackattime",
-            totalsecondsfrombeginingintrack: totalsecondsfrombeginingintrack,
+            alltrackscurrentplayingtimeinseconds:
+              alltrackscurrentplayingtimeinseconds,
           });
         }}
       >
@@ -1980,7 +1983,7 @@ function Mediatrackhtml(props) {
     );
   }
 
-  let totalsecondsfrombeginingintrack = 0;
+  let alltrackscurrentplayingtimeinseconds = 0;
   let trackHtml = [];
 
   let trackbuttonsitemHtml = [];
@@ -2071,7 +2074,9 @@ function Mediatrackhtml(props) {
           <>
             <Mediatrackitemhtml
               listmediatrack={listmediatrack}
-              totalsecondsfrombeginingintrack={totalsecondsfrombeginingintrack}
+              alltrackscurrentplayingtimeinseconds={
+                alltrackscurrentplayingtimeinseconds
+              }
               trackviewtype={trackviewtype}
               hr={hr}
               min={min}
@@ -2082,7 +2087,8 @@ function Mediatrackhtml(props) {
           </>
         );
 
-        totalsecondsfrombeginingintrack = totalsecondsfrombeginingintrack + 60;
+        alltrackscurrentplayingtimeinseconds =
+          alltrackscurrentplayingtimeinseconds + 60;
       } else {
         for (let secn = 0; secn < 60; secn++) {
           if (trackviewtype === "minutes") {
@@ -2090,8 +2096,8 @@ function Mediatrackhtml(props) {
               <>
                 <Mediatrackitemhtml
                   listmediatrack={listmediatrack}
-                  totalsecondsfrombeginingintrack={
-                    totalsecondsfrombeginingintrack
+                  alltrackscurrentplayingtimeinseconds={
+                    alltrackscurrentplayingtimeinseconds
                   }
                   trackviewtype={trackviewtype}
                   hr={hr}
@@ -2103,8 +2109,8 @@ function Mediatrackhtml(props) {
               </>
             );
 
-            totalsecondsfrombeginingintrack =
-              totalsecondsfrombeginingintrack + 1;
+            alltrackscurrentplayingtimeinseconds =
+              alltrackscurrentplayingtimeinseconds + 1;
           } else {
             for (
               let centisecn = 0;
@@ -2115,8 +2121,8 @@ function Mediatrackhtml(props) {
                 <>
                   <Mediatrackitemhtml
                     listmediatrack={listmediatrack}
-                    totalsecondsfrombeginingintrack={
-                      totalsecondsfrombeginingintrack
+                    alltrackscurrentplayingtimeinseconds={
+                      alltrackscurrentplayingtimeinseconds
                     }
                     trackviewtype={trackviewtype}
                     hr={hr}
@@ -2128,8 +2134,8 @@ function Mediatrackhtml(props) {
                 </>
               );
 
-              totalsecondsfrombeginingintrack =
-                totalsecondsfrombeginingintrack + 0.01;
+              alltrackscurrentplayingtimeinseconds =
+                alltrackscurrentplayingtimeinseconds + 0.01;
             }
           }
         }
@@ -2387,216 +2393,377 @@ export function Videoeditor() {
       totaldurationinseconds,
       // htmlid,
       listmediatrack,
-      selectedmediatrack,
+      //  selectedmediatrack,
 
-      playtrackstatus,
-      totalsecondsfrombeginingintrack,
+      // playtrackstatus,
+      alltrackscurrentplayingtimeinseconds,
     } = methodprops;
     console.log(methodprops);
     let videocurrenttimeinseconds = 0;
 
-    // let videoupload = document.getElementById(htmlid);
-
-    // playtrackstatus > initial, createvideoelements, addsourcetovideos,
-    //setvideoplayingtime, checkplayingtime, playing, ended
     //
-    if (playtrackstatus === "initial") {
-      mycanvasrecordedChunks2 = [];
-      mycanvasmediaRecorder2.start();
+    for (let i = 0; i < listmediatrack.length; i++) {
+      let selectedmediatrack = listmediatrack[i];
+      console.log(selectedmediatrack.playtrackstatus);
+      if (
+        selectedmediatrack &&
+        Object.keys(selectedmediatrack).length > 0 &&
+        selectedmediatrack.items &&
+        Object.keys(selectedmediatrack.items).length > 0
+      ) {
+        let playtrackstatus = selectedmediatrack.playtrackstatus;
 
-      // videoupload.play();
-      playtrackstatus = "createvideoelements";
-    } else if (playtrackstatus === "createvideoelements") {
-      document.getElementById("divfinalvideohtmlid").innerHTML = "";
-      document.getElementById("divofinalcanvashtmlid").innerHTML = "";
+        if (playtrackstatus === "initial") {
+          console.log(methodprops);
+          playtrackstatus = "createvideoelements";
+        } else if (playtrackstatus === "createvideoelements") {
+          const divfinalvideohtmlidvideo = document.createElement("video");
+          divfinalvideohtmlidvideo.controls = true;
+          divfinalvideohtmlidvideo.muted = false;
+          divfinalvideohtmlidvideo.height = 240; // in px
+          divfinalvideohtmlidvideo.width = 320; // in px
+          divfinalvideohtmlidvideo.id =
+            "divfinalvideohtmlid" + selectedmediatrack.order;
+          document
+            .getElementById("divfinalvideohtmlid")
+            .appendChild(divfinalvideohtmlidvideo);
 
-      for (let i = 0; i < listmediatrack.length; i++) {
-        const divfinalvideohtmlidvideo = document.createElement("video");
-        divfinalvideohtmlidvideo.controls = true;
-        divfinalvideohtmlidvideo.muted = false;
-        divfinalvideohtmlidvideo.height = 240; // in px
-        divfinalvideohtmlidvideo.width = 320; // in px
-        divfinalvideohtmlidvideo.id =
-          "divfinalvideohtmlid" + listmediatrack[i].order;
-        document
-          .getElementById("divfinalvideohtmlid")
-          .appendChild(divfinalvideohtmlidvideo);
-      }
-
-      const divofinalcanvashtmlidvideo = document.createElement("canvas");
-      divofinalcanvashtmlidvideo.height = 240; // in px
-      divofinalcanvashtmlidvideo.width = 320; // in px
-
-      document
-        .getElementById("divofinalcanvashtmlid")
-        .appendChild(divofinalcanvashtmlidvideo);
-
-      playtrackstatus = "addsourcetovideos";
-    }
-     else if (playtrackstatus === "addsourcetovideos") {
-      for (let i = 0; i < listmediatrack.length; i++) {
-        let currenttimemediatrackitem = {};
-        if (listmediatrack[i].items) {
-          for (let j = 0; j < listmediatrack[i].items.length; j++) {
-            if (
-              listmediatrack[i].items[j].starttimeinsecondsinmediatrack <=
-                totalsecondsfrombeginingintrack &&
-              listmediatrack[i].items[j].endtimeinsecondsinmediatrack >
-                totalsecondsfrombeginingintrack
-            ) {
-              if (
-                selectedmediatrack &&
-                Object.keys(selectedmediatrack).length > 0
-              ) {
-                if (selectedmediatrack.order === listmediatrack[i].order) {
-                  currenttimemediatrackitem = listmediatrack[i].items[j];
-                  let urlObj2 = URL.createObjectURL(
-                    currenttimemediatrackitem.mediauploadobject.file
-                  );
-                  document.getElementById(
-                    "divfinalvideohtmlid" + listmediatrack[i].order
-                  ).src = urlObj2;
-                  listmediatrack[i].playingitem = currenttimemediatrackitem;
-                }
-              } else {
-                currenttimemediatrackitem = listmediatrack[i].items[j];
-                let urlObj2 = URL.createObjectURL(
-                  currenttimemediatrackitem.mediauploadobject.file
-                );
-                document.getElementById(
-                  "divfinalvideohtmlid" + listmediatrack[i].order
-                ).src = urlObj2;
-                listmediatrack[i].playingitem = currenttimemediatrackitem;
-              }
-            }
-          }
-        }
-      }
-
-      playtrackstatus = "setvideoplayingtime";
-    }
-     else if (playtrackstatus === "setvideoplayingtime") {
-      let issetvideoplayingtime = true;
-      for (let i = 0; i < listmediatrack.length; i++) {
-        let currenttimemediatrackitem = {};
-        if (listmediatrack[i].items) {
-          for (let j = 0; j < listmediatrack[i].items.length; j++) {
-            if (
-              listmediatrack[i].items[j].starttimeinsecondsinmediatrack <=
-                totalsecondsfrombeginingintrack &&
-              listmediatrack[i].items[j].endtimeinsecondsinmediatrack >
-                totalsecondsfrombeginingintrack
-            ) {
-              if (
-                selectedmediatrack &&
-                Object.keys(selectedmediatrack).length > 0
-              ) {
-                if (selectedmediatrack.order === listmediatrack[i].order) {
-                  if (
-                    document.getElementById(
-                      "divfinalvideohtmlid" + listmediatrack[i].order
-                    ).currentTime !== totalsecondsfrombeginingintrack
-                  ) {
-                    issetvideoplayingtime = false;
-                  }
-                }
-              } else {
-                if (
-                  document.getElementById(
-                    "divfinalvideohtmlid" + listmediatrack[i].order
-                  ).currentTime !== totalsecondsfrombeginingintrack
-                ) {
-                  issetvideoplayingtime = false;
-                }
-              }
-            }
-          }
-        }
-      }
-
-      if (issetvideoplayingtime == false) {
-        for (let i = 0; i < listmediatrack.length; i++) {
+          playtrackstatus = "addsourcetovideos";
+        } else if (playtrackstatus === "addsourcetovideos") {
           let currenttimemediatrackitem = {};
-          if (listmediatrack[i].items) {
-            for (let j = 0; j < listmediatrack[i].items.length; j++) {
-              if (
-                listmediatrack[i].items[j].starttimeinsecondsinmediatrack <=
-                  totalsecondsfrombeginingintrack &&
-                listmediatrack[i].items[j].endtimeinsecondsinmediatrack >
-                  totalsecondsfrombeginingintrack
-              ) {
-                if (
-                  selectedmediatrack &&
-                  Object.keys(selectedmediatrack).length > 0
-                ) {
-                  if (selectedmediatrack.order === listmediatrack[i].order) {
-                    currenttimemediatrackitem = listmediatrack[i].items[j];
 
-                    document.getElementById(
-                      "divfinalvideohtmlid" + listmediatrack[i].order
-                    ).currentTime = totalsecondsfrombeginingintrack;
-                  }
-                } else {
-                  document.getElementById(
-                    "divfinalvideohtmlid" + listmediatrack[i].order
-                  ).currentTime = totalsecondsfrombeginingintrack;
-                }
+          //currenttimemediatrackitem if previousplayingitem
+          for (let j = 0; j < selectedmediatrack.items.length; j++) {
+            if (
+              selectedmediatrack.previousplayingitem &&
+              Object.keys(selectedmediatrack.previousplayingitem).length > 0
+            ) {
+              if (
+                selectedmediatrack.previousplayingitem.order + 1 ==
+                selectedmediatrack.items[j].order
+              ) {
+                currenttimemediatrackitem = selectedmediatrack.items[j];
               }
             }
           }
-        }
-      } else {
-        playtrackstatus = "startplaying";
-      }
-    }
-     else if (playtrackstatus === "startplaying") {
-      for (let i = 0; i < listmediatrack.length; i++) {
-        document
-          .getElementById("divfinalvideohtmlid" + listmediatrack[i].order)
-          .play();
-      }
 
-      playtrackstatus = "playing";
-    }
-     else if (playtrackstatus === "playing") {
-      for (let i = 0; i < listmediatrack.length; i++) {
-        let currenttimemediatrackitem = {};
-        if (listmediatrack[i].items) {
-          for (let j = 0; j < listmediatrack[i].items.length; j++) {
-
-           let playingitem = listmediatrack[i].playingitem;
-
-           if (
-            playingitem ){
-            if (
-              playingitem.starttimeinsecondsinmediatrack <=
-                totalsecondsfrombeginingintrack &&
-                playingitem.endtimeinsecondsinmediatrack >
-                totalsecondsfrombeginingintrack
-            ) {
-              
-            } else {
-              playtrackstatus = "addsourcetovideos";
+          //currenttimemediatrackitem if not previousplayingitem
+          if (
+            currenttimemediatrackitem &&
+            Object.keys(currenttimemediatrackitem).length > 0
+          ) {
+          } else {
+            for (let j = 0; j < selectedmediatrack.items.length; j++) {
+              if (
+                selectedmediatrack.items[j].starttimeinsecondsinmediatrack <=
+                  alltrackscurrentplayingtimeinseconds &&
+                selectedmediatrack.items[j].endtimeinsecondsinmediatrack >
+                  alltrackscurrentplayingtimeinseconds
+              ) {
+                currenttimemediatrackitem = selectedmediatrack.items[j];
+              }
             }
           }
+
+          //if currenttimemediatrackitem
+          if (
+            currenttimemediatrackitem &&
+            Object.keys(currenttimemediatrackitem).length > 0
+          ) {
+            let urlObj2 = URL.createObjectURL(
+              currenttimemediatrackitem.mediauploadobject.file
+            );
+            document.getElementById(
+              "divfinalvideohtmlid" + selectedmediatrack.order
+            ).src = urlObj2;
+            selectedmediatrack.playingitem = currenttimemediatrackitem;
+            playtrackstatus = "setvideoplayingtime";
+          } else {
+            selectedmediatrack.playingitem = {};
+            //   selectedmediatrack.previousplayingitem = {};
+            playtrackstatus = "trackended";
+          }
+        } else if (playtrackstatus === "setvideoplayingtime") {
+          let issetvideoplayingtime = true;
+
+          for (let j = 0; j < selectedmediatrack.items.length; j++) {
+            if (
+              selectedmediatrack.items[j].starttimeinsecondsinmediatrack <=
+                alltrackscurrentplayingtimeinseconds &&
+              selectedmediatrack.items[j].endtimeinsecondsinmediatrack >
+                alltrackscurrentplayingtimeinseconds &&
+              document.getElementById(
+                "divfinalvideohtmlid" + selectedmediatrack.order
+              )
+            ) {
+              let differencesecondsinmediatrack =
+                alltrackscurrentplayingtimeinseconds -
+                selectedmediatrack.items[j].starttimeinsecondsinmediatrack;
+              let currenttimeinmediaupload =
+                selectedmediatrack.items[j].cutstarttimeinsecondsinmediaupload +
+                differencesecondsinmediatrack;
+
+              let currenttimeinmediauploadinteger = parseInt(
+                currenttimeinmediaupload * 10000000000
+              );
+
+              let listmediatrackcurrenttimeinteger = document.getElementById(
+                "divfinalvideohtmlid" + selectedmediatrack.order
+              ).currentTime;
+              listmediatrackcurrenttimeinteger = parseInt(
+                listmediatrackcurrenttimeinteger * 10000000000
+              );
+
+              console.log(listmediatrackcurrenttimeinteger);
+
+              console.log(currenttimeinmediauploadinteger);
+              if (
+                listmediatrackcurrenttimeinteger !==
+                currenttimeinmediauploadinteger
+              ) {
+                issetvideoplayingtime = false;
+              }
+            }
+          }
+
+          if (issetvideoplayingtime == false) {
+            for (let j = 0; j < selectedmediatrack.items.length; j++) {
+              if (
+                selectedmediatrack.items[j].starttimeinsecondsinmediatrack <=
+                  alltrackscurrentplayingtimeinseconds &&
+                selectedmediatrack.items[j].endtimeinsecondsinmediatrack >
+                  alltrackscurrentplayingtimeinseconds
+              ) {
+                let differencesecondsinmediatrack =
+                  alltrackscurrentplayingtimeinseconds -
+                  selectedmediatrack.items[j].starttimeinsecondsinmediatrack;
+                let currenttimeinmediaupload =
+                  selectedmediatrack.items[j]
+                    .cutstarttimeinsecondsinmediaupload +
+                  differencesecondsinmediatrack;
+                console.log(currenttimeinmediaupload);
+                document.getElementById(
+                  "divfinalvideohtmlid" + selectedmediatrack.order
+                ).currentTime = currenttimeinmediaupload;
+              }
+            }
+          } else {
+            playtrackstatus = "startplaying";
+          }
+        } else if (playtrackstatus === "startplaying") {
+          console.log(
+            document.getElementById(
+              "divfinalvideohtmlid" + listmediatrack[i].order
+            ).currentTime
+          );
+          // debugger;
+
+          playtrackstatus = "playing";
+        } else if (playtrackstatus === "playing") {
+          let playingitem = selectedmediatrack.playingitem;
+
+          if (playingitem) {
+            let listmediatrackcurrenttimeinteger = document.getElementById(
+              "divfinalvideohtmlid" + selectedmediatrack.order
+            ).currentTime;
+
+            if (
+              //   playingitem.starttimeinsecondsinmediatrack <=
+              //    alltrackscurrentplayingtimeinseconds &&
+              playingitem.cutendtimeinsecondsinmediaupload >
+              listmediatrackcurrenttimeinteger
+            ) {
+              console.log(playingitem.starttimeinsecondsinmediatrack);
+              console.log(playingitem.endtimeinsecondsinmediatrack);
+              console.log(alltrackscurrentplayingtimeinseconds);
+            } else {
+              console.log(playingitem.starttimeinsecondsinmediatrack);
+              console.log(playingitem.endtimeinsecondsinmediatrack);
+              console.log(alltrackscurrentplayingtimeinseconds);
+
+              try {
+                document
+                  .getElementById(
+                    "divfinalvideohtmlid" + selectedmediatrack.order
+                  )
+                  .pause();
+              } catch (e) {}
+              selectedmediatrack.previousplayingitem = playingitem;
+              selectedmediatrack.playingitem = {};
+              playtrackstatus = "findnextitem";
+              // return ;
+            }
+          }
+        } else if (playtrackstatus === "findnextitem") {
+          let isfindnextitem = {};
+
+          //currenttimemediatrackitem if previousplayingitem
+          for (let j = 0; j < selectedmediatrack.items.length; j++) {
+            if (
+              selectedmediatrack.previousplayingitem &&
+              Object.keys(selectedmediatrack.previousplayingitem).length > 0
+            ) {
+              if (
+                selectedmediatrack.previousplayingitem.order + 1 ==
+                selectedmediatrack.items[j].order
+              ) {
+                isfindnextitem = selectedmediatrack.items[j];
+              }
+            }
+          }
+
+          if (isfindnextitem && Object.keys(isfindnextitem).length > 0) {
+            playtrackstatus = "addsourcetovideos";
+          } else {
+            playtrackstatus = "trackended";
           }
         }
+        selectedmediatrack.playtrackstatus = playtrackstatus;
       }
-
-      //playtrackstatus = "ended";
-    } else if (playtrackstatus === "ended") {
-      mycanvasmediaRecorder2.stop();
     }
-    totalsecondsfrombeginingintrack = totalsecondsfrombeginingintrack+(16/1000)
-    setTimeout(() => {
-      playtrackitem({
-        listmediatrack: listmediatrack,
-        selectedmediatrack: selectedmediatrack,
-        playtrackstatus: playtrackstatus,
-        totalsecondsfrombeginingintrack:
-        totalsecondsfrombeginingintrack,
-      });
-    }, 16);
+
+    let isanytrackinitial = false;
+    let isanytrackcreatevideoelements = false;
+    let isanytrackaddsourcetovideos = false;
+    let isanytracksetvideoplayingtime = false;
+    let isanytrackstartplaying = false;
+    let isanytrackplaying = false;
+    let isanytrackfindnextitem = false;
+    let isanytrackended = false;
+
+    for (let i = 0; i < listmediatrack.length; i++) {
+      if (listmediatrack[i].playtrackstatus == "initial") {
+        isanytrackinitial = true;
+      }
+      if (listmediatrack[i].playtrackstatus == "createvideoelements") {
+        isanytrackcreatevideoelements = true;
+      }
+      if (listmediatrack[i].playtrackstatus == "addsourcetovideos") {
+        isanytrackaddsourcetovideos = true;
+      }
+      if (listmediatrack[i].playtrackstatus == "setvideoplayingtime") {
+        isanytracksetvideoplayingtime = true;
+      }
+      if (listmediatrack[i].playtrackstatus == "startplaying") {
+        isanytrackstartplaying = true;
+      }
+      if (listmediatrack[i].playtrackstatus == "playing") {
+        isanytrackplaying = true;
+      }
+      if (listmediatrack[i].playtrackstatus == "findnextitem") {
+        isanytrackfindnextitem = true;
+      }
+      if (listmediatrack[i].playtrackstatus == "trackended") {
+        isanytrackended = true;
+      }
+    }
+
+    console.log(isanytrackinitial);
+    console.log(isanytrackcreatevideoelements);
+    console.log(isanytrackaddsourcetovideos);
+    console.log(isanytracksetvideoplayingtime);
+    console.log(isanytrackstartplaying);
+    console.log(isanytrackplaying);
+    console.log(isanytrackfindnextitem);
+    console.log(isanytrackended);
+
+    if (
+      isanytrackinitial === false &&
+      isanytrackcreatevideoelements === false &&
+      isanytrackaddsourcetovideos === false &&
+      isanytracksetvideoplayingtime === false &&
+      isanytrackstartplaying === false &&
+      isanytrackplaying === true &&
+      isanytrackfindnextitem === false &&
+      isanytrackended === true
+    ) {
+      for (let i = 0; i < listmediatrack.length; i++) {
+        if (
+          document.getElementById(
+            "divfinalvideohtmlid" + listmediatrack[i].order
+          ) &&
+          document.getElementById(
+            "divfinalvideohtmlid" + listmediatrack[i].order
+          ).playing != true
+        ) {
+          try {
+            document
+              .getElementById("divfinalvideohtmlid" + listmediatrack[i].order)
+              .play();
+          } catch (e) {}
+        }
+      }
+      alltrackscurrentplayingtimeinseconds =
+        alltrackscurrentplayingtimeinseconds + 16 / 1000;
+    } else if (
+      isanytrackinitial === false &&
+      isanytrackcreatevideoelements === false &&
+      isanytrackaddsourcetovideos === false &&
+      isanytracksetvideoplayingtime === false &&
+      isanytrackstartplaying === false &&
+      isanytrackplaying === true &&
+      isanytrackfindnextitem === false &&
+      isanytrackended === false
+    ) {
+      for (let i = 0; i < listmediatrack.length; i++) {
+        if (
+          document.getElementById(
+            "divfinalvideohtmlid" + listmediatrack[i].order
+          ) &&
+          document.getElementById(
+            "divfinalvideohtmlid" + listmediatrack[i].order
+          ).playing != true
+        ) {
+          try {
+            document
+              .getElementById("divfinalvideohtmlid" + listmediatrack[i].order)
+              .play();
+          } catch (e) {}
+        }
+      }
+      alltrackscurrentplayingtimeinseconds =
+        alltrackscurrentplayingtimeinseconds + 16 / 1000;
+    } else {
+      for (let i = 0; i < listmediatrack.length; i++) {
+        if (
+          document.getElementById(
+            "divfinalvideohtmlid" + listmediatrack[i].order
+          ) &&
+          document.getElementById(
+            "divfinalvideohtmlid" + listmediatrack[i].order
+          ).playing == true
+        ) {
+          try {
+            document
+              .getElementById("divfinalvideohtmlid" + listmediatrack[i].order)
+              .pause();
+          } catch (e) {}
+        }
+      }
+    }
+
+    if (
+      isanytrackinitial === false &&
+      isanytrackcreatevideoelements === false &&
+      isanytrackaddsourcetovideos === false &&
+      isanytracksetvideoplayingtime === false &&
+      isanytrackstartplaying === false &&
+      isanytrackplaying === false &&
+      isanytrackfindnextitem === false &&
+      isanytrackended === true
+    ) {
+      clearTimeout(myTimeout);
+    } else {
+      myTimeout = setTimeout(() => {
+        playtrackitem({
+          listmediatrack: listmediatrack,
+          // selectedmediatrack: selectedmediatrack,
+          // playtrackstatus: playtrackstatus,
+          alltrackscurrentplayingtimeinseconds:
+            alltrackscurrentplayingtimeinseconds,
+        });
+      }, 16);
+    }
   }
 
   async function updatetime() {
@@ -2852,31 +3019,31 @@ export function Videoeditor() {
 
   async function playVideo(methodprops) {
     let { htmlid, currentTimeDisplayinSeconds, ispause, file } = methodprops;
-
+    console.log(methodprops);
     if (file) {
       var fr = new FileReader();
       fr.onload = function () {
         var data = fr.result;
         var array = new Int8Array(data);
         var uint8ClampedArray = new Uint8ClampedArray(data);
+
+        setTimeout(async () => {
+          // alert(currentTimeDisplayinSeconds);
+          let myvideo11 = document.getElementById(htmlid);
+          myvideo11.currentTime = currentTimeDisplayinSeconds;
+          if (!myvideo11.playing && ispause !== true) {
+            myvideo11.play();
+          }
+          if (ispause === true) {
+            myvideo11.pause();
+          }
+        }, 1000);
       };
       fr.readAsArrayBuffer(file);
 
       const urlObj = URL.createObjectURL(file);
       let videoupload = document.getElementById(htmlid);
       videoupload.src = urlObj;
-
-      setTimeout(async () => {
-        // alert(currentTimeDisplayinSeconds);
-        let myvideo11 = document.getElementById(htmlid);
-        myvideo11.currentTime = currentTimeDisplayinSeconds;
-        if (!myvideo11.playing && ispause !== true) {
-          myvideo11.play();
-        }
-        if (ispause === true) {
-          myvideo11.pause();
-        }
-      }, 1000);
     }
   }
 
@@ -3043,7 +3210,7 @@ export function Videoeditor() {
 
       playVideo({
         htmlid: "videocliphtmlid",
-        currentTimeDisplayinSeconds: videoclipcurrenttime,
+        currentTimeDisplayinSeconds: cutendtimeinseconds,
         ispause: true,
         file: selectedmediaupload.file,
       });
@@ -3121,37 +3288,91 @@ export function Videoeditor() {
           }
         }
       }
-      playtrackitem({
+      if (listmediatrack && listmediatrack.length > 0) {
+        for (let mt = 0; mt < listmediatrack.length; mt++) {
+          listmediatrack[mt].playtrackstatus = "initial";
+        }
+      }
+
+      let playtrackitemprops = {
         listmediatrack: listmediatrack,
         selectedmediatrack: selectedmediatrack,
-        playtrackstatus: "initial",
-        totalsecondsfrombeginingintrack:
-          methodprops.totalsecondsfrombeginingintrack,
-      });
+        // playtrackstatus: "initial",
+        alltrackscurrentplayingtimeinseconds:
+          methodprops.alltrackscurrentplayingtimeinseconds,
+      };
+      console.log(playtrackitemprops);
+      clearTimeout(myTimeout);
+      mycanvasrecordedChunks2 = [];
+      document.getElementById("divfinalvideohtmlid").innerHTML = "";
+      document.getElementById("divofinalcanvashtmlid").innerHTML = "";
+      const divofinalcanvashtmlidvideo = document.createElement("canvas");
+      divofinalcanvashtmlidvideo.height = 240; // in px
+      divofinalcanvashtmlidvideo.width = 320; // in px
+
+      document
+        .getElementById("divofinalcanvashtmlid")
+        .appendChild(divofinalcanvashtmlidvideo);
+
+      playtrackitem(playtrackitemprops);
     } else if (type === "playselectedtrack") {
       let selectedmediatrack = {};
       if (listmediatrack && listmediatrack.length > 0) {
         for (let mt = 0; mt < listmediatrack.length; mt++) {
           if (methodprops.trackorder === listmediatrack[mt].order) {
+            listmediatrack[mt].playtrackstatus = "initial";
             selectedmediatrack = listmediatrack[mt];
           }
         }
       }
       //console.log(selectedmediatrack);
-
-      playtrackitem({
+      let playtrackitemprops = {
         listmediatrack: listmediatrack,
         selectedmediatrack: selectedmediatrack,
         playtrackstatus: "initial",
-        totalsecondsfrombeginingintrack: 0,
-      });
+        alltrackscurrentplayingtimeinseconds: 0,
+      };
+      console.log(playtrackitemprops);
+      clearTimeout(myTimeout);
+      mycanvasrecordedChunks2 = [];
+      document.getElementById("divfinalvideohtmlid").innerHTML = "";
+      document.getElementById("divofinalcanvashtmlid").innerHTML = "";
+      const divofinalcanvashtmlidvideo = document.createElement("canvas");
+      divofinalcanvashtmlidvideo.height = 240; // in px
+      divofinalcanvashtmlidvideo.width = 320; // in px
+
+      document
+        .getElementById("divofinalcanvashtmlid")
+        .appendChild(divofinalcanvashtmlidvideo);
+
+      playtrackitem(playtrackitemprops);
     } else if (type === "selecttrackattime") {
+      if (listmediatrack && listmediatrack.length > 0) {
+        for (let mt = 0; mt < listmediatrack.length; mt++) {
+          if (methodprops.trackorder === listmediatrack[mt].order) {
+            listmediatrack[mt].playtrackstatus = "initial";
+          }
+        }
+      }
+
+      clearTimeout(myTimeout);
+      mycanvasrecordedChunks2 = [];
+      document.getElementById("divfinalvideohtmlid").innerHTML = "";
+      document.getElementById("divofinalcanvashtmlid").innerHTML = "";
+      const divofinalcanvashtmlidvideo = document.createElement("canvas");
+      divofinalcanvashtmlidvideo.height = 240; // in px
+      divofinalcanvashtmlidvideo.width = 320; // in px
+
+      document
+        .getElementById("divofinalcanvashtmlid")
+        .appendChild(divofinalcanvashtmlidvideo);
+
       playtrackitem({
         listmediatrack: listmediatrack,
         selectedmediatrack: {},
-        playtrackstatus: "initial",
-        totalsecondsfrombeginingintrack:
-          methodprops.totalsecondsfrombeginingintrack,
+        //  playtrackstatus: "initial",
+        alltrackscurrentplayingtimeinseconds:
+          methodprops.alltrackscurrentplayingtimeinseconds,
       });
     } else if (type === "clearcurrentcutting") {
       await Hideui({});
