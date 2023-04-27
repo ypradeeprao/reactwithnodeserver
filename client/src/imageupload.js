@@ -678,8 +678,64 @@ let Videoimageprogressbarhtml = (methodprops) => {
   );
 };
 
+async function drawVideoonCanvasnew(methodprops) {
+  let { videohtmlid, initcanvashtmlid, finalcanvashtmlid, startX, startY,
+  width, height,isgreyoutpixels } = methodprops;
+ 
+  let drawvideo = document.getElementById(videohtmlid);
+  let drawwidth = drawvideo.width;
+  let drawheight = drawvideo.height;
+
+  let c3 = document.getElementById(initcanvashtmlid);
+  let ctx3 = c3.getContext("2d");
+  ctx3.drawImage(drawvideo, 0, 0, drawwidth, drawheight);
+  let initframe = ctx3.getImageData(0, 0, drawwidth, drawheight);
+  //  //console.log(initframe);
+  const l = initframe.data.length / 4;
+  // //console.log(drawwidth);300
+  //  //console.log(drawheight);270
+  // //console.log(l);81000
+
+  
+  let rownumber = 0;
+  let columnnumber = 0;
+
+
+  for (let i = 0; i < l; i++) {
+  
+
+    if (isgreyoutpixels == true ) {
+      const grey =
+        (initframe.data[i * 4 + 0] +
+          initframe.data[i * 4 + 1] +
+          initframe.data[i * 4 + 2]) /
+        3;
+
+      initframe.data[i * 4 + 0] = grey;
+      initframe.data[i * 4 + 1] = grey;
+      initframe.data[i * 4 + 2] = grey;
+      // //console.log(i);
+     
+    }
+
+    columnnumber = columnnumber + 1;
+    if (columnnumber === drawwidth) {
+      columnnumber = 0;
+      rownumber = rownumber + 1;
+    }
+  }
+
+  ctx3.putImageData(initframe, 0, 0);
+
+
+
+  
+}
+
+
 async function drawVideoonCanvas(methodprops) {
-  let { videohtmlid, initcanvashtmlid, finalcanvashtmlid } = methodprops;
+  let { videohtmlid, initcanvashtmlid, finalcanvashtmlid, startX, startY,
+  width, height } = methodprops;
   var isgreyoutpixels = document.getElementById("isgreyoutpixels").checked;
   var isdefaultpixels = document.getElementById("isdefaultpixels").checked;
   var istransparentpixels = document.getElementById(
@@ -2404,7 +2460,7 @@ export function Videoeditor() {
     //
     for (let i = 0; i < listmediatrack.length; i++) {
       let selectedmediatrack = listmediatrack[i];
-      console.log(selectedmediatrack.playtrackstatus);
+     // console.log(selectedmediatrack.playtrackstatus);
       if (
         selectedmediatrack &&
         Object.keys(selectedmediatrack).length > 0 &&
@@ -2414,7 +2470,7 @@ export function Videoeditor() {
         let playtrackstatus = selectedmediatrack.playtrackstatus;
 
         if (playtrackstatus === "initial") {
-          console.log(methodprops);
+       //   console.log(methodprops);
           playtrackstatus = "createvideoelements";
         } else if (playtrackstatus === "createvideoelements") {
           const divfinalvideohtmlidvideo = document.createElement("video");
@@ -2480,53 +2536,24 @@ export function Videoeditor() {
             playtrackstatus = "setvideoplayingtime";
           } else {
             selectedmediatrack.playingitem = {};
-            //   selectedmediatrack.previousplayingitem = {};
             playtrackstatus = "trackended";
           }
         } else if (playtrackstatus === "setvideoplayingtime") {
-          let issetvideoplayingtime = true;
+          let setvideoplayingtime;
 
-          for (let j = 0; j < selectedmediatrack.items.length; j++) {
-            if (
-              selectedmediatrack.items[j].starttimeinsecondsinmediatrack <=
-                alltrackscurrentplayingtimeinseconds &&
-              selectedmediatrack.items[j].endtimeinsecondsinmediatrack >
-                alltrackscurrentplayingtimeinseconds &&
-              document.getElementById(
-                "divfinalvideohtmlid" + selectedmediatrack.order
-              )
-            ) {
-              let differencesecondsinmediatrack =
-                alltrackscurrentplayingtimeinseconds -
-                selectedmediatrack.items[j].starttimeinsecondsinmediatrack;
-              let currenttimeinmediaupload =
-                selectedmediatrack.items[j].cutstarttimeinsecondsinmediaupload +
-                differencesecondsinmediatrack;
-
-              let currenttimeinmediauploadinteger = parseInt(
-                currenttimeinmediaupload * 10000000000
-              );
-
-              let listmediatrackcurrenttimeinteger = document.getElementById(
-                "divfinalvideohtmlid" + selectedmediatrack.order
-              ).currentTime;
-              listmediatrackcurrenttimeinteger = parseInt(
-                listmediatrackcurrenttimeinteger * 10000000000
-              );
-
-              console.log(listmediatrackcurrenttimeinteger);
-
-              console.log(currenttimeinmediauploadinteger);
-              if (
-                listmediatrackcurrenttimeinteger !==
-                currenttimeinmediauploadinteger
-              ) {
-                issetvideoplayingtime = false;
-              }
-            }
+          // if previousitem
+          if (
+            selectedmediatrack.previousplayingitem &&
+            Object.keys(selectedmediatrack.previousplayingitem).length > 0 &&
+            selectedmediatrack.playingitem &&
+            Object.keys(selectedmediatrack.playingitem).length > 0
+          ) {
+            setvideoplayingtime =
+              selectedmediatrack.playingitem.cutstarttimeinsecondsinmediaupload;
           }
 
-          if (issetvideoplayingtime == false) {
+          // if not previousitem
+          if (setvideoplayingtime === undefined) {
             for (let j = 0; j < selectedmediatrack.items.length; j++) {
               if (
                 selectedmediatrack.items[j].starttimeinsecondsinmediatrack <=
@@ -2537,25 +2564,49 @@ export function Videoeditor() {
                 let differencesecondsinmediatrack =
                   alltrackscurrentplayingtimeinseconds -
                   selectedmediatrack.items[j].starttimeinsecondsinmediatrack;
-                let currenttimeinmediaupload =
+                setvideoplayingtime =
                   selectedmediatrack.items[j]
                     .cutstarttimeinsecondsinmediaupload +
                   differencesecondsinmediatrack;
-                console.log(currenttimeinmediaupload);
-                document.getElementById(
-                  "divfinalvideohtmlid" + selectedmediatrack.order
-                ).currentTime = currenttimeinmediaupload;
+              //  console.log(setvideoplayingtime);
               }
             }
-          } else {
-            playtrackstatus = "startplaying";
+          }
+
+          if (
+            document.getElementById(
+              "divfinalvideohtmlid" + selectedmediatrack.order
+            ) &&
+            setvideoplayingtime
+          ) {
+            let currenttimeinmediauploadinteger = parseInt(
+              setvideoplayingtime * 10000000000
+            );
+
+            let listmediatrackcurrenttimeinteger = document.getElementById(
+              "divfinalvideohtmlid" + selectedmediatrack.order
+            ).currentTime;
+
+            listmediatrackcurrenttimeinteger = parseInt(
+              listmediatrackcurrenttimeinteger * 10000000000
+            );
+
+           // console.log(listmediatrackcurrenttimeinteger);
+
+           // console.log(currenttimeinmediauploadinteger);
+            if (
+              listmediatrackcurrenttimeinteger ===
+              currenttimeinmediauploadinteger
+            ) {
+              playtrackstatus = "startplaying";
+            } else {
+              document.getElementById(
+                "divfinalvideohtmlid" + selectedmediatrack.order
+              ).currentTime = setvideoplayingtime;
+            }
           }
         } else if (playtrackstatus === "startplaying") {
-          console.log(
-            document.getElementById(
-              "divfinalvideohtmlid" + listmediatrack[i].order
-            ).currentTime
-          );
+         
           // debugger;
 
           playtrackstatus = "playing";
@@ -2573,13 +2624,13 @@ export function Videoeditor() {
               playingitem.cutendtimeinsecondsinmediaupload >
               listmediatrackcurrenttimeinteger
             ) {
-              console.log(playingitem.starttimeinsecondsinmediatrack);
-              console.log(playingitem.endtimeinsecondsinmediatrack);
-              console.log(alltrackscurrentplayingtimeinseconds);
+              //console.log(playingitem.starttimeinsecondsinmediatrack);
+             // console.log(playingitem.endtimeinsecondsinmediatrack);
+             // console.log(alltrackscurrentplayingtimeinseconds);
             } else {
-              console.log(playingitem.starttimeinsecondsinmediatrack);
-              console.log(playingitem.endtimeinsecondsinmediatrack);
-              console.log(alltrackscurrentplayingtimeinseconds);
+             // console.log(playingitem.starttimeinsecondsinmediatrack);
+            //  console.log(playingitem.endtimeinsecondsinmediatrack);
+            //  console.log(alltrackscurrentplayingtimeinseconds);
 
               try {
                 document
@@ -2658,14 +2709,14 @@ export function Videoeditor() {
       }
     }
 
-    console.log(isanytrackinitial);
-    console.log(isanytrackcreatevideoelements);
-    console.log(isanytrackaddsourcetovideos);
-    console.log(isanytracksetvideoplayingtime);
-    console.log(isanytrackstartplaying);
-    console.log(isanytrackplaying);
-    console.log(isanytrackfindnextitem);
-    console.log(isanytrackended);
+    // console.log(isanytrackinitial);
+    // console.log(isanytrackcreatevideoelements);
+    // console.log(isanytrackaddsourcetovideos);
+    // console.log(isanytracksetvideoplayingtime);
+    // console.log(isanytrackstartplaying);
+    // console.log(isanytrackplaying);
+    // console.log(isanytrackfindnextitem);
+    // console.log(isanytrackended);
 
     if (
       isanytrackinitial === false &&
@@ -2679,6 +2730,7 @@ export function Videoeditor() {
     ) {
       for (let i = 0; i < listmediatrack.length; i++) {
         if (
+          listmediatrack[i].playtrackstatus == "playing" &&
           document.getElementById(
             "divfinalvideohtmlid" + listmediatrack[i].order
           ) &&
@@ -2692,7 +2744,25 @@ export function Videoeditor() {
               .play();
           } catch (e) {}
         }
+
+        if (
+          listmediatrack[i].playtrackstatus == "playing" &&
+          document.getElementById(
+            "divfinalvideohtmlid" + listmediatrack[i].order
+          ) &&
+          document.getElementById(
+            "divfinalvideohtmlid" + listmediatrack[i].order
+          ).playing == true
+        ) {
+          drawVideoonCanvasnew({
+            videohtmlid: "divfinalvideohtmlid" + listmediatrack[i].order,
+            initcanvashtmlid: "finalcanvashtmlid",
+            finalcanvashtmlid: "finalcanvashtmlid",
+            isgreyoutpixels:true
+          });
+        }
       }
+
       alltrackscurrentplayingtimeinseconds =
         alltrackscurrentplayingtimeinseconds + 16 / 1000;
     } else if (
@@ -2707,6 +2777,7 @@ export function Videoeditor() {
     ) {
       for (let i = 0; i < listmediatrack.length; i++) {
         if (
+          listmediatrack[i].playtrackstatus == "playing" &&
           document.getElementById(
             "divfinalvideohtmlid" + listmediatrack[i].order
           ) &&
@@ -2720,12 +2791,29 @@ export function Videoeditor() {
               .play();
           } catch (e) {}
         }
+        
+
+        if (
+          listmediatrack[i].playtrackstatus == "playing" &&
+          document.getElementById(
+            "divfinalvideohtmlid" + listmediatrack[i].order
+          ) 
+        ) {
+          
+          drawVideoonCanvasnew({
+            videohtmlid: "divfinalvideohtmlid" + listmediatrack[i].order,
+            initcanvashtmlid: "finalcanvashtmlid",
+            finalcanvashtmlid: "finalcanvashtmlid",
+            isgreyoutpixels:true
+          });
+        }
       }
       alltrackscurrentplayingtimeinseconds =
         alltrackscurrentplayingtimeinseconds + 16 / 1000;
     } else {
       for (let i = 0; i < listmediatrack.length; i++) {
         if (
+          listmediatrack[i].playtrackstatus != "playing" &&
           document.getElementById(
             "divfinalvideohtmlid" + listmediatrack[i].order
           ) &&
@@ -3309,7 +3397,7 @@ export function Videoeditor() {
       const divofinalcanvashtmlidvideo = document.createElement("canvas");
       divofinalcanvashtmlidvideo.height = 240; // in px
       divofinalcanvashtmlidvideo.width = 320; // in px
-
+      divofinalcanvashtmlidvideo.id = "finalcanvashtmlid";
       document
         .getElementById("divofinalcanvashtmlid")
         .appendChild(divofinalcanvashtmlidvideo);
@@ -3340,7 +3428,7 @@ export function Videoeditor() {
       const divofinalcanvashtmlidvideo = document.createElement("canvas");
       divofinalcanvashtmlidvideo.height = 240; // in px
       divofinalcanvashtmlidvideo.width = 320; // in px
-
+      divofinalcanvashtmlidvideo.id = "finalcanvashtmlid";
       document
         .getElementById("divofinalcanvashtmlid")
         .appendChild(divofinalcanvashtmlidvideo);
@@ -3362,6 +3450,7 @@ export function Videoeditor() {
       const divofinalcanvashtmlidvideo = document.createElement("canvas");
       divofinalcanvashtmlidvideo.height = 240; // in px
       divofinalcanvashtmlidvideo.width = 320; // in px
+      divofinalcanvashtmlidvideo.id = "finalcanvashtmlid"; // in px
 
       document
         .getElementById("divofinalcanvashtmlid")
@@ -3532,7 +3621,6 @@ export function Videoeditor() {
         >
           startautouploadvideo
         </div>
-
         <div style={{ width: 200, height: "400px", padding: "5px" }}>
           <Mediauploadhtml dropHandler={dropHandler} />
           {mediauploadedFileshtml}
@@ -3574,6 +3662,7 @@ export function Videoeditor() {
           }}
           id="divfinalvideohtmlid"
         ></div>
+        ==
         <div
           style={{
             padding: "5px",
@@ -3582,6 +3671,7 @@ export function Videoeditor() {
           }}
           id="divofinalcanvashtmlid"
         ></div>
+        ==
         <div style={{ width: "100%" }}>
           <video controls id="videofinalhtmlid"></video>
         </div>
@@ -3594,22 +3684,18 @@ export function Videoeditor() {
           defaultpixels
           <input type="checkbox" id="isdefaultpixels" />
         </div>
-
         <div style={{ padding: "5px" }}>
           greyoutPixels
           <input type="checkbox" id="isgreyoutpixels"></input>
         </div>
-
         <div style={{ padding: "5px" }}>
           istransparentpixels
           <input type="checkbox" id="istransparentpixels"></input>
         </div>
-
         <div style={{ padding: "5px" }}>
           iswatermarktext
           <input type="checkbox" id="iswatermarktext"></input>
         </div>
-
         <div style={{ padding: "5px" }}>
           iswatermarkimage
           <input type="checkbox" id="iswatermarkimage"></input>
