@@ -21,6 +21,45 @@ import {
   dragdropHandler2,
 } from "./logic";
 
+/*
+
+
+zoom to center and open next scene
+blurscreen
+choroma colors
+whip - move a to right b to left, blur, 
+movescreen
+rotate
+masking/frameblocking: pillar black moves left and shows next image,opacity, blur, 
+lumakee = jumping in next screen
+rotation 
+shaking screen and chromatic looks and  show next
+framefill , show full white color and open next
+speed ramping: increase speed of video at one time, show next clip in same direction
+put one clip above another
+color and shape: show light fish and show next clip
+mixit website 
+downwardsplit and bounce: stacked screen goes down and bounce 
+3d spin: rotate first screen and show next screen 
+quick left distort, upward
+multicircle
+falling box 
+double twist 
+muti screenframe split 
+right split 
+upward flip 
+zoom burn 
+reverse spint 
+reverse zoom 
+upward motion 
+sidezoom 
+https://www.youtube.com/watch?v=GsSJsAkWGSI 
+
+
+
+
+
+*/
 var video2;
 var mycanvasmediaRecorder2;
 var mycanvasrecordedChunks2;
